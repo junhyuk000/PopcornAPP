@@ -1,0 +1,27 @@
+{% extends "movie_base.html" %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="mb-4">Today's Movie Rankings</h1>
+    <div id="movie-carousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for movie in movies %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ movie.image_url }}" class="d-block mx-auto" alt="{{ movie.name }}" style="height: 400px;">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ movie.name }}</h5>
+                    <p>{{ movie.description }}</p>
+                    <a href="/reviews/{{ movie.id }}" class="btn btn-primary">View Reviews</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#movie-carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#movie-carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+{% endblock %}

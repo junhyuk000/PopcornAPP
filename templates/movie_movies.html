@@ -1,0 +1,66 @@
+{% extends "movie_base.html" %}
+{% block css %}
+<style>
+    .carousel-item h5 {
+        font-size: 1.5rem;
+        color: #cababa;
+    }
+    
+    .carousel-item p {
+        font-size: 1rem;
+        color: #a79696;
+    }
+    
+    /* Carousel Indicators 아래로 이동 */
+    .carousel-indicators {
+        position: absolute;
+        bottom: -100px; /* Carousel 아래로 이동 */
+    }    
+
+</style>
+{%endblock%}
+{% block title %}Movie Rankings{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center my-4" style="color: white;">Rankings</h1>
+    
+    <!-- Bootstrap Carousel -->
+    <div id="movie-carousel" class="carousel slide" data-bs-ride="carousel">
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            {% for movie in movies_info %}
+            <button type="button" data-bs-target="#movie-carousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-label="Slide {{ loop.index }}"></button>
+            {% endfor %}
+        </div>
+
+        <!-- Carousel Items -->
+        <div class="carousel-inner" style="height: 500%;">
+            {% for movie in movies_info %}
+            
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <!-- 이미지 -->
+                <img src="images/{{ movie.filename }}" class="d-block mx-auto" alt="{{ movie.title }}" style="max-height: 400px;">
+                
+                <!-- 텍스트 (이미지 아래) -->
+                <div class="text-center mt-3">
+                    <h5>{{ movie.title }}</h5>
+                    <p>Rank: {{ movie.rank }}</p>
+                    <a href="/reviews/{{ movie.title }}" class="btn btn-primary">View Reviews</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Navigation Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#movie-carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#movie-carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+{% endblock %}

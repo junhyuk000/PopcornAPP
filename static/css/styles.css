@@ -1,0 +1,39 @@
+
+@font-face {
+    font-family: 'SBAggroB';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #322f44;
+}
+
+
+
+main {
+    margin-bottom: 60px; /* footer 높이만큼 여백 추가 */
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

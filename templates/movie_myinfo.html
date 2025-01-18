@@ -1,0 +1,33 @@
+
+
+{% extends "movie_base.html" %}
+
+{% block title %}My Info{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="color: white;">My Information</h2>
+    
+    <!-- 사용자 정보 카드 -->
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body text-center">
+            <!-- 사용자 프로필 이미지 -->
+            <img src="user_image/{{ user.filename }}" alt="Profile Image" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+
+            <!-- 사용자 정보 -->
+            <h5 class="card-title">ID: {{ user.id }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Name: {{ user.name }}</h6>
+            <p class="card-text">Role:{% if user.id=='admin' %}admin{% else %}user{%endif%}</p>
+
+            <!-- 버튼들 -->
+            <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                <a href="/change_password" class="btn btn-primary">Change Password</a>
+                <a href="/logout" class="btn btn-secondary">Log Out</a>
+                <form action="/delete_account" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
