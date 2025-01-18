@@ -25,6 +25,10 @@ manager.update_filename_in_db("movies")
 def img_file(filename):
     return send_from_directory('static/images', filename)
 
+@app.route('/js/<path:filename>')
+def js_file(filename):
+    return send_from_directory('static/js', filename)
+
 @app.route('/user_image/<path:filename>')
 def user_img_file(filename):
     return send_from_directory('static/user_image', filename)
@@ -273,6 +277,14 @@ def edit_password():
     return render_template('movie_edit_password.html')
         
 
+@app.route('/movie_map')
+def movie_map():
+
+    return render_template('movie_map.html')
+
+@app.route('/movie_youtube/<title>')
+def movie_youtube(title):
+    return render_template('movie_youtube.html',title=title)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

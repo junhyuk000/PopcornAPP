@@ -1,0 +1,34 @@
+{% extends "movie_base.html" %}
+
+{% block css %}
+<style>
+    #videoPlayer {
+        width: 560px;
+        height: 315px;
+        margin: 20px auto;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="color: white;">{{title}} 예고편</h1>
+
+
+<iframe
+    id="videoPlayer"
+    src=""
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+</iframe>
+{% endblock %}
+
+{% block js %}
+<script>
+    const movieTitle = "{{ title | safe }}"; // 템플릿 변수 값을 JavaScript 전역 변수에 저장
+    console.log(`Movie Title (from Flask): ${movieTitle}`); // 디버깅용 로그
+</script>
+<script src="{{ url_for('static', filename='js/youtube.js') }}"></script>
+{% endblock %}

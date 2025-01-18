@@ -1,0 +1,32 @@
+{% extends "movie_base.html" %}
+{% block css %}
+<style>
+    #map { width: 100%; height: 500px; }
+    #placesList {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    #placesList li {
+        margin: 5px 0;
+        cursor: pointer;
+        padding: 5px;
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+    }
+    #placesList li:hover { background: #e0e0e0; }
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="color: white;">주소를 입력하여 근처 영화관 검색</h1>
+<input type="text" id="searchInput" placeholder="주소를 입력하세요" style="width: 300px;">
+<button id="searchButton">검색</button>
+<div id="map"></div>
+<ul id="placesList"></ul>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be47724c48a9357381269e671a99079c&libraries=services"></script>
+<script src="js/map.js"></script>
+{% endblock %}

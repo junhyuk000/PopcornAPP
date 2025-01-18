@@ -346,34 +346,6 @@ class DBManager:
                 print(f"Saved: {img_path}")
             except requests.exceptions.RequestException as e:
                 print(f"Failed to download {img_url}: {e}")
-
-    # def movies_merge(self):
-    #     try:
-    #         matched_data = []
-    #         self.connect()
-    #         self.cursor.execute("SELECT title FROM movies_info")
-    #         movies_info = self.cursor.fetchall()
-    #         print(movies_info)
-    #         image_files = os.listdir("static/images")
-    #         for movie_info in movies_info:
-    #             title = movie_info['title']
-    #             for image_file in image_files:
-    #                 image_name, _ = os.path.splitext(image_file)
-    #                 if title == image_name:
-    #                     matched_data.append({
-    #                         'title' : title,
-    #                         'filename' : image_file
-    #                     })
-    #                 else:
-    #                     matched_data.append({
-    #                         'title' : title,
-    #                         'filename' : "noimage.jpg"
-    #                     })                        
-    #         return metched_data
-    #     except mysql.connector.Error as error:
-    #         print(f"image파일과 데이터 베이스 연결 실패: {error}")
-    #     finally:
-    #         self.disconnect()
     
     def update_filename_in_db(self, table_name):
         """
