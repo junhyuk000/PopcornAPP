@@ -30,6 +30,7 @@ class DBManager:
                 connection_timeout=600  # 10분
                 )
                 self.cursor = self.connection.cursor(dictionary=True)
+                # 영화 리뷰 데이터베이스 posts 테이블 생성
                 self.cursor.execute("""
                                     CREATE TABLE IF NOT EXISTS `posts` (
                                     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -48,7 +49,7 @@ class DBManager:
                                     PRIMARY KEY (`id`)
                                     )
                                     """)
-            
+                # 회원 데이터베이스 users 테이블 생성
                 self.cursor.execute("""
                                     CREATE TABLE IF NOT EXISTS `users` (
                                     `idx` INT(11) NOT NULL AUTO_INCREMENT,
@@ -61,7 +62,7 @@ class DBManager:
                                     PRIMARY KEY (`idx`)
                                     ) 
                                     """)
-
+                # 당일 영화 API 데이터 누적 저장 데이터베이스 movies 테이블 생성(데이터 분석용)
                 self.cursor.execute("""
                                     CREATE TABLE IF NOT EXISTS `movies` (
                                     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -81,7 +82,7 @@ class DBManager:
                                     PRIMARY KEY (`id`)
                                     )
                                     """)
-
+                # 당일 영화 API 데이터 저장 데이터베이스 movies 테이블 생성
                 self.cursor.execute("""
                                     CREATE TABLE IF NOT EXISTS `movies_info` (
                                     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -110,100 +111,8 @@ class DBManager:
             self.cursor.close()
             self.connection.close()
 #--------------------------기본값으로 설정--------------------------------★    
-    def get_all_posts(self):
-        try:
-            self.connect()
-            sql = f"SELECT * FROM posts order by views desc"
-            self.cursor.execute(sql)
-            return self.cursor.fetchall()
-        except mysql.connector.Error as error:
-            print(f"게시글 조회 실패: {error}")
-            return []
-        finally:
-            self.disconnect()
-            
-    def insert_post(self, title, content, filename, userid, username, rating, spoiler, movie_title):
-        try:
-            self.connect()
-            sql = f"INSERT INTO posts (title, content, filename, created_at, userid, username, rating, spoiler,movie_title) values (%s, %s, %s, %s, %s, %s, %s, %s,%s)"
-            values = (title, content, filename, datetime.now(), userid, username, rating, spoiler, movie_title)  # 튜플형태
-            self.cursor.execute(sql, values)
-            
-            '''
-            ##  executemany() : list로 묶어서 한번에 입력 가능
-            values = [(title, content, filename, datetime.now().date().strftime('%Y-%m-%d')),(title, content, filename, datetime.now().date().strftime('%Y-%m-%d'))]
-            self.cursor.executemany(sql, values)
-            '''
-            
-            self.connection.commit()
-            return True
-        except mysql.connector.Error as error:
-            print(f"게시글 추가 실패: {error}")
-            return False
-        finally:
-            self.disconnect()
-            
-    def get_post_by_id(self, id):
-        try:
-            self.connect()
-            sql = f"SELECT * FROM posts WHERE id = %s"
-            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
-            self.cursor.execute(sql, value)
-            return self.cursor.fetchone()
-        except mysql.connector.Error as error:
-            print(f"데이터베이스 연결 실패: {error}")
-            return None
-        finally:
-            self.disconnect()
-            
-    def update_post(self, id, title, content, filename):
-        try:
-            self.connect()
-            if filename:
-                sql = f"UPDATE posts SET title = %s, content =%s, filename= %s WHERE id =%s"
-                values = (title, content, filename, id)  # 튜플형태
-            else:
-                sql = f"UPDATE posts SET title = %s, content =%s WHERE id =%s"
-                values = (title, content, id)  # 튜플형태
-            self.cursor.execute(sql, values)
-            self.connection.commit()
-            return True
-        except mysql.connector.Error as error:
-            self.connection.rollback()
-            print(f"게시글 정보 수정 실패: {error}")
-            return False
-        finally:
-            self.disconnect()
-            
-    def delete_post(self, id):
-        try:
-            self.connect()
-            sql = f"DELETE FROM posts WHERE id = %s"
-            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
-            self.cursor.execute(sql, value)
-            self.connection.commit()
-            return True
-        except mysql.connector.Error as error:
-            print(f"게시글 삭제 실패: {error}")
-            return False
-        finally:
-            self.disconnect()
-            
-    def increment_hits(self, id):
-        try:
-            self.connect()
-            sql = f"UPDATE posts SET views = views +1 WHERE id = %s"
-            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
-            self.cursor.execute(sql, value)
-            self.connection.commit()
-            return True
-        except mysql.connector.Error as error:
-            print(f"게시글 조회수 증가 실패: {error}")
-            return False
-        finally:
-            self.disconnect()        
         
-            
+    ### 회원가입
     def regsiter_user(self, name, id, password,user_ip, filename):
         try:
             self.connect()
@@ -223,6 +132,7 @@ class DBManager:
         finally:  
             self.disconnect() 
     
+    ### 로그인
     def login_user(self, id, password):
         try:
             self.connect()
@@ -237,6 +147,7 @@ class DBManager:
         finally:
             self.disconnect()
     
+    ### 회원가입시 id 중복 확인
     def duplicate_user(self,id):
         try:
             self.connect()
@@ -254,6 +165,7 @@ class DBManager:
         finally:
             self.disconnect()
     
+    ### 해당 id 유저정보 가져오기
     def get_user_by_id(self,id):
         try:
             self.connect()
@@ -265,8 +177,24 @@ class DBManager:
             print(f"데이터베이스 연결 실패: {error}")
             return None
         finally:
-            self.disconnect()       
-            
+            self.disconnect()     
+
+    ### 해당 id 유저 비밀번호 변경
+    def get_user_edit_password(self, id, password):
+        try:
+            self.connect()
+            sql = f"UPDATE users SET `password` = PASSWORD(%s) WHERE `id`=%s"
+            value = (password,id) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+            return True
+        except mysql.connector.Error as error:
+            print(f"게시글 조회수 증가 실패: {error}")
+            return False
+        finally:
+            self.disconnect()   
+
+    ### 해당 id 유저 회원 탈퇴
     def delete_user(self, id):
         try:
             self.connect()
@@ -281,12 +209,90 @@ class DBManager:
             return False
         finally:
             self.disconnect()
-            
-    def get_user_edit_password(self, id, password):
+
+    ### 모든 리뷰 정보 가져오기
+    def get_all_posts(self):
         try:
             self.connect()
-            sql = f"UPDATE users SET `password` = PASSWORD(%s) WHERE `id`=%s"
-            value = (password,id) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+            sql = f"SELECT * FROM posts order by views desc"
+            self.cursor.execute(sql)
+            return self.cursor.fetchall()
+        except mysql.connector.Error as error:
+            print(f"게시글 조회 실패: {error}")
+            return []
+        finally:
+            self.disconnect()
+        
+    ### 리뷰 추가하기    
+    def insert_post(self, title, content, filename, userid, username, rating, spoiler, movie_title):
+        try:
+            self.connect()
+            sql = f"INSERT INTO posts (title, content, filename, created_at, userid, username, rating, spoiler,movie_title) values (%s, %s, %s, %s, %s, %s, %s, %s,%s)"
+            values = (title, content, filename, datetime.now(), userid, username, rating, spoiler, movie_title)  # 튜플형태
+            self.cursor.execute(sql, values)
+            self.connection.commit()
+            return True
+        except mysql.connector.Error as error:
+            print(f"게시글 추가 실패: {error}")
+            return False
+        finally:
+            self.disconnect()
+       
+    ### 선택된 리뷰 자세히 보기     
+    def get_post_by_id(self, id):
+        try:
+            self.connect()
+            sql = f"SELECT * FROM posts WHERE id = %s"
+            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+            self.cursor.execute(sql, value)
+            return self.cursor.fetchone()
+        except mysql.connector.Error as error:
+            print(f"데이터베이스 연결 실패: {error}")
+            return None
+        finally:
+            self.disconnect()
+            
+    ### 리뷰 수정
+    def update_post(self, id, title, content, filename):
+        try:
+            self.connect()
+            if filename:
+                sql = f"UPDATE posts SET title = %s, content =%s, filename= %s WHERE id =%s"
+                values = (title, content, filename, id)  # 튜플형태
+            else:
+                sql = f"UPDATE posts SET title = %s, content =%s WHERE id =%s"
+                values = (title, content, id)  # 튜플형태
+            self.cursor.execute(sql, values)
+            self.connection.commit()
+            return True
+        except mysql.connector.Error as error:
+            self.connection.rollback()
+            print(f"게시글 정보 수정 실패: {error}")
+            return False
+        finally:
+            self.disconnect()
+    
+    ### 리뷰 삭제
+    def delete_post(self, id):
+        try:
+            self.connect()
+            sql = f"DELETE FROM posts WHERE id = %s"
+            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+            return True
+        except mysql.connector.Error as error:
+            print(f"게시글 삭제 실패: {error}")
+            return False
+        finally:
+            self.disconnect()
+    
+    ### 리뷰 조회수     
+    def increment_hits(self, id):
+        try:
+            self.connect()
+            sql = f"UPDATE posts SET views = views +1 WHERE id = %s"
+            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             self.connection.commit()
             return True
@@ -294,8 +300,9 @@ class DBManager:
             print(f"게시글 조회수 증가 실패: {error}")
             return False
         finally:
-            self.disconnect()    
-    
+            self.disconnect()        
+
+    ### 영화 이미지 requests, BeautifulSoup을 활용하여 제목과 함께 저장    
     def movies_images(self):
         url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&ssc=tab.nx.all&query=%EC%98%81%ED%99%94+%EC%88%9C%EC%9C%84"
         base_dir = os.path.abspath(os.getcwd())
@@ -353,17 +360,16 @@ class DBManager:
                 import traceback
                 print(traceback.format_exc())
 
+    ### 파일 이름 유효성 체크
     def sanitize_filename(self, filename):
         # Windows에서 사용할 수 없는 문자 처리
         invalid_chars = '<>:"/\\|?*'
-        filename = filename.replace(':', '_')  # 콜론을 언더스코어로 변경
-        
+        # filename = filename.replace(':', '_')  # 콜론을 언더스코어로 변경
         for char in invalid_chars:
-            if char != ':':  # 콜론은 이미 처리했으므로 건너뜀
-                filename = filename.replace(char, '_')
-        
+            filename = filename.replace(char, '_')
         return filename.strip()  # 앞뒤 공백 제거
 
+    ### 이미지파일 movies, movies_info 테이블에 업데이트
     def update_filename_in_db(self, table_name):
         """
         데이터베이스에서 title 컬럼에 해당하는 filename 값을 업데이트합니다.
@@ -417,7 +423,7 @@ class DBManager:
         finally:
             self.disconnect()
 
-                
+    ### KOBIS사이트에서 일별 박스오피스 및 영화 상세정보 API 가져와서 PANDAS를 활용하여 필요한 데이터 추출    
     def moives_info(self):
         servicekey = 'd8df4fae219ac24585a0ee3c1a43933c'
         # 오늘 날짜를 '250113' 형식으로 가져오기
@@ -480,6 +486,7 @@ class DBManager:
         self.insert_data(df3)
         self.insert_data_with_no_duplicates(df3)
    
+    ### 데이터베이스 movies_info 테이블은 당일 데이터만 저장하므로 당일 데이터 저장 전 기존 데이터 삭제
     def clear_table(self):
         """
         테이블의 모든 데이터를 삭제
@@ -495,6 +502,7 @@ class DBManager:
         finally:
             self.disconnect()
 
+    ### 데이터베이스 movies 테이블은 누적하여 데이터를 저장하므로 중복 데이터를 저장 안 하기 위한 제목 중복 체크
     def check_title_exists(self, title):
         """
         제목 중복 확인 함수
@@ -515,6 +523,7 @@ class DBManager:
         finally:
             self.disconnect()
 
+    ### 데이터베이스 movies 테이블에 데이터 누적 저장
     def insert_data_with_no_duplicates(self, df):
         """
         제목이 중복되지 않는 경우에만 데이터프레임의 데이터를 한 번에 삽입
@@ -590,8 +599,7 @@ class DBManager:
                 connection.close()
                 print("Database connection closed.")
 
-
-
+    ### movies_info 테이블에 당일 데이터 저장
     def insert_data(self, df):
         """
         movies_info 테이블에 데이터를 삽입
@@ -613,7 +621,7 @@ class DBManager:
         finally:
             self.disconnect()
 
-
+    ### 모든 영화 정보 가져오기
     def get_all_movies(self):
         try:
             self.connect()

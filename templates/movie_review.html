@@ -4,10 +4,12 @@
 
     {% if session['id'] %}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="color: white;">{{title}} Review</h2>
+        <h2 style="color: white;">{% if title %}{{title}}{% else %}All{%endif%} Review</h2>
+        {% if title %}
         <a href="/post/add/{{title}}" class="btn btn-primary">
             <i class="fas fa-plus"></i> 글쓰기
         </a>
+        {% endif %}
     </div>
 
     <div class="table-responsive">
@@ -15,25 +17,21 @@
             <thead class="table-dark">
                 <tr>
                     <th style="text-align:center;width:70px;">번호</th>
-                    <th style="text-align:center;width:150px;">이미지</th>
+                    <th style="text-align:center;width:150px;">영화 제목</th>
                     <th>제목</th>
                     <th style="text-align:center;width:150px;">별점</th>
                     <th style="text-align:center;width:100px;">작성자</th>
                     <th style="text-align:center;width:150px;">작성일</th>
                     <th style="text-align:center;width:100px;">조회수</th>
-                    <th style="text-align:center;width:50px;">첨부</th>
+                    <th style="text-align:center;width:100px;">이미지 첨부</th>
                 </tr>
             </thead>
             <tbody>
                 {% for post in posts %}
                 <tr>
                     <td class="row-number" style="text-align:center;color: white;"></td>
-                    <td style="text-align:center;">
-                        {% if post.filename %}
-                        <img src="/uploads/{{post.filename}}" width="70" height="70" />
-                        {% else %}
-                        <img src="/uploads/noimage.jpg" width="70" height="70" />
-                        {% endif %}
+                    <td style="text-align:center; color: white;">
+                        {{post.movie_title}}
                     </td>
                     <td>
                         <a href="/post/{{title}}/{{post.id}}" class="text-decoration-none">
