@@ -37,7 +37,7 @@
                     </td>
                     <td>
                         <a href="/post/{{title}}/{{post.id}}" class="text-decoration-none">
-                            {{post.title}}
+                            {% if post.spoiler %}❗스포일러가 포함되어 있습니다.{% else %}{{post.title}}{% endif %}
                         </a>
                     </td>
                     <td style="text-align:center; color: yellow;">{% if post.rating == 5 %}★★★★★{%elif post.rating == 4%}★★★★{%elif post.rating == 3%}★★★{%elif post.rating == 2%}★★{%else%}★{%endif%}</td>
@@ -46,7 +46,7 @@
                     <td style="text-align:center; color: white">{{post.views}}</td>
                     <td style="text-align:center; color: white">
                         {% if post.filename %}
-                            &#x1F4CE;
+                            📋
                         {% endif %}
                     </td>
                 </tr>

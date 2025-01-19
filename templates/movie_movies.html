@@ -40,7 +40,7 @@
             
             <div class="carousel-item {% if loop.first %}active{% endif %}">
                 <!-- 이미지 -->
-                <a href="/movie_youtube/{{movie.title}}"><img src="images/{{ movie.filename }}" class="d-block mx-auto" alt="{{ movie.title }}" style="max-height: 400px;">
+                <a href="/movie_youtube/{{movie.title}}"><img src="images/{{ movie.filename }}" id ='dynamicImage' class="d-block mx-auto" alt="{{ movie.title }}" style="max-height: 400px;">
                 
                 <!-- 텍스트 (이미지 아래) -->
                 <div class="text-center mt-3">
@@ -63,4 +63,17 @@
         </button>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // 이미지 경로 수정
+    window.onload = function () {
+        const imageElement = document.getElementById('dynamicImage');
+        const originalSrc = imageElement.dataset.src; // Python에서 전달된 데이터 (예: "example:filename.jpg")
+        const updatedSrc = originalSrc.replace(/:/g, '_'); // ':'를 '_'로 변환
+        imageElement.src = `/static/images/${updatedSrc}`; // 이미지 경로 설정
+    };
+</script>
+
 {% endblock %}

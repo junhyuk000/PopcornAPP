@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timedelta
 import pandas as pd
 import json
+import re
 
 
 
@@ -295,69 +296,88 @@ class DBManager:
         finally:
             self.disconnect()    
     
-    def moives_images(self):
-        """
-        주어진 URL에서 이미지를 다운로드하여 save_dir에 저장
-        :param url: 이미지가 포함된 웹 페이지 URL
-        :param save_dir: 이미지를 저장할 로컬 디렉토리 경로
-        """
-        url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&ssc=tab.nx.all&query=%EC%98%81%ED%99%94+%EC%88%9C%EC%9C%84&oquery=%EC%98%81%ED%99%94&tqi=iGpiYdqVOsossurWSGlssssssC4-514797"  # 이미지를 포함한 웹 페이지 URL
-        save_dir = "static/images"  
-        # 요청 및 파싱
-        response = requests.get(url)
-        response.raise_for_status()  # 요청 에러 확인
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        items = soup.select('div.list_image_info.type_pure_top div ul:nth-child(1) li')
-        # 이미지 태그 추출
-        img_tags = soup.find_all('img')[:10]
-        title =[]
-        for item in items[:10]:
-            title.append(item.select_one('strong').text)
-
+    def movies_images(self):
+        url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&ssc=tab.nx.all&query=%EC%98%81%ED%99%94+%EC%88%9C%EC%9C%84"
+        base_dir = os.path.abspath(os.getcwd())
+        save_dir = os.path.join(base_dir, "static", "images")
 
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
-    
 
-        # 이미지 다운로드
-        for idx, img_tag in enumerate(img_tags):
-            img_url = img_tag.get('src')
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-            if not img_url:
-                continue  # src 속성이 없는 경우 건너뛰기
+        # 먼저 전체 제목 리스트를 가져옴 (Processing row에서 사용하는 방식과 동일)
+        items = soup.select('div.list_image_info.type_pure_top div ul:nth-child(1) li')
+        titles = []
+        for item in items[:10]:
+            # Processing row에서 사용하는 것과 동일한 방식으로 제목 추출
+            title = item.select_one('strong').text.strip()
+            titles.append(title)
 
-            # 절대 URL인지 확인하고 없으면 상대 URL 처리
-            if not img_url.startswith(('http://', 'https://')):
-                img_url = requests.compat.urljoin(url, img_url)
+        # 이미지 태그 찾기
+        img_tags = soup.find_all('img')[:10]
 
-            print(f"Downloading {img_url}...")
-
+        # 제목과 이미지를 함께 처리
+        for idx, (title, img_tag) in enumerate(zip(titles, img_tags)):
             try:
+                img_url = img_tag.get('src')
+                if not img_url:
+                    print(f"No image URL found for {title}")
+                    continue
+
+                img_url = requests.compat.urljoin(url, img_url)
+                print(f"Downloading {img_url}...")
+
                 img_response = requests.get(img_url)
                 img_response.raise_for_status()
 
-                # 파일 저장
-                img_name = f"{title[idx]}.jpg"
+                # 파일 이름 생성
+                sanitized_title = self.sanitize_filename(title)
+                img_name = f"{sanitized_title}.jpg"
                 img_path = os.path.join(save_dir, img_name)
+
+                # 디버깅 로그
+                print(f"Original title: {title}")
+                print(f"Sanitized title: {sanitized_title}")
+                print(f"Image name: {img_name}")
+                print(f"Image path: {img_path}")
+
                 with open(img_path, 'wb') as file:
                     file.write(img_response.content)
-
                 print(f"Saved: {img_path}")
-            except requests.exceptions.RequestException as e:
-                print(f"Failed to download {img_url}: {e}")
-    
+
+            except Exception as e:
+                print(f"Error processing movie: {e}")
+                import traceback
+                print(traceback.format_exc())
+
+    def sanitize_filename(self, filename):
+        # Windows에서 사용할 수 없는 문자 처리
+        invalid_chars = '<>:"/\\|?*'
+        filename = filename.replace(':', '_')  # 콜론을 언더스코어로 변경
+        
+        for char in invalid_chars:
+            if char != ':':  # 콜론은 이미 처리했으므로 건너뜀
+                filename = filename.replace(char, '_')
+        
+        return filename.strip()  # 앞뒤 공백 제거
+
     def update_filename_in_db(self, table_name):
         """
-        title 컬럼을 기준으로 filename 컬럼 업데이트
-        :param image_dir: 이미지 파일이 저장된 디렉토리 경로
-        :param table_name: 업데이트할 테이블 이름
+        데이터베이스에서 title 컬럼에 해당하는 filename 값을 업데이트합니다.
         """
         try:
             self.connect()
 
             # 이미지 파일 목록 가져오기
-            image_files = os.listdir('static/images')
+            image_files = os.listdir("static/images")
+            noimage_path = os.path.join('static/images', 'noimage.jpg')
+
+            # noimage.jpg 확인
+            if 'noimage.jpg' not in image_files:
+                print("Warning: 'noimage.jpg' 파일이 존재하지 않습니다.")
 
             # SQL로 title 데이터 가져오기
             self.cursor.execute(f"SELECT id, title FROM {table_name}")
@@ -365,15 +385,17 @@ class DBManager:
 
             for row in rows:
                 title = row['title']
-                # 이미지 파일 이름 매칭
+                sanitized_title = self.sanitize_filename(title)
                 matched_file = None
+
+                # 이미지 파일 이름 매칭
                 for image_file in image_files:
                     file_name, _ = os.path.splitext(image_file)
-                    if title == file_name:
+                    if sanitized_title[:15] == file_name[:15]:
                         matched_file = image_file
                         break
 
-                # 이미지가 없으면 noimage.jpg 저장
+                # 이미지가 없으면 noimage.jpg 사용
                 if not matched_file:
                     matched_file = "noimage.jpg"
 
@@ -393,7 +415,8 @@ class DBManager:
         except mysql.connector.Error as error:
             print(f"Error updating filename: {error}")
         finally:
-                self.disconnect()
+            self.disconnect()
+
                 
     def moives_info(self):
         servicekey = 'd8df4fae219ac24585a0ee3c1a43933c'
