@@ -23,8 +23,8 @@ class DBManager:
         try:
             if not self.connection or not self.connection.is_connected():
                 self.connection = mysql.connector.connect(
-                host='10.0.66.20',
-                user='sejong',
+                host='3.38.87.25',
+                user='root',
                 password='1234',
                 database='movie_db',
                 connection_timeout=600  # 10분
@@ -451,7 +451,7 @@ class DBManager:
 
         m_infos = []
         for data in t_datas:
-            url1 = f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={servicekey}&movieCd={data['moviecd']}'
+            url1 = f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={servicekey}&movieCd={data["moviecd"]}'
             res1 = requests.get(url1)
             movie_infos = res1.json()
 
@@ -535,8 +535,8 @@ class DBManager:
         try:
             # 새로운 연결 생성
             connection = mysql.connector.connect(
-                host='10.0.66.20',
-                user='sejong',
+                host='3.38.87.25',
+                user='root',
                 password='1234',
                 database='movie_db',
                 connection_timeout=600

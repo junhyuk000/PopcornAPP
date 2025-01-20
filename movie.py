@@ -14,11 +14,16 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
 manager = DBManager()
+# DBManager 작업 분리
+print("데이터베이스 초기 작업 시작")
 manager.moives_info()
+print("movies_info 업데이트 완료")
 manager.movies_images()
+print("movies_images 완료")
 manager.update_filename_in_db("movies_info")
+print("movies_info 파일명 업데이트 완료")
 manager.update_filename_in_db("movies")
-
+print("movies 파일명 업데이트 완료")
 
 ### images 폴더 static/images 폴더로 연결
 @app.route('/images/<path:filename>')
@@ -62,7 +67,7 @@ def login():
             session['name'] = user['name']
             session['filename'] = user['filename']
             
-            return f'<script>alert("로그인 성공!");location.href="{url_for('movies')}"</script>'
+            return f'<script>alert("로그인 성공!");location.href="{url_for("movies")}"</script>'
         else:
             flash("로그인 실패!", 'error')
     return render_template('movie_login.html')
@@ -114,9 +119,9 @@ def delete_user():
     id = session['id']
     if manager.delete_user(id):
         session.clear()
-        return f'<script>alert("회원탈퇴 성공!");location.href="{url_for('login')}"</script>' # 스크립트로 alert알람창 띄우기
+        return f'<script>alert("회원탈퇴 성공!");location.href="{url_for("login")}"</script>' # 스크립트로 alert알람창 띄우기
     else:
-        return f'<script>alert("회원탈퇴 실패!");location.href="{url_for('index')}"</script>'
+        return f'<script>alert("회원탈퇴 실패!");location.href="{url_for("index")}"</script>'
 
 ### 비밀번호 변경
 @app.route('/edit_password', methods=['GET','POST'])
@@ -127,8 +132,8 @@ def edit_password():
         user = manager.get_user_by_id(id)
         if user['id'] == request.form.get('userid') and user['name'] == request.form.get('username'):
             if manager.get_user_edit_password(id, password):
-                return f'<script>alert("비밀번호 변경 성공!");location.href="{url_for('login')}"</script>'
-            return f'<script>alert("비밀번호 변경 실패!, 아이디 혹은 이름이 다릅니다.");location.href="{url_for('login')}"</script>'
+                return f'<script>alert("비밀번호 변경 성공!");location.href="{url_for("login")}"</script>'
+            return f'<script>alert("비밀번호 변경 실패!, 아이디 혹은 이름이 다릅니다.");location.href="{url_for("login")}"</script>'
     return render_template('movie_edit_password.html')
 
 ### 상영중인 영화 당일 랭킹순으로 화면에 표현
@@ -250,7 +255,7 @@ def delete_post(id):
             if manager.delete_post(id):
                 flash("게시물 삭제 성공!","success")
                 return redirect(url_for('index'))
-            return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for('register')}"</script>' # 스크립트로 alert알람창 띄우기
+            return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for("register")}"</script>' # 스크립트로 alert알람창 띄우기
         else:
             if manager.delete_post(id):
                 flash("게시물 삭제 성공!","success")
