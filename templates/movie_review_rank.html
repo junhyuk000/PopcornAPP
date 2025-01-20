@@ -1,0 +1,211 @@
+{% extends "movie_base.html" %}
+
+{% block css %}
+<style>
+    .podium {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 300px;
+        margin-top: 0%; /* 공백 줄임 */
+    }
+
+    .podium-item {
+        width: 100px;
+        text-align: center;
+        margin: 0 20px;
+        position: relative;
+    }
+
+    .podium-item:first-child {
+        background-color: silver;
+    }
+
+    .podium-item:nth-child(2) {
+        background-color: gold;
+    }
+
+    .podium-item:nth-child(3) {
+        background-color: #cd7f32; /* Bronze color */
+    }
+
+    .podium-item .medal {
+        font-size: 50px;
+        color: white;
+        font-weight: bold;
+        position: absolute;
+        top: -70px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .podium-item .name {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .podium-item .rank {
+        font-size: 18px;
+        color: white;
+        margin-top: 5px;
+    }
+
+    .first {
+        height: 180px;
+    }
+
+    .second {
+        height: 140px;
+    }
+
+    .third {
+        height: 100px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px; /* 버튼 간 간격 줄임 */
+    }
+
+    .ranking-table-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px; /* 공백 줄임 */
+    }
+
+    .ranking-table {
+        width: 80%;
+        height: 70%;
+        border-collapse: collapse;
+        text-align: center;
+       
+        margin: auto;
+    }
+
+    .ranking-table th, .ranking-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .ranking-table th {
+        background-color: #333;
+        color: white;
+    }
+
+    .ranking-table td {
+        color: white;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 10px; /* 제목 아래 간격 줄임 */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+    <h1 class="mb-4" id="ranking-title">추천수 Rankings</h1>
+    <div class="row">
+        <div class="podium">
+            <div id="second" class="podium-item second">
+                <div class="medal">🥈</div>
+                <div class="name"></div>
+                <div class="rank">2nd</div>
+            </div>
+            <div id="first" class="podium-item first">
+                <div class="medal">🥇</div>
+                <div class="name"></div>
+                <div class="rank">1st</div>
+            </div>
+            <div id="third" class="podium-item third">
+                <div class="medal">🥉</div>
+                <div class="name"></div>
+                <div class="rank">3rd</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 매출액 순위 -->
+    <div class="ranking-table-container">
+        <table class="ranking-table" id="rankingTable">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>유저 ID</th>
+                    <th>영화 제목</th>
+                    <th>추천수</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody id="ranking-table-body"></tbody>
+        </table>
+    </div>
+
+    <div class="button-container">
+        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', '추천수 Rankings')">추천수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_views', '조회수 Rankings')">조회수</button>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    // 파이썬에서 받은 데이터
+    const top_recommend = {{ top_recommend | tojson }};
+    const top_views = {{ top_views | tojson }};
+
+    // 기본 데이터 설정
+    let currentData = top_recommend;
+
+    // 순위 업데이트 함수
+    function updateRank(type, titleText) {
+        if (type === 'top_recommend') {
+            currentData = top_recommend;
+        } else if (type === 'top_views') {
+            currentData = top_views;
+        }
+        document.getElementById('ranking-title').textContent = titleText; // h1 제목 변경
+        updateTable();
+        updatePodium();
+    }
+
+    // 테이블 업데이트
+    function updateTable() {
+        const tableBody = document.getElementById('rankingTable').querySelector('tbody');
+        tableBody.innerHTML = '';
+
+        currentData.forEach((item, index) => {
+            const row = `<tr>
+                <td>${index + 1}</td>
+                <td>${item.user_id}</td>
+                <td>${item.movie_title}</td>
+                <td>${item.recommend}</td>
+                <td>${item.views}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // 올림픽 스타일 업데이트
+    function updatePodium() {
+        if (currentData.length < 3) return;
+        const first = document.getElementById('first').querySelector('.name');
+        const second = document.getElementById('second').querySelector('.name');
+        const third = document.getElementById('third').querySelector('.name');
+
+        first.textContent = currentData[0].user_id + " (" + currentData[0].movie_title + ")";
+        second.textContent = currentData[1].user_id + " (" + currentData[1].movie_title + ")";
+        third.textContent = currentData[2].user_id + " (" + currentData[2].movie_title + ")";
+    }
+
+    // 초기 데이터 설정
+    updateTable();
+    updatePodium();
+</script>
+{% endblock %}

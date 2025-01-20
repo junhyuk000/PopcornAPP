@@ -228,7 +228,7 @@ def edit_post(id):
         # 게시글 정보를 업데이트
         if manager.update_post(id, title, content, filename):
             flash("업데이트 성공!", "success")
-            return redirect(url_for('index'))  # 성공 시 메인 페이지로 리디렉션
+            return redirect(url_for('movies'))  # 성공 시 메인 페이지로 리디렉션
         return flash("게시글 수정 실패,400", 'error')  # 실패 시 400 에러 반환
 
     # GET 요청: 게시글 정보를 가져와 폼에 표시
@@ -301,6 +301,49 @@ def movie_map():
 @app.route('/movie_youtube/<title>')
 def movie_youtube(title):
     return render_template('movie_youtube.html',title=title)
+
+@app.route('/post/recommend/<int:post_id>/<title>')
+def recommend_post(post_id,title):
+    manager.recommend_post(post_id)
+    # 추천 후 목록 페이지로 리디렉션
+    return redirect(url_for('review', title=title))
+
+
+@app.route('/post/report/<int:post_id>', methods=['GET', 'POST'])
+def report_post(post_id):
+        
+
+    if request.method == 'POST':
+        # 신고 내용 및 사유 저장
+        content = request.form.get('content')
+        reason_code = request.form.get('reason')  # 체크박스에서 선택한 값
+        user_id = request.form.get('user_id')
+        if not content or not reason_code:
+            flash('신고 내용을 작성하고 사유를 선택해주세요.', 'danger')
+            return redirect(url_for('report_post', post_id=post_id))
+
+        manager.report_post(post_id,user_id, content, reason_code)
+
+        return redirect(url_for('movies'))  # 신고 후 목록 페이지로 리디렉션
+    return render_template('movie_report.html', post_id=post_id)
+
+@app.route('/movie_review_rank')
+def movie_review_rank():
+    posts = manager.get_all_posts()
+    tops = []
+    recommend = []
+    for post in posts:
+        tops.append({
+            'user_id': post['userid'],
+            'movie_title': post['movie_title'],
+            'views': post['views'],
+            'recommend': post['recommend'],
+            })
+ 
+    top_views = sorted(tops, key=lambda x: x['views'], reverse=True)[:10]
+    top_recommend = sorted(tops, key=lambda x: x['recommend'], reverse=True)[:10]
+    
+    return render_template('movie_review_rank.html', top_views = top_views, top_recommend=top_recommend)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

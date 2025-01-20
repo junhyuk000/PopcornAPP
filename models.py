@@ -42,10 +42,11 @@ class DBManager:
                                     `spoiler` BOOLEAN NOT NULL,
                                     `filename` VARCHAR(255) DEFAULT NULL,
                                     `movie_title` VARCHAR(255) DEFAULT NULL,
+                                    `views` INT(11) DEFAULT 0,
+                                    `recommend` INT(11) DEFAULT 0,
+                                    `report` INT(11) DEFAULT 0,                                    
                                     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                                     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
-                                    `views` INT(11) DEFAULT 0,
-
                                     PRIMARY KEY (`id`)
                                     )
                                     """)
@@ -100,6 +101,17 @@ class DBManager:
                                     `input_date` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
 
                                     PRIMARY KEY (`id`)
+                                    )
+                                    """)
+                
+                self.cursor.execute("""
+                                    CREATE TABLE IF NOT EXISTS `reports` (
+                                    `id` INT(11) AUTO_INCREMENT PRIMARY KEY,
+                                    `post_id` INT(11) NOT NULL,
+                                    `user_id` VARCHAR(255) NOT NULL,
+                                    `content` TEXT NOT NULL,
+                                    `reason_code` INT(11) NOT NULL,
+                                    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
                                     )
                                     """)
             self.cursor = self.connection.cursor(dictionary=True)
@@ -214,7 +226,7 @@ class DBManager:
     def get_all_posts(self):
         try:
             self.connect()
-            sql = f"SELECT * FROM posts order by views desc"
+            sql = f"SELECT * FROM posts"
             self.cursor.execute(sql)
             return self.cursor.fetchall()
         except mysql.connector.Error as error:
@@ -300,7 +312,47 @@ class DBManager:
             print(f"게시글 조회수 증가 실패: {error}")
             return False
         finally:
-            self.disconnect()        
+            self.disconnect()     
+            
+    def recommend_post(self, id):
+        try:
+            # 데이터베이스 연결
+            self.connect()
+
+            # 추천 수 증가
+            sql = f"UPDATE posts SET recommend = recommend + 1 WHERE id = %s"
+            value = (id,)
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+
+            # 추천 완료 메시지
+            flash('추천이 성공적으로 처리되었습니다!', 'success')
+
+        except Exception as e:
+            # 오류 처리
+            print(f"Error: {e}")
+            flash('추천 처리 중 오류가 발생했습니다.', 'danger')
+        finally:
+            self.disconnect()   
+    
+    def report_post(self, post_id,user_id, content, reason_code):
+        try:
+            # 데이터베이스 연결
+            self.connect()
+
+            # 신고 내용 저장
+            sql = f"INSERT INTO reports (post_id,user_id, content, reason_code) VALUES (%s, %s, %s, %s)"
+            value = (post_id,user_id, content, reason_code)
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+
+            flash('신고가 성공적으로 접수되었습니다.', 'success')
+        except Exception as e:
+            print(f"Error: {e}")
+            flash('신고 처리 중 문제가 발생했습니다.', 'danger')
+        finally:
+            self.disconnect()
+
 
     ### 영화 이미지 requests, BeautifulSoup을 활용하여 제목과 함께 저장    
     def movies_images(self):

@@ -16,15 +16,18 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/movies">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/movie_ranks">Ranks</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/all_reviews">All Reviews</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/movie_map">map</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movies">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_ranks">Movie Ranks</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_review_rank">Review Ranks</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_map">Map</a></li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     {% if session.get('id') %}
-                        <li class="nav-item"><a class="nav-link" href="/myinfo">My Info</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/myinfo">{{session.get('name')}}</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>

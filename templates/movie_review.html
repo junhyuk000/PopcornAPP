@@ -23,6 +23,7 @@
                     <th style="text-align:center;width:100px;">작성자</th>
                     <th style="text-align:center;width:150px;">작성일</th>
                     <th style="text-align:center;width:100px;">조회수</th>
+                    <th style="text-align:center;width:100px;">추천수</th>
                     <th style="text-align:center;width:100px;">이미지 첨부</th>
                 </tr>
             </thead>
@@ -42,6 +43,7 @@
                     <td style="text-align:center; color: white">{% if post.username %}{{post.username}}{% else %}-{% endif %}</td>
                     <td style="text-align:center; color: white">{{post.created_at.strftime('%Y-%m-%d')}}</td>
                     <td style="text-align:center; color: white">{{post.views}}</td>
+                    <td style="text-align:center; color: white">{{post.recommend}}</td>
                     <td style="text-align:center; color: white">
                         {% if post.filename %}
                             📋
