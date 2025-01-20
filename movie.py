@@ -268,7 +268,7 @@ def delete_post(id):
 @app.route('/movie_ranks')
 def movie_ranks():
     movie_infos = manager.get_all_movies()
-
+    page_title = 'movie_ranks'
     title = [movie_info['title'] for movie_info in movie_infos]
     t_sales = [movie_info['t_sales'] for movie_info in movie_infos]
     c_sales = [movie_info['c_sales'] for movie_info in movie_infos]
@@ -288,6 +288,7 @@ def movie_ranks():
     ]
     return render_template(
         'movie_ranks.html',
+        page_title=page_title,
         movies_data=movies_data,
         title=title,
         t_sales=t_sales,
