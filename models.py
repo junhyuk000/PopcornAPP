@@ -524,6 +524,7 @@ class DBManager:
             self.disconnect()
 
     ### 데이터베이스 movies 테이블에 데이터 누적 저장
+    # disconnect의 에러로 인한 connection과 disconnect기능 함수사용안하고 직접연결함
     def insert_data_with_no_duplicates(self, df):
         """
         제목이 중복되지 않는 경우에만 데이터프레임의 데이터를 한 번에 삽입
