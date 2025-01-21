@@ -22,6 +22,9 @@
                     <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_ranks">Movie Ranks</a></li>
                     <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_review_rank">Review Ranks</a></li>
                     <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_map">Map</a></li>
+                    {% if session.get('id') == 'admin' %}
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/reports">Reports</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="collapse navbar-collapse" id="navbarNav">

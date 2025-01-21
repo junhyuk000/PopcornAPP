@@ -44,7 +44,8 @@ class DBManager:
                                     `movie_title` VARCHAR(255) DEFAULT NULL,
                                     `views` INT(11) DEFAULT 0,
                                     `recommend` INT(11) DEFAULT 0,
-                                    `report` INT(11) DEFAULT 0,                                    
+                                    `report` INT(11) DEFAULT 0,        
+                                    `comment` INT(11) DEFAULT 0,                              
                                     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                                     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
                                     PRIMARY KEY (`id`)
@@ -72,6 +73,8 @@ class DBManager:
                                     `genres` VARCHAR(255) NOT NULL,
                                     `director` VARCHAR(200) NOT NULL,
                                     `nations`VARCHAR(200) NOT NULL,
+                                    `rating` FLOAT(11) DEFAULT NULL,
+                                    `reviews` INT(11) DEFAULT NULL,
                                     `t_audience` BIGINT NOT NULL,
                                     `c_audience` BIGINT NOT NULL,
                                     `t_sales` BIGINT NOT NULL,
@@ -79,7 +82,6 @@ class DBManager:
                                     `filename` VARCHAR(255) NOT NULL DEFAULT 'noimage.jpg',
                                     `release_date` DATETIME NOT NULL,
                                     `input_date` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
-
                                     PRIMARY KEY (`id`)
                                     )
                                     """)
@@ -92,6 +94,8 @@ class DBManager:
                                     `genres` VARCHAR(255) NOT NULL,
                                     `director` VARCHAR(200) NOT NULL,
                                     `nations`VARCHAR(200) NOT NULL,
+                                    `rating` FLOAT(11) DEFAULT NULL,
+                                    `reviews` INT(11) DEFAULT NULL,
                                     `t_audience` BIGINT NOT NULL,
                                     `c_audience` BIGINT NOT NULL,
                                     `t_sales` BIGINT NOT NULL,
@@ -114,6 +118,19 @@ class DBManager:
                                     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
                                     )
                                     """)
+                
+                self.cursor.execute("""
+                                    CREATE TABLE IF NOT EXISTS `comments` (
+                                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                                    `post_id` INT(11) NOT NULL,
+                                    `user_id` VARCHAR(255) NOT NULL,
+                                    `user_name` VARCHAR(255) NOT NULL,
+                                    `content` VARCHAR(255) NOT NULL,
+                                    `created_at` DATETIME NOT NULL,
+                                    PRIMARY KEY (`id`)
+                                    )
+                                    """)                 
+                
             self.cursor = self.connection.cursor(dictionary=True)
         except mysql.connector.Error as error:
             print(f"데이터베이스 연결 실패: {error}")
@@ -334,6 +351,29 @@ class DBManager:
             flash('추천 처리 중 오류가 발생했습니다.', 'danger')
         finally:
             self.disconnect()   
+    
+    def report_post_count(self, id):
+        try:
+            # 데이터베이스 연결
+            self.connect()
+
+            # 추천 수 증가
+            sql = f"UPDATE posts SET report = report + 1 WHERE id = %s"
+            value = (id,)
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+
+            # 추천 완료 메시지
+            flash('신고가 성공적으로 처리되었습니다!', 'success')
+
+        except Exception as e:
+            # 오류 처리
+            print(f"Error: {e}")
+            flash('신고 처리 중 오류가 발생했습니다.', 'danger')
+        finally:
+            self.disconnect()   
+    
+    
     
     def report_post(self, post_id,user_id, content, reason_code):
         try:
@@ -686,3 +726,162 @@ class DBManager:
             return []
         finally:
             self.disconnect()
+
+    ### 댓글 추가
+    def insert_comment(self,post_id,user_id,user_name,content):
+        try:
+            self.connect()
+            sql = """
+                INSERT INTO comments (post_id, user_id, user_name, content, created_at)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            values = (post_id,user_id,user_name, content ,datetime.now())
+            self.cursor.execute(sql, values)
+            self.connection.commit()
+            print("comments 테이블 업데이트 완료.")
+        except mysql.connector.Error as error:
+            print(f"comments 테이블 데이터 삽입 실패: {error}")
+        finally:
+            self.disconnect()
+
+    ### 모든 댓글 정보 가져오기
+    def get_all_comments(self):
+        try:
+            self.connect()
+            sql = f"SELECT * FROM comments"
+            self.cursor.execute(sql)
+            return self.cursor.fetchall()
+        except mysql.connector.Error as error:
+            print(f"댓글 조회 실패: {error}")
+            return []
+        finally:
+            self.disconnect()
+            
+    ### 해당 id 데이터 가져오기
+    def get_comment_by_id(self, id):
+        try:
+            self.connect()
+            sql = f"SELECT * FROM comments WHERE id = %s"
+            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+            self.cursor.execute(sql, value)
+            return self.cursor.fetchone()
+        except mysql.connector.Error as error:
+            print(f"데이터베이스 연결 실패: {error}")
+            return None
+        finally:
+            self.disconnect()
+    
+    ### 해당 댓글 삭제
+    def delete_comment(self, id):
+        try:
+            self.connect()
+            sql = f"DELETE FROM comments WHERE id = %s"
+            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+            return True
+        except mysql.connector.Error as error:
+            print(f"댓글 삭제 실패: {error}")
+            return False
+        finally:
+            self.disconnect()
+            
+    def comment_post_count(self, id):
+        try:
+            # 데이터베이스 연결
+            self.connect()
+            # 댓글수 증가
+            sql = f"UPDATE posts SET comment = comment + 1 WHERE id = %s"
+            value = (id,)
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+
+        except Exception as e:
+            # 오류 처리
+            print(f"Error: {e}")
+            flash('댓글 처리 중 오류가 발생했습니다.', 'danger')
+        finally:
+            self.disconnect()   
+
+    def movies_reviews_count(self, title):
+        try:
+            # 데이터베이스 연결
+            self.connect()
+            # 댓글수 증가
+            sql = f"UPDATE movies SET reviews = reviews + 1 WHERE title = %s"
+            value = (title,)
+            self.cursor.execute(sql, value)
+            self.connection.commit()
+
+        except Exception as e:
+            # 오류 처리
+            print(f"Error: {e}")
+            flash('리뷰 카운터 처리 중 오류가 발생했습니다.', 'danger')
+        finally:
+            self.disconnect()   
+
+
+    def update_movie_ratings_and_reviews(self):
+        try:
+            # 데이터베이스 연결
+            self.connect()
+
+            # 영화 제목별 평균 rating 및 리뷰 개수 계산
+            self.cursor.execute("""
+                SELECT 
+                    movie_title,
+                    AVG(rating) AS avg_rating,
+                    COUNT(*) AS review_count
+                FROM 
+                    posts
+                WHERE 
+                    rating IS NOT NULL
+                GROUP BY 
+                    movie_title
+            """)
+            aggregated_data = self.cursor.fetchall()
+
+            # movies 테이블 업데이트
+            for row in aggregated_data:
+                movie_title = row['movie_title']
+                avg_rating = row['avg_rating']
+                review_count = row['review_count']
+
+                # 영화 제목에 해당하는 평균 rating 및 리뷰 개수 업데이트
+                self.cursor.execute("""
+                    UPDATE movies
+                    SET rating = %s, reviews = %s
+                    WHERE title = %s
+                """, (avg_rating, review_count, movie_title))
+                
+                self.cursor.execute("""
+                    UPDATE movies_info
+                    SET rating = %s, reviews = %s
+                    WHERE title = %s
+                """, (avg_rating, review_count, movie_title))
+
+            # 변경사항 커밋
+            self.connection.commit()
+            print("Movies table updated successfully!")
+
+        except mysql.connector.Error as error:
+            print(f"Error updating movie ratings and reviews: {error}")
+        finally:
+            self.disconnect()
+
+    
+    def view_reports(self):
+        try:
+            self.connect()
+
+            # reports 테이블에서 데이터 가져오기
+            self.cursor.execute("SELECT post_id, user_id, content, reason_code FROM reports")
+            return self.cursor.fetchall()
+
+        except mysql.connector.Error as error:
+            print(f"Error fetching reports: {error}")
+            return "Error loading reports."
+
+        finally:
+            self.disconnect()
+

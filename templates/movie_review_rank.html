@@ -23,6 +23,7 @@
 
     .podium-item:nth-child(2) {
         background-color: gold;
+        
     }
 
     .podium-item:nth-child(3) {
@@ -54,14 +55,17 @@
 
     .first {
         height: 180px;
+        width: 200px;
     }
 
     .second {
         height: 140px;
+        width: 200px;
     }
 
     .third {
         height: 100px;
+        width: 200px;
     }
 
     .button-container {
@@ -111,7 +115,7 @@
 {% block content %}
 
 <div class="text-center">
-    <h1 class="mb-4" id="ranking-title">추천수 Rankings</h1>
+    <h1 class="mb-4" id="ranking-title">Review 추천수</h1>
     <div class="row">
         <div class="podium">
             <div id="second" class="podium-item second">
@@ -140,8 +144,10 @@
                     <th>순위</th>
                     <th>유저 ID</th>
                     <th>영화 제목</th>
+                    <th>리뷰 제목</th>
                     <th>추천수</th>
                     <th>조회수</th>
+                    <th>댓글수</th>
                 </tr>
             </thead>
             <tbody id="ranking-table-body"></tbody>
@@ -149,16 +155,18 @@
     </div>
 
     <div class="button-container">
-        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', '추천수 Rankings')">추천수</button>
-        <button class="btn btn-outline-light" onclick="updateRank('top_views', '조회수 Rankings')">조회수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', 'Review 추천수')">추천수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_views', 'Review 조회수')">조회수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_comments', 'Review 댓글수')">댓글수</button>
     </div>
 </div>
 {% endblock %}
 {% block js %}
 <script>
     // 파이썬에서 받은 데이터
-    const top_recommend = {{ top_recommend | tojson }};
-    const top_views = {{ top_views | tojson }};
+    const top_recommend = JSON.parse('{{ top_recommend | tojson | safe }}');
+    const top_views = JSON.parse('{{ top_views | tojson | safe }}');
+    const top_comments = JSON.parse('{{ top_comments | tojson | safe }}');
 
     // 기본 데이터 설정
     let currentData = top_recommend;
@@ -169,6 +177,8 @@
             currentData = top_recommend;
         } else if (type === 'top_views') {
             currentData = top_views;
+        } else if (type === 'top_comments'){
+            currentData = top_comments;
         }
         document.getElementById('ranking-title').textContent = titleText; // h1 제목 변경
         updateTable();
@@ -185,8 +195,10 @@
                 <td>${index + 1}</td>
                 <td>${item.user_id}</td>
                 <td>${item.movie_title}</td>
+                <td>${item.title}</td>
                 <td>${item.recommend}</td>
                 <td>${item.views}</td>
+                <td>${item.comments}</td>
             </tr>`;
             tableBody.innerHTML += row;
         });
@@ -199,9 +211,9 @@
         const second = document.getElementById('second').querySelector('.name');
         const third = document.getElementById('third').querySelector('.name');
 
-        first.textContent = currentData[0].user_id + " (" + currentData[0].movie_title + ")";
-        second.textContent = currentData[1].user_id + " (" + currentData[1].movie_title + ")";
-        third.textContent = currentData[2].user_id + " (" + currentData[2].movie_title + ")";
+        first.textContent = currentData[0].user_id;
+        second.textContent = currentData[1].user_id;
+        third.textContent = currentData[2].user_id ;
     }
 
     // 초기 데이터 설정

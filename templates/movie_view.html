@@ -7,7 +7,7 @@
             <h3 class="card-title">{{ post.title }}</h3>
             <div class="text-muted">
                 작성일: {{ post.created_at }} | 
-                작성자: {{ post.username }} |
+                작성자: {{ post.userid }} |
                 조회수: <span id="views-count">{{ post.views }}</span> |
                 추천수: <span id="recommend-count">{{ post.recommend }}</span>
             </div>
@@ -33,6 +33,7 @@
             </div>
             {% endif %}
         </div>
+        
         <div class="card-footer">
             <div class="d-flex justify-content-between">
                 <div>
@@ -60,6 +61,44 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 댓글 섹션 -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h6 class="card-title">댓글</h6>
+        </div>
+        <div class="card-body">
+
+            <ul id="comment-list" class="list-group mb-3">
+                {% for comment in comments %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>ID:</strong> {{ comment.user_id }} | 
+                        <strong>작성시간:</strong> {{ comment.created_at }}
+                        <p class="mb-0">{{ comment.content }}</p>
+                    </div>
+                    {% if session['id'] == comment.user_id or session['id'] == 'admin' %}
+                    <div class="btn-group">
+                        <a href="/post/comment_delete/{{post.id}}/{{ comment.id }}" 
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('정말로 삭제하시겠습니까?');">
+                            <i class="fas fa-trash"></i> 삭제
+                        </a>
+                    </div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <form action="/post/{{ post.id }}/comment" method="post">
+                <div class="mb-3">
+                    <label for="comment-content" class="form-label">댓글 작성</label>
+                    <textarea name="content" id="comment-content" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">댓글 작성</button>
+            </form>
         </div>
     </div>
 </div>

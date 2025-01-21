@@ -45,7 +45,9 @@
                 <!-- 텍스트 (이미지 아래) -->
                 <div class="text-center mt-3">
                     <h5>{{ movie.title }}</h5>
+                    <p>Rating: {{movie.rating}}</p>
                     <p>Rank: {{ movie.rank }}</p>
+                    <p>Reviews: {{movie.reviews}}</p>
                     <a href="/reviews/{{ movie.title }}" class="btn btn-primary">View Reviews</a>
                 </div>
             </div>

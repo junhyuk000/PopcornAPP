@@ -117,6 +117,16 @@ def delete_user():
         return f'<script>alert("회원탈퇴 성공!");location.href="{url_for('login')}"</script>' # 스크립트로 alert알람창 띄우기
     else:
         return f'<script>alert("회원탈퇴 실패!");location.href="{url_for('index')}"</script>'
+    
+### 회원 탈퇴(신고 추방)
+@app.route('/user/delete/<user_id>')
+def report_user(user_id):
+    if manager.delete_user(user_id):
+        flash(f"{user_id}계정이 삭제되었습니다.",'success')
+        return redirect(request.referrer or url_for('movie_report'))
+    else:
+        flash(f"{user_id}계정 삭제를 실패했습니다.",'error')
+        return redirect(request.referrer or url_for('movie_report'))
 
 ### 비밀번호 변경
 @app.route('/edit_password', methods=['GET','POST'])
@@ -134,10 +144,12 @@ def edit_password():
 ### 상영중인 영화 당일 랭킹순으로 화면에 표현
 @app.route('/movies')
 def movies():
+    manager.update_movie_ratings_and_reviews()
     movies = manager.get_all_movies()
     movies_info = []
     for movie in movies:
-        movies_info.append({'id':movie['id'],"title":movie['title'],"rank":movie['rank'],"filename":movie['filename']})
+        print(movie)
+        movies_info.append({'id':movie['id'],"title":movie['title'],"rank":movie['rank'],"filename":movie['filename'],"rating":movie['rating'],"reviews":movie['reviews']})
 
     return render_template('movie_movies.html', movies_info=movies_info)
 
@@ -148,7 +160,7 @@ def review(title):
     posts=[]
     for post in all_posts:
         if post['movie_title'] == title:
-            posts.append(post)    
+            posts.append(post)  
     page = int(request.args.get('page', 1))  # 쿼리 파라미터에서 페이지 번호 가져오기
     per_page = 5
     start = (page - 1) * per_page
@@ -178,7 +190,12 @@ def all_reviews():
 def view_post(id,title):
     post = manager.get_post_by_id(id)
     views = manager.increment_hits(id)
-    return render_template('movie_view.html',title=title,post=post, views=views)
+    all_comments = manager.get_all_comments()
+    comments = []
+    for comment in all_comments:
+        if comment['post_id'] == id:
+            comments.append(comment)
+    return render_template('movie_view.html',title=title,post=post, views=views, comments=comments)
 
 
 ### 리뷰 추가
@@ -306,7 +323,7 @@ def movie_youtube(title):
 def recommend_post(post_id,title):
     manager.recommend_post(post_id)
     # 추천 후 목록 페이지로 리디렉션
-    return redirect(url_for('review', title=title))
+    return redirect(request.referrer or url_for('view_post', id=id))
 
 
 @app.route('/post/report/<int:post_id>', methods=['GET', 'POST'])
@@ -321,7 +338,7 @@ def report_post(post_id):
         if not content or not reason_code:
             flash('신고 내용을 작성하고 사유를 선택해주세요.', 'danger')
             return redirect(url_for('report_post', post_id=post_id))
-
+        manager.report_post_count(post_id)
         manager.report_post(post_id,user_id, content, reason_code)
 
         return redirect(url_for('movies'))  # 신고 후 목록 페이지로 리디렉션
@@ -335,15 +352,48 @@ def movie_review_rank():
     for post in posts:
         tops.append({
             'user_id': post['userid'],
+            'title': post['title'],
             'movie_title': post['movie_title'],
             'views': post['views'],
             'recommend': post['recommend'],
+            'comments': post['comment']
             })
- 
     top_views = sorted(tops, key=lambda x: x['views'], reverse=True)[:10]
     top_recommend = sorted(tops, key=lambda x: x['recommend'], reverse=True)[:10]
-    
-    return render_template('movie_review_rank.html', top_views = top_views, top_recommend=top_recommend)
+    top_comments = sorted(tops, key=lambda x: x['comments'], reverse=True)[:10]
+    return render_template('movie_review_rank.html', top_views = top_views, top_recommend=top_recommend, top_comments=top_comments)
+
+
+
+@app.route('/post/<int:id>/comment', methods = ['POST'])
+def movie_review_comment(id):
+    # 댓글 저장 로직
+    # 예: DB에 댓글 추가
+    content = request.form.get('content')
+    if content:
+        # DB에 저장하는 로직 (예시)
+        manager.insert_comment(post_id=id, user_id=session['id'],user_name=session['name'], content=content)
+    manager.comment_post_count(id)
+    # 사용자가 왔던 페이지로 리다이렉트
+    return redirect(request.referrer or url_for('view_post', id=id))
+
+
+### 댓글 삭제
+@app.route('/post/comment_delete/<int:id>/<int:comment_id>')
+def delete_comment(id,comment_id):
+    comment = manager.get_comment_by_id(comment_id)
+    if comment:
+        manager.delete_comment(comment_id)
+        flash("댓글 삭제 성공!","success")
+        return redirect(request.referrer or url_for('view_post', id=id))
+    flash("삭제실패",'error')
+    return redirect(request.referrer or url_for('view_post', id=id))
+
+@app.route('/reports')
+def movie_report():
+    reports = manager.view_reports()
+    return render_template('movie_reports.html',reports=reports)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
