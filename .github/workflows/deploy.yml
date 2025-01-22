@@ -10,13 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # GitHub Repository를 Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 서버에 SSH로 접속하여 명령 실행
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v0.1.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /home/sejong/flask_app/MovieAPP
+            cd /honme/sejong/flask_app/MovieAPP
             git pull origin main
             sudo systemctl restart gunicorn_app
