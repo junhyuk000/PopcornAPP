@@ -2,28 +2,28 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Reports</h1>
+    <h1 class="mb-4" style="color: white;">Reports</h1>
     <table class="table table-striped">
         <thead class="table-dark">
             <tr>
+                <th>Movie Title</th>
                 <th>Post ID</th>
-                <th>User ID</th>
+                <th>Writer ID</th>
+                <th>Reporter ID</th>
                 <th>Content</th>
                 <th>Reason Code</th>
-                <th>Action</th>
+
             </tr>
         </thead>
         <tbody>
             {% for report in reports %}
             <tr>
-                <td style="color: wheat;">{{ report.post_id }}</td>
-                <td style="color: wheat;">{{ report.user_id }}</td>
+                <td style="color: wheat;">{{report.movie_title}}</td>
+                <td style="color: wheat;"><a href="post/{{report.movie_title}}/{{report.post_id}}">{{ report.post_id }}</a></td>
+                <td style="color: wheat;"><a href="userinfo/{{report.writer_id}}">{{ report.writer_id }}</a></td>
+                <td style="color: wheat;">{{ report.reporter_id }}</td>
                 <td style="color: wheat;">{{ report.content }}</td>
                 <td style="color: wheat;">{%if report.reason_code == 1 %}욕설/혐오{%elif report.reason_code == 2 %}스팸홍보/도배{%elif report.reason_code == 3 %}음란물{%elif report.reason_code == 4 %}불법정보 포함{%elif report.reason_code == 5 %}개인정보 노출{%else%}기타{% endif %}</td>
-                <td>
-                    <a href= "/user/delete/{{ report.user_id }}" class="btn btn-danger btn-sm" onclick="return confirm('정말로 회원을 탈퇴시키겠습니까?');">회원탈퇴</button>
-                 </a>
-                </td>
             </tr>
             {% endfor %}
         </tbody>

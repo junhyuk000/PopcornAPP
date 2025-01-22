@@ -23,8 +23,8 @@ class DBManager:
         try:
             if not self.connection or not self.connection.is_connected():
                 self.connection = mysql.connector.connect(
-                host='localhost',
-                user='root',
+                host='10.0.66.20',
+                user='sejong',
                 password='1234',
                 database='movie_db',
                 connection_timeout=600  # 10분
@@ -112,7 +112,9 @@ class DBManager:
                                     CREATE TABLE IF NOT EXISTS `reports` (
                                     `id` INT(11) AUTO_INCREMENT PRIMARY KEY,
                                     `post_id` INT(11) NOT NULL,
-                                    `user_id` VARCHAR(255) NOT NULL,
+                                    `writer_id` VARCHAR(255) NOT NULL,
+                                    `reporter_id` VARCHAR(255) NOT NULL,
+                                    `movie_title` VARCHAR(255) NOT NULL,
                                     `content` TEXT NOT NULL,
                                     `reason_code` INT(11) NOT NULL,
                                     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
@@ -375,14 +377,14 @@ class DBManager:
     
     
     
-    def report_post(self, post_id,user_id, content, reason_code):
+    def report_post(self, post_id,reporter_id, content, reason_code,movie_title,writer_id):
         try:
             # 데이터베이스 연결
             self.connect()
 
             # 신고 내용 저장
-            sql = f"INSERT INTO reports (post_id,user_id, content, reason_code) VALUES (%s, %s, %s, %s)"
-            value = (post_id,user_id, content, reason_code)
+            sql = f"INSERT INTO reports (post_id,reporter_id,movie_title,writer_id, content, reason_code) VALUES (%s, %s, %s, %s, %s, %s)"
+            value = (post_id,reporter_id, movie_title,writer_id, content, reason_code)
             self.cursor.execute(sql, value)
             self.connection.commit()
 
@@ -875,7 +877,7 @@ class DBManager:
             self.connect()
 
             # reports 테이블에서 데이터 가져오기
-            self.cursor.execute("SELECT post_id, user_id, content, reason_code FROM reports")
+            self.cursor.execute("SELECT * FROM reports")
             return self.cursor.fetchall()
 
         except mysql.connector.Error as error:

@@ -7,7 +7,7 @@
             <h3 class="card-title">신고하기</h3>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ url_for('report_post', post_id=post_id) }}">
+            <form method="POST" action="{{ url_for('report_post', movie_title=movie_title, post_id=post_id, writer_id=writer_id) }}">
                 <div class="mb-3">
                     <label for="reportContent" class="form-label">작성자: {{ session['id'] }}</label><br>
                     <input type="hidden" name="user_id" value="{{ session['id'] }}">

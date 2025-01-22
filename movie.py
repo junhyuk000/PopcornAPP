@@ -108,6 +108,12 @@ def myinfo():
     user = manager.get_user_by_id(id)
     return render_template('movie_myinfo.html',user=user)
 
+@app.route('/userinfo/<user_id>')
+def user_info(user_id):
+    id = session['id']
+    user = manager.get_user_by_id(user_id)
+    return render_template('movie_myinfo.html',user=user,id=id)
+
 ### 회원 탈퇴
 @app.route('/delete_user')
 def delete_user():
@@ -326,23 +332,23 @@ def recommend_post(post_id,title):
     return redirect(request.referrer or url_for('view_post', id=id))
 
 
-@app.route('/post/report/<int:post_id>', methods=['GET', 'POST'])
-def report_post(post_id):
+@app.route('/post/report/<movie_title>/<int:post_id>/<writer_id>', methods=['GET', 'POST'])
+def report_post(movie_title,post_id,writer_id):
         
 
     if request.method == 'POST':
         # 신고 내용 및 사유 저장
         content = request.form.get('content')
         reason_code = request.form.get('reason')  # 체크박스에서 선택한 값
-        user_id = request.form.get('user_id')
+        reporter_id = request.form.get('user_id')
         if not content or not reason_code:
             flash('신고 내용을 작성하고 사유를 선택해주세요.', 'danger')
-            return redirect(url_for('report_post', post_id=post_id))
+            return redirect(url_for('report_post',movie_title=movie_title, post_id=post_id,writer_id=writer_id))
         manager.report_post_count(post_id)
-        manager.report_post(post_id,user_id, content, reason_code)
+        manager.report_post(post_id,reporter_id, content, reason_code,movie_title,writer_id)
 
         return redirect(url_for('movies'))  # 신고 후 목록 페이지로 리디렉션
-    return render_template('movie_report.html', post_id=post_id)
+    return render_template('movie_report.html',movie_title=movie_title, post_id=post_id,writer_id=writer_id)
 
 @app.route('/movie_review_rank')
 def movie_review_rank():

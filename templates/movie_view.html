@@ -7,7 +7,7 @@
             <h3 class="card-title">{{ post.title }}</h3>
             <div class="text-muted">
                 작성일: {{ post.created_at }} | 
-                작성자: {{ post.userid }} |
+                작성자: <a href="/userinfo/{{post.userid}}">{{ post.userid }}</a> |
                 조회수: <span id="views-count">{{ post.views }}</span> |
                 추천수: <span id="recommend-count">{{ post.recommend }}</span>
             </div>
@@ -55,7 +55,7 @@
                         <a href="/post/recommend/{{ post.id }}/{{title}}" class="btn btn-primary">
                             <i class="fas fa-thumbs-up"></i> 추천
                         </a>
-                        <a href="/post/report/{{ post.id }}" class="btn btn-danger" onclick="return confirm('정말로 신고하시겠습니까?');">
+                        <a href="/post/report/{{post.movie_title}}/{{ post.id }}/{{post.userid}}" class="btn btn-danger" onclick="return confirm('정말로 신고하시겠습니까?');">
                             <i class="fas fa-thumbs-up"></i> 신고
                         </a>
                     {% endif %}
@@ -75,7 +75,7 @@
                 {% for comment in comments %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>ID:</strong> {{ comment.user_id }} | 
+                        <strong>ID:</strong><a href="/userinfo/{{comment.user_id}}">{{ comment.user_id }}</a> | 
                         <strong>작성시간:</strong> {{ comment.created_at }}
                         <p class="mb-0">{{ comment.content }}</p>
                     </div>
