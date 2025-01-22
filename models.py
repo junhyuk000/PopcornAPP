@@ -543,7 +543,7 @@ class DBManager:
 
         m_infos = []
         for data in t_datas:
-            url1 = f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={servicekey}&movieCd={data['moviecd']}'
+            url1 = f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={servicekey}&movieCd={data["moviecd"]}'
             res1 = requests.get(url1)
             movie_infos = res1.json()
 
