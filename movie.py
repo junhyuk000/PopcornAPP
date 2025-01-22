@@ -62,7 +62,7 @@ def login():
             session['name'] = user['name']
             session['filename'] = user['filename']
             
-            return f'<script>alert("로그인 성공!");location.href="{url_for('movies')}"</script>'
+            return f'<script>alert("로그인 성공!");location.href="{url_for("movies")}"</script>'
         else:
             flash("로그인 실패!", 'error')
     return render_template('movie_login.html')
@@ -114,9 +114,9 @@ def delete_user():
     id = session['id']
     if manager.delete_user(id):
         session.clear()
-        return f'<script>alert("회원탈퇴 성공!");location.href="{url_for('login')}"</script>' # 스크립트로 alert알람창 띄우기
+        return f'<script>alert("회원탈퇴 성공!");location.href="{url_for("login")}"</script>' # 스크립트로 alert알람창 띄우기
     else:
-        return f'<script>alert("회원탈퇴 실패!");location.href="{url_for('index')}"</script>'
+        return f'<script>alert("회원탈퇴 실패!");location.href="{url_for("index")}"</script>'
     
 ### 회원 탈퇴(신고 추방)
 @app.route('/user/delete/<user_id>')
@@ -137,8 +137,8 @@ def edit_password():
         user = manager.get_user_by_id(id)
         if user['id'] == request.form.get('userid') and user['name'] == request.form.get('username'):
             if manager.get_user_edit_password(id, password):
-                return f'<script>alert("비밀번호 변경 성공!");location.href="{url_for('login')}"</script>'
-            return f'<script>alert("비밀번호 변경 실패!, 아이디 혹은 이름이 다릅니다.");location.href="{url_for('login')}"</script>'
+                return f'<script>alert("비밀번호 변경 성공!");location.href="{url_for("login")}"</script>'
+            return f'<script>alert("비밀번호 변경 실패!, 아이디 혹은 이름이 다릅니다.");location.href="{url_for("login")}"</script>'
     return render_template('movie_edit_password.html')
 
 ### 상영중인 영화 당일 랭킹순으로 화면에 표현
@@ -267,7 +267,7 @@ def delete_post(id):
             if manager.delete_post(id):
                 flash("게시물 삭제 성공!","success")
                 return redirect(url_for('index'))
-            return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for('register')}"</script>' # 스크립트로 alert알람창 띄우기
+            return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for("register")}"</script>' # 스크립트로 alert알람창 띄우기
         else:
             if manager.delete_post(id):
                 flash("게시물 삭제 성공!","success")
