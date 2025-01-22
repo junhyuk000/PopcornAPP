@@ -22,6 +22,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /honme/sejong/flask_app/MovieAPP
+            cd /home/sejong/flask_app/MovieAPP
             git pull origin main
             sudo systemctl restart gunicorn_app
