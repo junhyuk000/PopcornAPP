@@ -23,8 +23,8 @@ class DBManager:
         try:
             if not self.connection or not self.connection.is_connected():
                 self.connection = mysql.connector.connect(
-                host='10.0.66.20',
-                user='sejong',
+                host='13.209.145.130',
+                user='junhyuk',
                 password='1234',
                 database='movie_db',
                 connection_timeout=600  # 10분
@@ -519,7 +519,7 @@ class DBManager:
 
     ### KOBIS사이트에서 일별 박스오피스 및 영화 상세정보 API 가져와서 PANDAS를 활용하여 필요한 데이터 추출    
     def moives_info(self):
-        servicekey = 'd8df4fae219ac24585a0ee3c1a43933c'
+        servicekey = 'cb5246d178348110c35db93ed0c615be'
         # 오늘 날짜를 '250113' 형식으로 가져오기
         today = datetime.now()
         yesterday = today - timedelta(days=1)
@@ -571,11 +571,24 @@ class DBManager:
         df3 = pd.merge(df1, df2, on='moviecd', how='inner')
         df3 = df3[['rank','title','genres','director','nations','t_audience','c_audience','t_sales','c_sales','release_date','moviecd']]
         # df3 = df3['순위']
+        # 1. 쉼표 제거 및 숫자 변환
+        # df3['c_sales'] = df3['c_sales'].str.replace(',', '', regex=True)
+        # df3['c_sales'] = pd.to_numeric(df3['c_sales'], errors='coerce')
+
+        # # 2. NaN 제거
+        # df3 = df3.dropna(subset=['c_sales'])
+
+        # 3. 적절한 타입으로 변환 (Int64 또는 float)
+        # df3['c_sales'] = df3['c_sales'].astype('Int64')  # 또는 .astype(float)
+
+        # 결과 확인
+        print(df3['c_sales'].head())
+        print(df3['c_sales'].dtype)
         df3['rank']=df3['rank'].astype(int)
         df3['t_audience']=df3['t_audience'].astype(int)
         df3['c_audience']=df3['c_audience'].astype(int)
         df3['t_sales']=df3['t_sales'].astype(int)
-        df3['c_sales']=df3['c_sales'].astype(int)
+        df3['c_sales']=df3['c_sales'].astype('int64')
         print("영화 정보 가져오기 완료!") 
         self.insert_data(df3)
         self.insert_data_with_no_duplicates(df3)
@@ -629,7 +642,7 @@ class DBManager:
         try:
             # 새로운 연결 생성
             connection = mysql.connector.connect(
-                host='10.0.66.20',
+                host='10.0.66.6',
                 user='sejong',
                 password='1234',
                 database='movie_db',
