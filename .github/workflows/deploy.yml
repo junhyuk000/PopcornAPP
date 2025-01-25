@@ -17,6 +17,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/flask_app/MovieAPP
+            cd /home/junhyuk/flask_app/MovieAPP
             git pull origin main
             sudo systemctl restart gunicorn_app
