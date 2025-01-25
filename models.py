@@ -642,8 +642,8 @@ class DBManager:
         try:
             # 새로운 연결 생성
             connection = mysql.connector.connect(
-                host='10.0.66.6',
-                user='sejong',
+                host='13.209.145.130',
+                user='junhyuk',
                 password='1234',
                 database='movie_db',
                 connection_timeout=600
