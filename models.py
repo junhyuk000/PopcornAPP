@@ -23,7 +23,7 @@ class DBManager:
         try:
             if not self.connection or not self.connection.is_connected():
                 self.connection = mysql.connector.connect(
-                host='172.30.1.28',
+                host='192.168.0.15',
                 user='junhyuk',
                 password='1234',
                 database='movie_db',
@@ -642,7 +642,7 @@ class DBManager:
         try:
             # 새로운 연결 생성
             connection = mysql.connector.connect(
-                host='172.30.1.28',
+                host='192.168.0.15',
                 user='junhyuk',
                 password='1234',
                 database='movie_db',
