@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-   
+
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
@@ -17,9 +17,9 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          timeout: 60s       # SSH 연결 타임아웃
-          command.timeout: 300s  # 스크립트 실행 타임아웃
-          debug: true
+          timeout: 60s          # SSH 연결 타임아웃
+          command_timeout: 300s # 명령 실행 타임아웃
+          debug: true           # 디버그 로그 활성화
           script: |
             cd /home/junhyuk/flask_app/MovieAPP
             git pull origin main
