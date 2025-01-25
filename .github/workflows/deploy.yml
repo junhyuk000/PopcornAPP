@@ -16,6 +16,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          timeout: 60
           script: |
             cd /home/junhyuk/flask_app/MovieAPP
             git pull origin main
