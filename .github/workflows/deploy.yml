@@ -17,10 +17,10 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          timeout: 60s          # SSH 연결 타임아웃
-          command_timeout: 300s # 명령 실행 타임아웃
-          debug: true           # 디버그 로그 활성화
+          timeout: 60s
+          command_timeout: 300s
+          debug: true
           script: |
             cd /home/junhyuk/flask_app/MovieAPP
             git pull origin main
-            sudo systemctl restart gunicorn_app
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S systemctl restart gunicorn_app
