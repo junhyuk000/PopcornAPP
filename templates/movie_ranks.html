@@ -7,6 +7,7 @@
         justify-content: center; /* 가운데 정렬 */
         gap: 10px; /* 버튼 간격 조정 */
         margin-top: 20px;
+        margin-bottom: 200px;
     }
 
     .button-container .btn {
@@ -19,7 +20,7 @@
 {% endblock %}
 {% block content %}
 <div class="text-center">
-    <h1 class="mb-4" style="color: white;">Movie Rankings</h1>
+    <h1 class="mb-4" style="color: white;">Audience & Revenue Trends</h1>
     <div class="row">
         <!-- 차트 영역 -->
         <div class="col-md-8">
@@ -28,7 +29,7 @@
 
         <!-- 매출액 순위 -->
         <div class="col-md-4">
-            <h3 style="color: white;" id="rank-title">일일 매출액</h3>
+            <h3 style="color: white;" id="rank-title">일일 관객수</h3>
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>

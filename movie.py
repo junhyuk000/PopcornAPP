@@ -3,6 +3,7 @@ from functools import wraps
 import os
 from datetime import datetime
 from models import DBManager
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -50,7 +51,6 @@ def login_required(f):
 
 ### 로그인
 @app.route('/login', methods=['GET','POST'])
-@app.route('/')
 def login():
 
     if request.method == 'POST':
@@ -149,6 +149,7 @@ def edit_password():
 
 ### 상영중인 영화 당일 랭킹순으로 화면에 표현
 @app.route('/movies')
+@app.route('/')
 def movies():
     manager.update_movie_ratings_and_reviews()
     movies = manager.get_all_movies()
@@ -400,6 +401,53 @@ def movie_report():
     reports = manager.view_reports()
     return render_template('movie_reports.html',reports=reports)
 
+@app.route('/show_movie_about')
+def index():
+    return render_template('movie_about.html')
+
+@app.route('/movie_about')
+def movie_about():
+    try:
+        # 절대 경로로 CSV 파일 읽기
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(base_dir, "static/csv/movie_data_2010_to_present.csv")
+        data = pd.read_csv(file_path)
+
+        # 날짜 데이터 변환
+        data['date'] = pd.to_datetime(data['date'], format='%Y%m%d', errors='coerce')
+        data['year'] = data['date'].dt.year
+
+        # 코로나 전후 평균값 계산
+        pre_covid = data[data['year'] < 2020]
+        post_covid = data[data['year'] >= 2020]
+        pre_covid_avg = pre_covid['audiCnt'].mean()
+        post_covid_avg = post_covid['audiCnt'].mean()
+
+        # 넷플릭스 전후 평균값 계산
+        pre_netflix = data[data['year'] < 2016]
+        post_netflix = data[data['year'] >= 2016]
+        pre_netflix_avg = pre_netflix['audiCnt'].mean()
+        post_netflix_avg = post_netflix['audiCnt'].mean()
+
+        # 연도별 평균 관람객 계산
+        yearly_avg = data.groupby('year')['audiCnt'].mean().reset_index()
+
+        # JSON 데이터 반환
+        response = {
+            "pre_post_covid": [pre_covid_avg, post_covid_avg],
+            "pre_post_netflix": [pre_netflix_avg, post_netflix_avg],
+            "yearly_avg": yearly_avg.to_dict(orient='records')
+        }
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/movie_notice')
+def movie_notice():
+    return render_template('movie_notice.html')
+
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

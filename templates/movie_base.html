@@ -12,16 +12,18 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/movies">마지막MovieInfoApp</a>
+            <a class="navbar-brand" href="/movies">MovieInfoApp</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" style="color: white;" href="/movies">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_ranks">Movie Ranks</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_review_rank">Review Ranks</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_map">Map</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_ranks">Trends</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_review_rank">Reviews</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_map">Find Cinemas</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_notice">Notice</a></li>
+                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/show_movie_about">About</a></li>
                     {% if session.get('id') == 'admin' %}
                     <li class="nav-item"><a class="nav-link" style="color: white;" href="/reports">Reports</a></li>
                     {% endif %}
