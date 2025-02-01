@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 #COPY . .
 
 # Gunicorn을 사용하여 Flask 애플리케이션 실행 여기서 정한 포트로 포트연결됨(80포트로 실행함함)
-CMD ["gunicorn", "-w", "2", "-k", "gevent", "app:app", "--bind", "0.0.0.0:8000", "--reload"]
+CMD ["gunicorn", "-w", "2", "-k", "gevent", "movie:app", "--bind", "0.0.0.0:8080", "--reload"]
