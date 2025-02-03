@@ -519,8 +519,7 @@ class DBManager:
 
     ### KOBIS사이트에서 일별 박스오피스 및 영화 상세정보 API 가져와서 PANDAS를 활용하여 필요한 데이터 추출    
     def moives_info(self):
-        servicekey = 'cb5246d178348110c35db93ed0c615be'
-        # 오늘 날짜를 '250113' 형식으로 가져오기
+        servicekey = '764174096a86253e914fc24097ead292'
         today = datetime.now()
         yesterday = today - timedelta(days=1)
         yesterday_formatted = yesterday.strftime('%Y%m%d')
@@ -531,7 +530,7 @@ class DBManager:
 
         t_datas = []
         for data in today_datas["boxOfficeResult"]["dailyBoxOfficeList"]:
-            movie_data ={
+            movie_data = {
                 "rank": data["rank"],
                 "title": data["movieNm"],
                 "release_date": data["openDt"],
@@ -539,7 +538,7 @@ class DBManager:
                 "c_sales": data["salesAcc"],
                 "t_audience": data["audiCnt"],
                 "c_audience": data["audiAcc"],
-                "moviecd": data['movieCd']
+                "moviecd": data["movieCd"]
             }
             t_datas.append(movie_data)
 
@@ -549,17 +548,28 @@ class DBManager:
             res1 = requests.get(url1)
             movie_infos = res1.json()
 
-            # movieCd 가져오기
-            movie_cd = movie_infos["movieInfoResult"]["movieInfo"]["movieCd"]
-            # nationNm 가져오기
-            nations = [nation["nationNm"] for nation in movie_infos["movieInfoResult"]["movieInfo"]["nations"]][0]
-            # genreNm 가져오기
-            genres = [genre["genreNm"] for genre in movie_infos["movieInfoResult"]["movieInfo"]["genres"]][0]
-            # peopleNm 가져오기 (actors 리스트에서)
-            director = [director["peopleNm"] for director in movie_infos["movieInfoResult"]["movieInfo"]["directors"]][0]
-            # 결과를 딕셔너리 형태로 저장
+            # ✅ API 응답 확인
+            print(f"🎬 {data['title']} ({data['moviecd']}) API 응답:", movie_infos)
+
+            # ✅ KeyError 방지
+            if "movieInfoResult" not in movie_infos or "movieInfo" not in movie_infos["movieInfoResult"]:
+                print(f"❌ 'movieInfoResult' 또는 'movieInfo' 키 없음! (movieCd: {data['moviecd']})")
+                continue
+
+            movie_data = movie_infos["movieInfoResult"]["movieInfo"]
+
+            nations = movie_data.get("nations", [])
+            nations = nations[0]["nationNm"] if nations else "Unknown"
+
+            genres = movie_data.get("genres", [])
+            genres = genres[0]["genreNm"] if genres else "Unknown"
+
+            # ✅ `directors` 리스트가 비어 있을 경우 기본 값 "Unknown" 반환
+            directors = movie_data.get("directors", [])
+            director = directors[0]["peopleNm"] if directors else "Unknown"
+
             result = {
-                "moviecd": movie_cd,
+                "moviecd": data["moviecd"],
                 "nations": nations,
                 "genres": genres,
                 "director": director
@@ -569,29 +579,17 @@ class DBManager:
         df1 = pd.DataFrame(t_datas)
         df2 = pd.DataFrame(m_infos)
         df3 = pd.merge(df1, df2, on='moviecd', how='inner')
-        df3 = df3[['rank','title','genres','director','nations','t_audience','c_audience','t_sales','c_sales','release_date','moviecd']]
-        # df3 = df3['순위']
-        # 1. 쉼표 제거 및 숫자 변환
-        # df3['c_sales'] = df3['c_sales'].str.replace(',', '', regex=True)
-        # df3['c_sales'] = pd.to_numeric(df3['c_sales'], errors='coerce')
 
-        # # 2. NaN 제거
-        # df3 = df3.dropna(subset=['c_sales'])
+        df3['c_sales'] = df3['c_sales'].fillna(0).astype('int64')
+        df3['rank'] = df3['rank'].astype(int)
+        df3['t_audience'] = df3['t_audience'].astype(int)
+        df3['c_audience'] = df3['c_audience'].astype(int)
+        df3['t_sales'] = df3['t_sales'].astype(int)
 
-        # 3. 적절한 타입으로 변환 (Int64 또는 float)
-        # df3['c_sales'] = df3['c_sales'].astype('Int64')  # 또는 .astype(float)
-
-        # 결과 확인
-        print(df3['c_sales'].head())
-        print(df3['c_sales'].dtype)
-        df3['rank']=df3['rank'].astype(int)
-        df3['t_audience']=df3['t_audience'].astype(int)
-        df3['c_audience']=df3['c_audience'].astype(int)
-        df3['t_sales']=df3['t_sales'].astype(int)
-        df3['c_sales']=df3['c_sales'].astype('int64')
-        print("영화 정보 가져오기 완료!") 
+        print("🎬 영화 정보 가져오기 완료!")
         self.insert_data(df3)
         self.insert_data_with_no_duplicates(df3)
+
    
     ### 데이터베이스 movies_info 테이블은 당일 데이터만 저장하므로 당일 데이터 저장 전 기존 데이터 삭제
     def clear_table(self):
