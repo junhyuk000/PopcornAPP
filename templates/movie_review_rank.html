@@ -79,6 +79,7 @@
     .ranking-table th {
         background-color: #333;
         color: white;
+        width: 20px;
     }
 
     .ranking-table td { color: white; }
@@ -168,7 +169,7 @@
         currentData.forEach((item, index) => {
             const row = `<tr>
                 <td>${index + 1}</td>
-                <td><a href="/profile/${item.user_id}">${item.user_id}</a></td>
+                <td><a href="/userinfo/${item.user_id}">${item.user_id}</a></td>
                 <td>${item.movie_title}</td>
                 <td>${item.title}</td>
                 <td>${item.recommend}</td>
