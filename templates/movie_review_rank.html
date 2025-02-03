@@ -79,7 +79,8 @@
     .ranking-table th {
         background-color: #333;
         color: white;
-
+        white-space: nowrap; /* ✅ 줄바꿈 방지 */
+        padding: 10px; /* ✅ 내부 여백 조정 */
     }
 
     .ranking-table td { color: white; }
@@ -116,11 +117,11 @@
         <table class="ranking-table" id="rankingTable">
             <thead>
                 <tr>
-                    <th style="width: 15px;">순위</th>
-                    <th style="width: 20px;">유저 ID</th>
+                    <th>순위</th>
+                    <th>유저 ID</th>
                     <th>영화 제목</th>
                     <th>리뷰 제목</th>
-                    <th style="width: auto;">추천수</th>
+                    <th>추천수</th>
                     <th>조회수</th>
                     <th>댓글수</th>
                 </tr>
