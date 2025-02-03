@@ -74,13 +74,14 @@
     .ranking-table th, .ranking-table td {
         border: 1px solid #ddd;
         padding: 8px;
+        white-space: nowrap; /* ✅ 줄바꿈 방지 */
+        padding: 10px; /* ✅ 내부 여백 조정 */
     }
 
     .ranking-table th {
         background-color: #333;
         color: white;
-        white-space: nowrap; /* ✅ 줄바꿈 방지 */
-        padding: 10px; /* ✅ 내부 여백 조정 */
+
     }
 
     .ranking-table td { color: white; }
