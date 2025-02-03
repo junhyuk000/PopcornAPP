@@ -7,7 +7,7 @@
         justify-content: center;
         align-items: flex-end;
         height: 300px;
-        margin-top: 0%; /* 공백 줄임 */
+        margin-top: 0%;
     }
 
     .podium-item {
@@ -17,18 +17,9 @@
         position: relative;
     }
 
-    .podium-item:first-child {
-        background-color: silver;
-    }
-
-    .podium-item:nth-child(2) {
-        background-color: gold;
-        
-    }
-
-    .podium-item:nth-child(3) {
-        background-color: #cd7f32; /* Bronze color */
-    }
+    .podium-item:first-child { background-color: silver; }
+    .podium-item:nth-child(2) { background-color: gold; }
+    .podium-item:nth-child(3) { background-color: #cd7f32; }
 
     .podium-item .medal {
         font-size: 50px;
@@ -47,38 +38,29 @@
         margin-top: 10px;
     }
 
-    .podium-item .rank {
-        font-size: 18px;
+    .podium-item .name a {
         color: white;
-        margin-top: 5px;
+        text-decoration: none;
+        font-weight: bold;
     }
 
-    .first {
-        height: 180px;
-        width: 200px;
-    }
+    .podium-item .rank { font-size: 18px; color: white; margin-top: 5px; }
 
-    .second {
-        height: 140px;
-        width: 200px;
-    }
-
-    .third {
-        height: 100px;
-        width: 200px;
-    }
+    .first { height: 180px; width: 200px; }
+    .second { height: 140px; width: 200px; }
+    .third { height: 100px; width: 200px; }
 
     .button-container {
         display: flex;
         justify-content: center;
         gap: 10px;
-        margin-top: 10px; /* 버튼 간 간격 줄임 */
+        margin-top: 10px;
     }
 
     .ranking-table-container {
         display: flex;
         justify-content: center;
-        margin-top: 20px; /* 공백 줄임 */
+        margin-top: 20px;
     }
 
     .ranking-table {
@@ -86,7 +68,6 @@
         height: 70%;
         border-collapse: collapse;
         text-align: center;
-       
         margin: auto;
     }
 
@@ -100,37 +81,30 @@
         color: white;
     }
 
-    .ranking-table td {
-        color: white;
-    }
+    .ranking-table td { color: white; }
 
-    h1 {
-        font-size: 2.5rem;
-        color: white;
-        margin-bottom: 10px; /* 제목 아래 간격 줄임 */
-    }
+    h1 { font-size: 2.5rem; color: white; margin-bottom: 10px; }
 </style>
 {% endblock %}
 
 {% block content %}
-
 <div class="text-center">
     <h1 class="mb-4" id="ranking-title">Review 추천수</h1>
     <div class="row">
         <div class="podium">
             <div id="second" class="podium-item second">
                 <div class="medal">🥈</div>
-                <div class="name"></div>
+                <div class="name"><a href="#" id="second-user"></a></div>
                 <div class="rank">2nd</div>
             </div>
             <div id="first" class="podium-item first">
                 <div class="medal">🥇</div>
-                <div class="name"></div>
+                <div class="name"><a href="#" id="first-user"></a></div>
                 <div class="rank">1st</div>
             </div>
             <div id="third" class="podium-item third">
                 <div class="medal">🥉</div>
-                <div class="name"></div>
+                <div class="name"><a href="#" id="third-user"></a></div>
                 <div class="rank">3rd</div>
             </div>
         </div>
@@ -161,6 +135,7 @@
     </div>
 </div>
 {% endblock %}
+
 {% block js %}
 <script>
     // 파이썬에서 받은 데이터
@@ -193,7 +168,7 @@
         currentData.forEach((item, index) => {
             const row = `<tr>
                 <td>${index + 1}</td>
-                <td>${item.user_id}</td>
+                <td><a href="/profile/${item.user_id}">${item.user_id}</a></td>
                 <td>${item.movie_title}</td>
                 <td>${item.title}</td>
                 <td>${item.recommend}</td>
@@ -207,13 +182,15 @@
     // 올림픽 스타일 업데이트
     function updatePodium() {
         if (currentData.length < 3) return;
-        const first = document.getElementById('first').querySelector('.name');
-        const second = document.getElementById('second').querySelector('.name');
-        const third = document.getElementById('third').querySelector('.name');
+        
+        document.getElementById('first-user').textContent = currentData[0].user_id;
+        document.getElementById('first-user').href = `/userinfo/${currentData[0].user_id}`;
 
-        first.textContent = currentData[0].user_id;
-        second.textContent = currentData[1].user_id;
-        third.textContent = currentData[2].user_id ;
+        document.getElementById('second-user').textContent = currentData[1].user_id;
+        document.getElementById('second-user').href = `/userinfo/${currentData[1].user_id}`;
+
+        document.getElementById('third-user').textContent = currentData[2].user_id;
+        document.getElementById('third-user').href = `/userinfo/${currentData[2].user_id}`;
     }
 
     // 초기 데이터 설정
