@@ -34,7 +34,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th style="color: white;">Rank</th>
-                        <th style="color: white; white-space: nowrap;">Title</th>
+                        <th style="color: white;">Title</th>
                     </tr>
                 </thead>
                 <tbody id="ranking-table-body">
@@ -164,7 +164,7 @@
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td style="color: white;">${index + 1}</td>
-                <td style="color: white;">${movie.title}</td>
+                <td style="color: white; white-space: nowrap;">${movie.title}</td>
             `;
             rankingTableBody.appendChild(row);
         });
