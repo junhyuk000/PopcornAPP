@@ -20,7 +20,7 @@
             <!-- 버튼들 -->
             <div class="d-grid gap-2 col-6 mx-auto mt-4">
                 {% if user.user_id == session['id'] %}
-                <a href="/change_password" class="btn btn-primary">Change Password</a>
+                <a href="/edit_password" class="btn btn-primary">Change Password</a>
                 <a href="/logout" class="btn btn-secondary">Log Out</a>
                 {% endif %}
                 {% if session['id'] == user.user_id and session['id'] != 'admin'%}
