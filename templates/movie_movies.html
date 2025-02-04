@@ -49,7 +49,7 @@
                     <p>Rank: {{ movie.rank }}</p>
                     <p>Reviews: {{movie.reviews}}</p>
                     <a href="/movie_youtube/{{ movie.title }}" class="btn btn-dark">예고편</a>
-                    <a href="/reviews/{{ movie.title }}" class="btn btn-dark">Review</a>
+                    <a href="/reviews/{{ movie.title }}/{{movie.id}}" class="btn btn-dark">Review</a>
                 </div>
             </div>
             {% endfor %}

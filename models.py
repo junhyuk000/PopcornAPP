@@ -32,25 +32,31 @@ class DBManager:
                 self.cursor = self.connection.cursor(dictionary=True)
                 # 영화 리뷰 데이터베이스 posts 테이블 생성
                 self.cursor.execute("""
-                                    CREATE TABLE IF NOT EXISTS `posts` (
-                                    `id` INT(11) NOT NULL AUTO_INCREMENT,
-                                    `userid` VARCHAR(255) NOT NULL,
-                                    `username` VARCHAR(255) NOT NULL,
-                                    `title` VARCHAR(200) NOT NULL,
-                                    `content` TEXT NOT NULL,
-                                    `rating` INT(11) NOT NULL,
-                                    `spoiler` BOOLEAN NOT NULL,
-                                    `filename` VARCHAR(255) DEFAULT NULL,
-                                    `movie_title` VARCHAR(255) DEFAULT NULL,
-                                    `views` INT(11) DEFAULT 0,
-                                    `recommend` INT(11) DEFAULT 0,
-                                    `report` INT(11) DEFAULT 0,        
-                                    `comment` INT(11) DEFAULT 0,                              
-                                    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
-                                    PRIMARY KEY (`id`)
+                                    CREATE TABLE `posts` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `userid` varchar(255) NOT NULL,
+                                    `username` varchar(255) NOT NULL,
+                                    `title` varchar(200) NOT NULL,
+                                    `content` text NOT NULL,
+                                    `rating` int(11) NOT NULL,
+                                    `spoiler` tinyint(1) NOT NULL,
+                                    `filename` varchar(255) DEFAULT NULL,
+                                    `movie_id` int(11) DEFAULT NULL,
+                                    `movie_title` varchar(255) DEFAULT NULL,
+                                    `views` int(11) DEFAULT 0,
+                                    `recommend` int(11) DEFAULT 0,
+                                    `report` int(11) DEFAULT 0,
+                                    `comment` int(11) DEFAULT 0,
+                                    `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+                                    `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                                    PRIMARY KEY (`id`),
+                                    KEY `fk_posts_user` (`userid`),
+                                    KEY `fk_posts_movie_id` (`movie_id`),
+                                    CONSTRAINT `fk_posts_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies_info` (`id`),
+                                    CONSTRAINT `fk_posts_user` FOREIGN KEY (`userid`) REFERENCES `users` (`user_id`)
                                     )
                                     """)
+                
                 # 회원 데이터베이스 users 테이블 생성
                 self.cursor.execute("""
                                     CREATE TABLE `users` (
@@ -68,70 +74,76 @@ class DBManager:
                                     """)
                 # 당일 영화 API 데이터 누적 저장 데이터베이스 movies 테이블 생성(데이터 분석용)
                 self.cursor.execute("""
-                                    CREATE TABLE IF NOT EXISTS `movies` (
-                                    `id` INT(11) NOT NULL AUTO_INCREMENT,
-                                    `rank` INT(11) NOT NULL,
-                                    `title` VARCHAR(255) NOT NULL,
-                                    `genres` VARCHAR(255) NOT NULL,
-                                    `director` VARCHAR(200) NOT NULL,
-                                    `nations`VARCHAR(200) NOT NULL,
-                                    `rating` FLOAT(11) DEFAULT NULL,
-                                    `reviews` INT(11) DEFAULT NULL,
-                                    `t_audience` BIGINT NOT NULL,
-                                    `c_audience` BIGINT NOT NULL,
-                                    `t_sales` BIGINT NOT NULL,
-                                    `c_sales` BIGINT NOT NULL,
-                                    `filename` VARCHAR(255) NOT NULL DEFAULT 'noimage.jpg',
-                                    `release_date` DATETIME NOT NULL,
-                                    `input_date` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+                                    CREATE TABLE `movies` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `rank` int(11) NOT NULL,
+                                    `title` varchar(255) NOT NULL,
+                                    `genres` varchar(255) NOT NULL,
+                                    `director` varchar(200) NOT NULL,
+                                    `nations` varchar(200) NOT NULL,
+                                    `rating` float DEFAULT NULL,
+                                    `reviews` int(11) DEFAULT NULL,
+                                    `t_audience` bigint(20) NOT NULL,
+                                    `c_audience` bigint(20) NOT NULL,
+                                    `t_sales` bigint(20) NOT NULL,
+                                    `c_sales` bigint(20) NOT NULL,
+                                    `filename` varchar(255) NOT NULL DEFAULT 'noimage.jpg',
+                                    `release_date` datetime NOT NULL,
+                                    `input_date` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                                     PRIMARY KEY (`id`)
                                     )
                                     """)
                 # 당일 영화 API 데이터 저장 데이터베이스 movies 테이블 생성
                 self.cursor.execute("""
-                                    CREATE TABLE IF NOT EXISTS `movies_info` (
-                                    `id` INT(11) NOT NULL AUTO_INCREMENT,
-                                    `rank` INT(11) NOT NULL,
-                                    `title` VARCHAR(255) NOT NULL,
-                                    `genres` VARCHAR(255) NOT NULL,
-                                    `director` VARCHAR(200) NOT NULL,
-                                    `nations`VARCHAR(200) NOT NULL,
-                                    `rating` FLOAT(11) DEFAULT NULL,
-                                    `reviews` INT(11) DEFAULT NULL,
-                                    `t_audience` BIGINT NOT NULL,
-                                    `c_audience` BIGINT NOT NULL,
-                                    `t_sales` BIGINT NOT NULL,
-                                    `c_sales` BIGINT NOT NULL,
-                                    `filename` VARCHAR(255) NOT NULL DEFAULT 'noimage.jpg',
-                                    `release_date` DATETIME NOT NULL,
-                                    `input_date` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
-
+                                    CREATE TABLE `movies_info` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `rank` int(11) NOT NULL,
+                                    `title` varchar(255) NOT NULL,
+                                    `genres` varchar(255) NOT NULL,
+                                    `director` varchar(200) NOT NULL,
+                                    `nations` varchar(200) NOT NULL,
+                                    `rating` float DEFAULT NULL,
+                                    `reviews` int(11) DEFAULT NULL,
+                                    `t_audience` bigint(20) NOT NULL,
+                                    `c_audience` bigint(20) NOT NULL,
+                                    `t_sales` bigint(20) NOT NULL,
+                                    `c_sales` bigint(20) NOT NULL,
+                                    `filename` varchar(255) NOT NULL DEFAULT 'noimage.jpg',
+                                    `release_date` datetime NOT NULL,
+                                    `input_date` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                                     PRIMARY KEY (`id`)
                                     )
                                     """)
                 
                 self.cursor.execute("""
-                                    CREATE TABLE IF NOT EXISTS `reports` (
-                                    `id` INT(11) AUTO_INCREMENT PRIMARY KEY,
-                                    `post_id` INT(11) NOT NULL,
-                                    `writer_id` VARCHAR(255) NOT NULL,
-                                    `reporter_id` VARCHAR(255) NOT NULL,
-                                    `movie_title` VARCHAR(255) NOT NULL,
-                                    `content` TEXT NOT NULL,
-                                    `reason_code` INT(11) NOT NULL,
-                                    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+                                    CREATE TABLE `reports` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `post_id` int(11) NOT NULL,
+                                    `writer_id` varchar(255) NOT NULL,
+                                    `reporter_id` varchar(255) NOT NULL,
+                                    `movie_title` varchar(255) NOT NULL,
+                                    `content` text NOT NULL,
+                                    `reason_code` int(11) NOT NULL,
+                                    `created_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                                    PRIMARY KEY (`id`),
+                                    KEY `fk_reports_post` (`post_id`),
+                                    CONSTRAINT `fk_reports_post` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
                                     )
                                     """)
                 
                 self.cursor.execute("""
-                                    CREATE TABLE IF NOT EXISTS `comments` (
-                                    `id` INT(11) NOT NULL AUTO_INCREMENT,
-                                    `post_id` INT(11) NOT NULL,
-                                    `user_id` VARCHAR(255) NOT NULL,
-                                    `user_name` VARCHAR(255) NOT NULL,
-                                    `content` VARCHAR(255) NOT NULL,
-                                    `created_at` DATETIME NOT NULL,
-                                    PRIMARY KEY (`id`)
+                                    CREATE TABLE `comments` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `post_id` int(11) NOT NULL,
+                                    `user_id` varchar(255) NOT NULL,
+                                    `user_name` varchar(255) NOT NULL,
+                                    `content` varchar(255) NOT NULL,
+                                    `created_at` datetime NOT NULL,
+                                    PRIMARY KEY (`id`),
+                                    KEY `fk_commentss_user` (`user_id`),
+                                    KEY `fk_comments_post` (`post_id`),
+                                    CONSTRAINT `fk_comments_post` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+                                    CONSTRAINT `fk_commentss_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
                                     )
                                     """)                 
                 
@@ -258,11 +270,11 @@ class DBManager:
             self.disconnect()
         
     ### 리뷰 추가하기    
-    def insert_post(self, title, content, filename, userid, username, rating, spoiler, movie_title):
+    def insert_post(self, title, content, filename, userid, username, rating, spoiler, movie_title, movie_id):
         try:
             self.connect()
-            sql = f"INSERT INTO posts (title, content, filename, created_at, userid, username, rating, spoiler,movie_title) values (%s, %s, %s, %s, %s, %s, %s, %s,%s)"
-            values = (title, content, filename, datetime.now(), userid, username, rating, spoiler, movie_title)  # 튜플형태
+            sql = f"INSERT INTO posts (title, content, filename, created_at, userid, username, rating, spoiler,movie_title,movie_id) values (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s)"
+            values = (title, content, filename, datetime.now(), userid, username, rating, spoiler, movie_title, movie_id)  # 튜플형태
             self.cursor.execute(sql, values)
             self.connection.commit()
             return True

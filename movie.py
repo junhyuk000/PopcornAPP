@@ -163,8 +163,8 @@ def movies():
     return render_template('movie_movies.html', movies_info=movies_info)
 
 ### 해당영화 리뷰
-@app.route('/reviews/<title>')
-def review(title):
+@app.route('/reviews/<title>/<movie_id>')
+def review(title,movie_id):
     all_posts = manager.get_all_posts()
     posts=[]
     for post in all_posts:
@@ -177,21 +177,8 @@ def review(title):
     paginated_data = posts[start:end]
     # 총 페이지 수 계산
     total_pages = (len(posts) + per_page - 1) // per_page
-    return render_template('movie_review.html',title=title, posts=paginated_data, page=page, total_pages=total_pages)
+    return render_template('movie_review.html',title=title, movie_id=movie_id, posts=paginated_data, page=page, total_pages=total_pages)
 
-### 모든 리뷰 보여주는 페이지
-@app.route('/all_reviews')
-def all_reviews():
-    posts = manager.get_all_posts()
-
-    page = int(request.args.get('page', 1))  # 쿼리 파라미터에서 페이지 번호 가져오기
-    per_page = 10
-    start = (page - 1) * per_page
-    end = start + per_page
-    paginated_data = posts[start:end]
-    # 총 페이지 수 계산
-    total_pages = (len(posts) + per_page - 1) // per_page
-    return render_template('movie_review.html', posts=paginated_data, page=page, total_pages=total_pages)
 
 ### 선택한 리뷰 상세히 보기
 @app.route('/post/<title>/<int:id>')
@@ -209,9 +196,9 @@ def view_post(id,title):
 
 ### 리뷰 추가
 ### 파일업로드: method='POST' enctype="multipart/form-data" type='file accept= '.png,.jpg,.gif
-@app.route('/post/add/<movie_title>', methods=['GET', 'POST'])
+@app.route('/post/add/<movie_title>/<movie_id>', methods=['GET', 'POST'])
 @login_required
-def add_post(movie_title):
+def add_post(movie_title,movie_id):
     userid = session.get('id')
     username = session.get('name')
     user_img = session.get('filename')
@@ -228,14 +215,14 @@ def add_post(movie_title):
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
 
-        if manager.insert_post(title, content, filename, userid, username, rating, spoiler, movie_title):
+        if manager.insert_post(title, content, filename, userid, username, rating, spoiler, movie_title, movie_id):
             flash("리뷰가 성공적으로 추가되었습니다!", "success")
             return redirect(f'/reviews/{movie_title}')
         else:
             flash("리뷰 추가 실패!", "error")
             return redirect(request.url)
 
-    return render_template('movie_review_add.html', movie_title=movie_title)
+    return render_template('movie_review_add.html', movie_title=movie_title )
 
 ### 리뷰 수정
 @app.route('/post/edit/<int:id>', methods=['GET', 'POST'])
