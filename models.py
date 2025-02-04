@@ -898,3 +898,18 @@ class DBManager:
         finally:
             self.disconnect()
 
+    def loc_ip(self, user_ip):
+        url = f"https://ipinfo.io/{user_ip}?token=08f027512e9236"
+        try:
+            response = requests.get(url)
+            data = response.json()  # JSON 응답을 딕셔너리로 변환
+            
+            if "loc" in data:
+                print(data["loc"])
+                return data["loc"]  # 위도, 경도 반환
+            else:
+                return "Location not found"
+
+        except requests.exceptions.RequestException as e:
+            return f"Error: {e}"
+

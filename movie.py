@@ -321,7 +321,9 @@ def movie_ranks():
 ### 카카오 지도로 가까운 영화관 검색 
 @app.route('/movie_map')
 def movie_map():
-    return render_template('movie_map.html')
+    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    loc = manager.loc_ip(user_ip)
+    return render_template('movie_map.html', loc= loc)
 
 ### 영화별 예고편
 @app.route('/movie_youtube/<title>')
