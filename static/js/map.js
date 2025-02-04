@@ -10,25 +10,28 @@ var markers = [];
 
 // 🔥 현재 위치 자동 검색 및 지도 초기화
 function initializeMap() {
+    console.log("📍 현재 위치 검색 시작"); // 콘솔 로그 확인용
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
+            console.log("✅ 위치 정보 가져오기 성공:", position.coords);
+
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
             var currentPosition = new kakao.maps.LatLng(lat, lng);
 
             map.setCenter(currentPosition);
             map.setLevel(5);
-            console.log(`현재 위치 (${lat}, ${lng})`);
 
             searchCinemasAround(currentPosition);
         }, function (error) {
-            console.error("위치 정보를 가져올 수 없습니다.", error);
+            console.error("🚨 위치 정보를 가져올 수 없습니다.", error);
             alert("위치 정보를 가져올 수 없습니다. 기본 위치에서 검색을 진행합니다.");
             searchCinemasAround(mapOption.center);
         });
     } else {
-        console.error("Geolocation을 지원하지 않습니다.");
-        alert("위치 정보 사용이 불가능합니다. 기본 위치에서 검색을 진행합니다.");
+        console.error("❌ Geolocation을 지원하지 않습니다.");
+        alert("위치 정보 사용이 불가능합니다.");
         searchCinemasAround(mapOption.center);
     }
 }
