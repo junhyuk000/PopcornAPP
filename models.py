@@ -347,7 +347,8 @@ class DBManager:
             return False
         finally:
             self.disconnect()     
-            
+
+    ### 리뷰 추천수        
     def recommend_post(self, id):
         try:
             # 데이터베이스 연결
@@ -369,18 +370,19 @@ class DBManager:
         finally:
             self.disconnect()   
     
+    ### 리뷰 신고수수
     def report_post_count(self, id):
         try:
             # 데이터베이스 연결
             self.connect()
 
-            # 추천 수 증가
+            # 신고수 증가
             sql = f"UPDATE posts SET report = report + 1 WHERE id = %s"
             value = (id,)
             self.cursor.execute(sql, value)
             self.connection.commit()
 
-            # 추천 완료 메시지
+            # 신고고 완료 메시지
             flash('신고가 성공적으로 처리되었습니다!', 'success')
 
         except Exception as e:
@@ -391,7 +393,7 @@ class DBManager:
             self.disconnect()   
     
     
-    
+    ### 신고 내용 저장
     def report_post(self, post_id,reporter_id, content, reason_code,movie_title,writer_id):
         try:
             # 데이터베이스 연결
