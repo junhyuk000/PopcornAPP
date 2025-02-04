@@ -52,3 +52,7 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+a {
+    color: inherit;  /* 부모 요소의 글씨 색을 따름 */
+    text-decoration: none; /* 밑줄 제거 */
+}
