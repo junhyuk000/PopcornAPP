@@ -202,7 +202,7 @@ class DBManager:
     def get_user_by_id(self,id):
         try:
             self.connect()
-            sql = f"SELECT * FROM users WHERE id = %s and deleted_at IS NULL"
+            sql = f"SELECT * FROM users WHERE user_id = %s and deleted_at IS NULL"
             value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             return self.cursor.fetchone()
