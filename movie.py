@@ -222,7 +222,7 @@ def add_post(movie_title,movie_id):
             flash("리뷰 추가 실패!", "error")
             return redirect(request.url)
 
-    return render_template('movie_review_add.html', movie_title=movie_title )
+    return render_template('movie_review_add.html', movie_title=movie_title, movie_id=movie_id )
 
 ### 리뷰 수정
 @app.route('/post/edit/<int:id>', methods=['GET', 'POST'])
