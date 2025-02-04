@@ -33,7 +33,11 @@
     function loadKakaoMap() {
         if (window.kakao && window.kakao.maps) {
             console.log("카카오 맵 API 이미 로드됨");
-            initializeMap(); // 맵 초기화 실행
+            if (typeof initializeMap === "function") {
+                initializeMap(); // 맵 초기화 실행
+            } else {
+                console.error("❌ initializeMap 함수가 정의되지 않음");
+            }
             return;
         }
 
@@ -43,12 +47,16 @@
         script.defer = true;
 
         script.onload = function () {
-            console.log("카카오 맵 API 로드 완료");
-            initializeMap(); // 맵 초기화 실행
+            console.log("✅ 카카오 맵 API 로드 완료");
+            if (typeof initializeMap === "function") {
+                initializeMap();
+            } else {
+                console.error("❌ initializeMap 함수가 여전히 정의되지 않음");
+            }
         };
 
         script.onerror = function () {
-            console.error("카카오 맵 API 로드 실패");
+            console.error("🚨 카카오 맵 API 로드 실패");
             alert("카카오 맵을 로드하는 데 실패했습니다. 네트워크 상태를 확인하세요.");
         };
 
@@ -56,7 +64,8 @@
     }
 
     window.onload = function () {
-        loadKakaoMap(); // 페이지 로드 시 카카오 맵 API 비동기 로드
+        console.log("🌍 Window onload 실행");
+        loadKakaoMap();
     };
 </script>
 <script src="js/map.js"></script>

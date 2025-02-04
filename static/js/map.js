@@ -6,16 +6,23 @@ var mapOption = {
 var map = new kakao.maps.Map(mapContainer, mapOption);
 var ps = new kakao.maps.services.Places();
 var geocoder = new kakao.maps.services.Geocoder();
-var markers = [];
+var map, ps, geocoder, markers = [];
 
-// 🔥 현재 위치 자동 검색 및 지도 초기화
+// 🏁 맵 초기화 함수
 function initializeMap() {
-    console.log("📍 현재 위치 검색 시작"); // 콘솔 로그 확인용
+    console.log("📍 맵 초기화 실행");
+
+    var mapContainer = document.getElementById('map');
+    var mapOption = {
+        center: new kakao.maps.LatLng(36.5, 127.5),
+        level: 13
+    };
+    map = new kakao.maps.Map(mapContainer, mapOption);
+    ps = new kakao.maps.services.Places();
+    geocoder = new kakao.maps.services.Geocoder();
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-            console.log("✅ 위치 정보 가져오기 성공:", position.coords);
-
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
             var currentPosition = new kakao.maps.LatLng(lat, lng);
@@ -23,10 +30,11 @@ function initializeMap() {
             map.setCenter(currentPosition);
             map.setLevel(5);
 
+            console.log("✅ 위치 정보 가져오기 성공:", lat, lng);
             searchCinemasAround(currentPosition);
         }, function (error) {
-            console.error("🚨 위치 정보를 가져올 수 없습니다.", error);
-            alert("위치 정보를 가져올 수 없습니다. 기본 위치에서 검색을 진행합니다.");
+            console.error("🚨 위치 정보를 가져올 수 없음", error);
+            alert("위치 정보를 가져올 수 없습니다. 기본 위치에서 검색합니다.");
             searchCinemasAround(mapOption.center);
         });
     } else {
@@ -35,7 +43,6 @@ function initializeMap() {
         searchCinemasAround(mapOption.center);
     }
 }
-
 // 🔍 키워드 기반 영화관 검색
 function searchCinemasAround(centerLatLng) {
     var keywords = ['롯데시네마', '메가박스', 'CGV'];
