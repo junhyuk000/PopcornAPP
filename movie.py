@@ -66,6 +66,8 @@ def login():
         else:
             flash("로그인 실패!", 'error')
     return render_template('movie_login.html')
+from flask import request
+
 
 ### 회원가입
 @app.route('/register', methods=['GET','POST'])
@@ -75,7 +77,7 @@ def register():
         id = request.form.get('userid')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
-        user_ip = request.remote_addr
+        user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
         file = request.files['file']
         
         filename = file.filename if file else None
