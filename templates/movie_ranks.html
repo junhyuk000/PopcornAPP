@@ -58,7 +58,8 @@
 
 <script>
     // 템플릿에서 데이터 가져오기
-    const moviesData = {{ movies_data | tojson }};
+    const moviesData = JSON.parse('{{ movies_data | tojson | safe }}');
+
     const dataSets = {
         t_sales: moviesData.map(movie => movie.t_sales),
         c_sales: moviesData.map(movie => movie.c_sales),
