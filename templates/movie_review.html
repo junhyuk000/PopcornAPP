@@ -31,8 +31,8 @@
                 {% for post in posts %}
                 <tr>
                     <td class="row-number" style="text-align:center;color: white;"></td>
-                    <td style="text-align:center; color: white;">
-                        {{post.movie_title}}
+                    <td style="text-align:center; color: white;"><a href="/post/{{title}}/{{post.id}}">
+                        {{post.movie_title}}</a>
                     </td>
                     <td>
                         <a href="/post/{{title}}/{{post.id}}" style="color: white;" class="text-decoration-none">
