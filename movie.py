@@ -318,10 +318,10 @@ def movie_ranks():
         c_audience=c_audience
     )        
 
-### 카카오 지도로 가까운 영화관 검색 
+### 카카오 지도로 사용자 공인 ip를 활용하여 근처 영화관 검색 
 @app.route('/movie_map')
 def movie_map():
-    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # 공인 ip 가져오기
     loc = manager.loc_ip(user_ip)
     return render_template('movie_map.html', loc= loc)
 
@@ -339,8 +339,6 @@ def recommend_post(post_id,title):
 
 @app.route('/post/report/<movie_title>/<int:post_id>/<writer_id>', methods=['GET', 'POST'])
 def report_post(movie_title,post_id,writer_id):
-        
-
     if request.method == 'POST':
         # 신고 내용 및 사유 저장
         content = request.form.get('content')
