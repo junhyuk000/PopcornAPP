@@ -184,17 +184,18 @@ class DBManager:
     def duplicate_user(self,id):
         try:
             self.connect()
-            sql = "SELECT COUNT(*), MAX(deleted_at IS NOT NULL) FROM users WHERE user_id = %s"
+            sql = f"SELECT * FROM users where user_id = %s and deleted_at IS NULL"
             value = (id,)
-            
-            print("🛠 실행할 SQL 쿼리:", sql % value)  # 디버깅용
-            self.cursor.execute(sql, value)
-            
+            self.cursor.execute(sql,value)
             result = self.cursor.fetchone()
-            return result[0] > 0, result[1] == 1
+            if result:
+                return True
+            else:
+                sql = "SELECT * FROM "
+                return False
         except mysql.connector.Error as error:
-            print(f"🚨 SQL 실행 오류: {error}")
-            return False, False
+            print(f"게시글 조회 실패: {error}")
+            return []
         finally:
             self.disconnect()
     
