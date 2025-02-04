@@ -53,13 +53,10 @@
     </div>
 </div>
 
-<!-- Chart.js 및 3D 플러그인 추가 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-3d"></script>
-
 <script>
     // 템플릿에서 데이터 가져오기
-    const moviesData = {{ movies_data | tojson | safe }};
+    const moviesData = {{ movies_data | tojson }};
     const dataSets = {
         t_sales: moviesData.map(movie => movie.t_sales),
         c_sales: moviesData.map(movie => movie.c_sales),
@@ -84,16 +81,16 @@
         return colors[index % colors.length]; // 색상 배열을 반복적으로 할당
     });
 
-    // 3D 차트 초기화
+    // 차트 초기화
     const ctx = document.getElementById('chart').getContext('2d');
     const chart = new Chart(ctx, {
-        type: 'bar3d',  // 3D 막대 차트 적용
+        type: 'bar',
         data: {
             labels: movieNames,
             datasets: [{
                 label: '일일 관객수',
                 data: dataSets[currentMetric],
-                backgroundColor: barColors,
+                backgroundColor: barColors, // 노란색 막대
                 borderColor: barColors.map(color => color.replace('0.8','1')),
                 borderWidth: 1
             }]
@@ -101,54 +98,68 @@
         options: {
             plugins: {
                 legend: {
-                    display: false
+                    display: false // 범례 표시 안 함
                 },
                 title: {
                     display: true,
                     text: '일일 관객수',
-                    color: 'white',
-                    font: { size: 20 }
+                    color: 'white', // 제목 색상
+                    font: {
+                        size: 20
+                    }
                 }
             },
             scales: {
                 x: {
-                    ticks: { color: 'white' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    ticks: {
+                        color: 'white' // X축 텍스트 색상
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)' // X축 그리드 색상
+                    }
                 },
                 y: {
-                    ticks: { color: 'white' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    ticks: {
+                        color: 'white' // Y축 텍스트 색상
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)' // Y축 그리드 색상
+                    }
                 }
             },
             responsive: true,
-            maintainAspectRatio: false,
-
-            // 🔥 3D 차트 설정 추가
-            bar3d: {
-                depth: 15, // 3D 깊이 (값이 클수록 깊어짐)
-                viewAngleX: 10, // X축 기울기
-                viewAngleY: 20, // Y축 기울기
-                zOffset: 5  // 막대 사이의 간격
-            }
+            maintainAspectRatio: false
         }
     });
 
-    // 차트 및 순위 업데이트
+// 차트 및 순위 업데이트
     function updateChartAndRank(metric) {
         currentMetric = metric;
+
+        // 차트 데이터 및 제목 업데이트
         chart.data.datasets[0].data = dataSets[metric];
         chart.data.datasets[0].label = getLabel(metric);
-        chart.options.plugins.title.text = getLabel(metric);
+        chart.options.plugins.title.text = getLabel(metric); // 차트 제목 업데이트
         chart.update();
+
+        // 표 업데이트
         updateRanking(metric);
-        document.getElementById('rank-title').textContent = `${getLabel(metric)}`;
+
+        // 순위표 제목 업데이트
+        const rankTitle = document.getElementById('rank-title');
+        rankTitle.textContent = `${getLabel(metric)}`;
     }
 
+
+    // 순위 업데이트 함수
     function updateRanking(metric) {
         const rankingTableBody = document.getElementById('ranking-table-body');
-        rankingTableBody.innerHTML = '';
+        rankingTableBody.innerHTML = ''; // 기존 데이터 삭제
+
+        // 데이터 정렬
         const sortedMovies = [...moviesData].sort((a, b) => b[metric] - a[metric]);
 
+        // 정렬된 데이터로 표 생성
         sortedMovies.forEach((movie, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -159,6 +170,7 @@
         });
     }
 
+    // 메트릭별 레이블 반환
     function getLabel(metric) {
         switch (metric) {
             case 't_audience': return '일일 관객수';
@@ -169,7 +181,10 @@
         }
     }
 
+    // 초기 순위 업데이트
     updateRanking(currentMetric);
 </script>
+
+
 
 {% endblock %}
