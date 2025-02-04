@@ -217,7 +217,7 @@ def add_post(movie_title,movie_id):
 
         if manager.insert_post(title, content, filename, userid, username, rating, spoiler, movie_title, movie_id):
             flash("리뷰가 성공적으로 추가되었습니다!", "success")
-            return redirect(f'/reviews/{movie_title}')
+            return redirect(f'/reviews/{movie_title}/{movie_id}')
         else:
             flash("리뷰 추가 실패!", "error")
             return redirect(request.url)
