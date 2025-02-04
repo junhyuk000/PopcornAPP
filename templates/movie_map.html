@@ -29,5 +29,35 @@
 {% endblock %}
 {% block js %}
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be47724c48a9357381269e671a99079c&libraries=services"></script>
+<script>
+    function loadKakaoMap() {
+        if (window.kakao && window.kakao.maps) {
+            console.log("카카오 맵 API 이미 로드됨");
+            initializeMap(); // 맵 초기화 실행
+            return;
+        }
+
+        var script = document.createElement("script");
+        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_API_KEY&libraries=services";
+        script.async = true;
+        script.defer = true;
+
+        script.onload = function () {
+            console.log("카카오 맵 API 로드 완료");
+            initializeMap(); // 맵 초기화 실행
+        };
+
+        script.onerror = function () {
+            console.error("카카오 맵 API 로드 실패");
+            alert("카카오 맵을 로드하는 데 실패했습니다. 네트워크 상태를 확인하세요.");
+        };
+
+        document.head.appendChild(script);
+    }
+
+    window.onload = function () {
+        loadKakaoMap(); // 페이지 로드 시 카카오 맵 API 비동기 로드
+    };
+</script>
 <script src="js/map.js"></script>
 {% endblock %}
