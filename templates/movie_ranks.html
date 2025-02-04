@@ -53,13 +53,13 @@
     </div>
 </div>
 
+<!-- Chart.js 및 3D 플러그인 추가 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-3d"></script>
 
 <script>
     // 템플릿에서 데이터 가져오기
-    const moviesData = JSON.parse('{{ movies_data | tojson | safe }}');
-
+    const moviesData = {{ movies_data | tojson | safe }};
     const dataSets = {
         t_sales: moviesData.map(movie => movie.t_sales),
         c_sales: moviesData.map(movie => movie.c_sales),
@@ -171,4 +171,5 @@
 
     updateRanking(currentMetric);
 </script>
+
 {% endblock %}
