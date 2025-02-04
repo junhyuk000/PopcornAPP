@@ -54,14 +54,15 @@ class DBManager:
                 # 회원 데이터베이스 users 테이블 생성
                 self.cursor.execute("""
                                     CREATE TABLE IF NOT EXISTS `users` (
-                                    `idx` INT(11) NOT NULL AUTO_INCREMENT,
-                                    `id` VARCHAR(255) NOT NULL,
+                                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                                    `user_id` VARCHAR(255) NOT NULL,
                                     `name` VARCHAR(255) NOT NULL,
                                     `password` VARCHAR(255) NOT NULL,
                                     `user_ip` VARCHAR(45) NOT NULL,
                                     `filename` VARCHAR(255) DEFAULT NULL,
                                     `reg_date` DATETIME DEFAULT CURRENT_TIMESTAMP(),
-                                    PRIMARY KEY (`idx`)
+                                    PRIMARY KEY (`id`),
+                                    UNIQUE KEY `user_id` (`user_id`)
                                     ) 
                                     """)
                 # 당일 영화 API 데이터 누적 저장 데이터베이스 movies 테이블 생성(데이터 분석용)
@@ -147,7 +148,7 @@ class DBManager:
     def regsiter_user(self, name, id, password,user_ip, filename):
         try:
             self.connect()
-            sql = f"INSERT INTO users (name, id, password, user_ip,filename) values (%s, %s, password(%s),%s, %s)"
+            sql = f"INSERT INTO users (name, user_id, password, user_ip,filename) values (%s, %s, password(%s),%s, %s)"
             values = (name, id, password, user_ip,filename)  # 튜플형태
             self.cursor.execute(sql, values)
 
@@ -167,7 +168,7 @@ class DBManager:
     def login_user(self, id, password):
         try:
             self.connect()
-            sql = f"SELECT * FROM users where id = %s and password=password(%s)"
+            sql = f"SELECT * FROM users where user_id = %s and password=password(%s)"
             values = (id, password)
             self.cursor.execute(sql,values)
             return self.cursor.fetchone()
@@ -182,7 +183,7 @@ class DBManager:
     def duplicate_user(self,id):
         try:
             self.connect()
-            sql = f"SELECT * FROM users where id = %s"
+            sql = f"SELECT * FROM users where user_id = %s"
             value = (id,)
             self.cursor.execute(sql,value)
             result = self.cursor.fetchone()
@@ -214,7 +215,7 @@ class DBManager:
     def get_user_edit_password(self, id, password):
         try:
             self.connect()
-            sql = f"UPDATE users SET `password` = PASSWORD(%s) WHERE `id`=%s"
+            sql = f"UPDATE users SET `password` = PASSWORD(%s) WHERE `user_id`=%s"
             value = (password,id) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             self.connection.commit()
@@ -229,7 +230,7 @@ class DBManager:
     def delete_user(self, id):
         try:
             self.connect()
-            sql = f"DELETE FROM users WHERE id = %s"
+            sql = f"DELETE FROM users WHERE user_id = %s"
             value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             self.connection.commit()
