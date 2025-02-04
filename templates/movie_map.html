@@ -29,6 +29,7 @@
 {% endblock %}
 {% block js %}
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be47724c48a9357381269e671a99079c&libraries=services"></script>
+<script src="js/map.js"></script>
 <script>
     function loadKakaoMap() {
         if (window.kakao && window.kakao.maps) {
@@ -68,5 +69,5 @@
         loadKakaoMap();
     };
 </script>
-<script src="js/map.js"></script>
+
 {% endblock %}
