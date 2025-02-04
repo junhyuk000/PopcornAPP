@@ -143,7 +143,7 @@ def edit_password():
         id = request.form.get('userid')
         password = request.form.get('password')
         user = manager.get_user_by_id(id)
-        if user['id'] == request.form.get('userid') and user['name'] == request.form.get('username'):
+        if user['user_id'] == request.form.get('userid') and user['name'] == request.form.get('username'):
             if manager.get_user_edit_password(id, password):
                 return f'<script>alert("비밀번호 변경 성공!");location.href="{url_for("login")}"</script>'
             return f'<script>alert("비밀번호 변경 실패!, 아이디 혹은 이름이 다릅니다.");location.href="{url_for("login")}"</script>'
