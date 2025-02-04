@@ -13,17 +13,17 @@
             <img src="{{ url_for('user_img_file', filename=user.filename if user.filename else 'noimage.jpg') }}" alt="Profile Image" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
 
             <!-- 사용자 정보 -->
-            <h5 class="card-title">ID: {% if user.id %}{{ user.id }}{%else%}탈퇴한 아이디{% endif %}</h5>
+            <h5 class="card-title">ID: {% if user.user_id %}{{ user.user_id }}{%else%}탈퇴한 아이디{% endif %}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Name: {{ user.name }}</h6>
             <p class="card-text">Role: {% if user.id == 'admin' %}admin{% else %}user{% endif %}</p>
 
             <!-- 버튼들 -->
             <div class="d-grid gap-2 col-6 mx-auto mt-4">
-                {% if user.id == session['id'] %}
+                {% if user.user_id == session['id'] %}
                 <a href="/change_password" class="btn btn-primary">Change Password</a>
                 <a href="/logout" class="btn btn-secondary">Log Out</a>
                 {% endif %}
-                {% if session['id'] == user.id and session['id'] != 'admin'%}
+                {% if session['id'] == user.user_id and session['id'] != 'admin'%}
                 <a href="/delete_user" class="btn btn-danger">Delete Account</a>
                 {% endif %}
                 {% if session['id'] == 'admin' %}
