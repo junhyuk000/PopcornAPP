@@ -1,3 +1,4 @@
+console.log("✅ map.js 로드됨!");
 var mapContainer = document.getElementById('map');
 var mapOption = {
     center: new kakao.maps.LatLng(36.5, 127.5), // 기본 중심 (대한민국)
