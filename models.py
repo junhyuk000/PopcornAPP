@@ -182,19 +182,27 @@ class DBManager:
     
     ### 회원가입시 id 중복 확인
     def duplicate_user(self,id):
+        """
+        주어진 user_id가 데이터베이스에 존재하는지 확인하고,
+        탈퇴하지 않은 사용자 (deleted_at IS NULL)인지 체크하는 함수
+
+        :param user_id: 사용자 ID (str)
+        :return: (존재 여부, 탈퇴 여부) -> (True/False, True/False)
+        """
         try:
             self.connect()
-            sql = f"SELECT * FROM users where user_id = %s or deleted_at IS NOT NULL"
+            sql = "SELECT COUNT(*), MAX(deleted_at IS NOT NULL) FROM users WHERE user_id = %s"
             value = (id,)
-            self.cursor.execute(sql,value)
+            self.cursor.execute(sql, value)
             result = self.cursor.fetchone()
-            if result:
-                return True
-            else:
-                return False
+
+            user_exists = result[0] > 0  # ✅ 사용자 ID가 존재하는지 여부
+            is_deleted = result[1] == 1  # ✅ 사용자가 탈퇴했는지 여부 (deleted_at이 NULL이 아니면 True)
+
+            return user_exists, is_deleted
         except mysql.connector.Error as error:
-            print(f"게시글 조회 실패: {error}")
-            return []
+            print(f"사용자 확인 실패: {error}")
+            return False, False
         finally:
             self.disconnect()
     
