@@ -360,6 +360,7 @@ def movie_review_rank():
     recommend = []
     for post in posts:
         tops.append({
+            'id':post['id'],
             'user_id': post['userid'],
             'title': post['title'],
             'movie_title': post['movie_title'],
