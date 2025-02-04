@@ -905,7 +905,6 @@ class DBManager:
             data = response.json()  # JSON 응답을 딕셔너리로 변환
             
             if "loc" in data:
-                print(data["loc"])
                 return data["loc"]  # 위도, 경도 반환
             else:
                 return "Location not found"

@@ -1,21 +1,43 @@
-// 지도 초기화
 var mapContainer = document.getElementById('map');
 var mapOption = {
-    center: new kakao.maps.LatLng(36.5, 127.5), // 대한민국 중심 좌표
+    center: new kakao.maps.LatLng(36.5, 127.5), // 기본 중심 (대한민국)
     level: 13 // 확대 수준
 };
 var map = new kakao.maps.Map(mapContainer, mapOption);
-
-// 장소 검색 및 주소 변환 서비스 생성
 var ps = new kakao.maps.services.Places();
 var geocoder = new kakao.maps.services.Geocoder();
-var markers = []; // 마커 관리 배열
+var markers = [];
 
-// 키워드 검색 함수 (영화관 검색)
+// 🔥 현재 위치 자동 검색 및 지도 초기화
+function initializeMap() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var currentPosition = new kakao.maps.LatLng(lat, lng);
+
+            map.setCenter(currentPosition);
+            map.setLevel(5);
+            console.log(`현재 위치 (${lat}, ${lng})`);
+
+            searchCinemasAround(currentPosition);
+        }, function (error) {
+            console.error("위치 정보를 가져올 수 없습니다.", error);
+            alert("위치 정보를 가져올 수 없습니다. 기본 위치에서 검색을 진행합니다.");
+            searchCinemasAround(mapOption.center);
+        });
+    } else {
+        console.error("Geolocation을 지원하지 않습니다.");
+        alert("위치 정보 사용이 불가능합니다. 기본 위치에서 검색을 진행합니다.");
+        searchCinemasAround(mapOption.center);
+    }
+}
+
+// 🔍 키워드 기반 영화관 검색
 function searchCinemasAround(centerLatLng) {
     var keywords = ['롯데시네마', '메가박스', 'CGV'];
-    var allResults = []; // 모든 결과 저장
-    removeMarkers(); // 이전 마커 제거
+    var allResults = [];
+    removeMarkers();
 
     keywords.forEach(function (keyword, index) {
         ps.keywordSearch(keyword, function (data, status, pagination) {
@@ -23,12 +45,10 @@ function searchCinemasAround(centerLatLng) {
                 allResults = allResults.concat(data);
                 console.log(`"${keyword}" 검색 성공:`, data);
 
-                // 마지막 키워드에서 모든 결과를 표시
                 if (index === keywords.length - 1 && !pagination.hasNextPage) {
                     displayResults(allResults);
                 }
 
-                // 추가 페이지 요청
                 if (pagination.hasNextPage) {
                     getNextPage(pagination, allResults, index, keywords.length - 1);
                 }
@@ -37,11 +57,11 @@ function searchCinemasAround(centerLatLng) {
             } else {
                 console.error(`"${keyword}" 검색 중 오류 발생`);
             }
-        }, {location: centerLatLng, radius: 5000}); // 중심 좌표와 반경 5km 내 검색
+        }, { location: centerLatLng, radius: 5000 });
     });
 }
 
-// Pagination으로 추가 페이지 가져오기
+// 🎯 페이지네이션으로 추가 데이터 가져오기
 function getNextPage(pagination, allResults, currentIndex, lastIndex) {
     pagination.nextPage();
     pagination.callback = function (data, status, nextPagination) {
@@ -62,12 +82,11 @@ function getNextPage(pagination, allResults, currentIndex, lastIndex) {
     };
 }
 
-// 검색 결과 표시 함수
+// 🏷️ 검색 결과 표시 및 리스트 추가
 function displayResults(results) {
     var listEl = document.getElementById('placesList');
     var bounds = new kakao.maps.LatLngBounds();
-
-    listEl.innerHTML = ''; // 기존 리스트 초기화
+    listEl.innerHTML = '';
 
     results.forEach(function (result) {
         var position = new kakao.maps.LatLng(result.y, result.x);
@@ -75,26 +94,24 @@ function displayResults(results) {
         marker.setMap(map);
         markers.push(marker);
 
-        // 리스트 항목 생성
         var listItem = document.createElement('li');
         listItem.innerHTML = `<b>${result.place_name}</b> (${result.address_name})`;
         listItem.dataset.lat = result.y;
         listItem.dataset.lng = result.x;
         listEl.appendChild(listItem);
 
-        // 리스트 항목 클릭 이벤트
         listItem.addEventListener('click', function () {
             map.setCenter(new kakao.maps.LatLng(this.dataset.lat, this.dataset.lng));
-            map.setLevel(3); // 확대 수준 설정
+            map.setLevel(3);
         });
 
-        bounds.extend(position); // 지도 영역 확장
+        bounds.extend(position);
     });
 
     map.setBounds(bounds);
 }
 
-// 주소 검색 함수
+// 📍 주소 검색 기능
 function searchByAddress() {
     var address = document.getElementById('searchInput').value.trim();
 
@@ -106,11 +123,10 @@ function searchByAddress() {
     geocoder.addressSearch(address, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
             var centerLatLng = new kakao.maps.LatLng(result[0].y, result[0].x);
-            map.setCenter(centerLatLng); // 지도 중심 이동
-            map.setLevel(5); // 확대 수준 설정
+            map.setCenter(centerLatLng);
+            map.setLevel(5);
             console.log(`주소 검색 성공: ${address}`, result);
 
-            // 주소를 중심으로 영화관 검색
             searchCinemasAround(centerLatLng);
         } else {
             alert('주소 검색 결과가 없습니다.');
@@ -118,7 +134,7 @@ function searchByAddress() {
     });
 }
 
-// 이전 마커 제거
+// 기존 마커 제거
 function removeMarkers() {
     markers.forEach(function (marker) {
         marker.setMap(null);
@@ -126,8 +142,11 @@ function removeMarkers() {
     markers = [];
 }
 
-// 버튼 클릭 이벤트 등록
+// 검색 버튼 이벤트 리스너
 document.getElementById('searchButton').addEventListener('click', function () {
     console.log('주소 검색 버튼 클릭됨');
     searchByAddress();
 });
+
+// 🌍 지도 초기화 및 자동 검색 실행
+initializeMap();
