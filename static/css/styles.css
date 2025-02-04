@@ -53,6 +53,10 @@ footer a:hover {
     text-decoration: underline;
 }
 a {
-    color: inherit;  /* 부모 요소의 글씨 색을 따름 */
+    color: inherit; /* 기본 글자색 유지 */
     text-decoration: none; /* 밑줄 제거 */
+}
+
+a:hover {
+    color: gray; /* 마우스를 올리면 회색으로 변경 */
 }
