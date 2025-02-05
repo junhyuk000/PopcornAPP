@@ -670,9 +670,9 @@ class DBManager:
                 print(f"Processing row: {row['title']} ({row['director']})")
                 
                 # 중복 확인 쿼리 (title + director 조합 확인, 공백 및 대소문자 무시)
-                check_sql = "SELECT COUNT(*) FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)"
+                check_sql = "SELECT id FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s) LIMIT 1"
                 cursor.execute(check_sql, (row['title'].strip().lower(), row['director'].strip().lower()))
-                record_exists = cursor.fetchone()[0] > 0
+                record_exists = cursor.fetchone() is not None
                 
                 values = (
                     int(row['rank']),
@@ -710,17 +710,18 @@ class DBManager:
                     else:
                         print(f"✅ Updated rows: {cursor.rowcount}")
                 else:
-                    print(f"Inserting: {row['title']} ({row['director']})")
+                    print(f"📌 Attempting to INSERT: {row['title']} ({row['director']})")
                     insert_sql = """
                         INSERT INTO movies 
                         (rank, title, genres, director, nations, t_audience, c_audience, t_sales, c_sales, release_date)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
                     insert_values = (values[0], row['title'].strip(), row['director'].strip()) + values[1:]
+                    print(f"🎯 Insert Values: {insert_values}")
                     cursor.execute(insert_sql, insert_values)
-                    print(f"Inserted: {row['title']} ({row['director']})")
+                    connection.commit()  # 명시적으로 commit 실행
+                    print(f"✅ Inserted: {row['title']} ({row['director']})")
                 
-            connection.commit()
             print("Database update completed successfully.")
         
         except mysql.connector.Error as error:
