@@ -16,6 +16,10 @@
             <h5 class="card-title">ID: {% if user.user_id %}{{ user.user_id }}{%else%}탈퇴한 아이디{% endif %}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Name: {{ user.name }}</h6>
             <p class="card-text">Role: {% if user.id == 'admin' %}admin{% else %}user{% endif %}</p>
+            <p style="color: wheat;">💬 댓글수: {{user.comments}}</p>
+            <p style="color: wheat;">💬 리뷰수: {{user.posts}}</p>
+            <p style="color: wheat;">🍿 팝콘수: {{user.popcorns}}</p>
+            <p style="color: wheat;">👍 추첨수: {{user.lots}}</p>
 
             <!-- 버튼들 -->
             <div class="d-grid gap-2 col-6 mx-auto mt-4">

@@ -9,7 +9,7 @@
         <h3 style="color: white;"><a href="/movie_youtube/{{movie.title}}">{{ movie.title }}</a></h3>
         <p style="color: wheat;">🎬 감독: {{ movie.director }}</p>
         <p style="color: wheat;">⭐ 평점: {{ movie.rating if movie.rating else 'N/A' }}</p>
-        <p style="color: wheat;">💬 리뷰: {{ movie.reviews if movie.reviews else 0 }}개</p>
+        <p style="color: wheat;">💬 리뷰: <a href="/reviews/{{ movie.title }}/{{movie.id}}">{{ movie.reviews if movie.reviews else 0 }}개</a></p>
         <p style="color: wheat;">
             👪 관객수: 
             <span class="audience" title="{{ movie.c_audience }}">
