@@ -736,20 +736,8 @@ class DBManager:
     #             print("Database connection closed.")
 
 def insert_data_with_no_duplicates(self, df):
-    """
-    Insert or update movie data avoiding duplicates based on title and director.
-    
-    Args:
-        df: DataFrame with movie data
-    """
     if df.empty:
         print("Error: Empty DataFrame provided")
-        return
-
-    required_columns = ['title', 'director', 'rank', 'genres', 'nations', 
-                       't_audience', 'c_audience', 't_sales', 'c_sales', 'release_date']
-    if not all(col in df.columns for col in required_columns):
-        print("Error: Missing required columns in DataFrame")
         return
 
     try:
@@ -760,23 +748,31 @@ def insert_data_with_no_duplicates(self, df):
 
         for _, row in df.iterrows():
             try:
-                # Check for existing record
                 check_sql = "SELECT * FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)"
                 self.cursor.execute(check_sql, (row['title'].strip().lower(), row['director'].strip().lower()))
-                
-                values = (
-                    int(row['rank']),
-                    str(row['genres']).strip(),
-                    str(row['nations']).strip(),
-                    int(row['t_audience']),
-                    int(row['c_audience']),
-                    int(row['t_sales']),
-                    int(row['c_sales']),
-                    row['release_date']
-                )
+                existing_record = self.cursor.fetchone()
 
-                if self.cursor.fetchone():
-                    # Update existing record
+                if existing_record:
+                    record_exists = True
+                else:
+                    record_exists = False
+                
+                try:
+                    values = (
+                        int(row['rank']),
+                        str(row['genres']).strip(),
+                        str(row['nations']).strip(),
+                        int(row['t_audience']),
+                        int(row['c_audience']),
+                        int(row['t_sales']),
+                        int(row['c_sales']),
+                        row['release_date']
+                    )
+                except ValueError as e:
+                    print(f"Data conversion error for {row['title']}: {str(e)}")
+                    continue
+                
+                if record_exists:
                     update_sql = """
                         UPDATE movies
                         SET rank = %s, genres = %s, nations = %s,
@@ -785,29 +781,38 @@ def insert_data_with_no_duplicates(self, df):
                         WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)
                     """
                     update_values = values + (row['title'].strip().lower(), row['director'].strip().lower())
-                    self.cursor.execute(update_sql, update_values)
+                    print(f"🔹 Update Values: {update_values}")
+                    self.cursor.execute(update_sql, update_values)     
+                    self.connection.commit()            
+                    if self.cursor.rowcount == 0:
+                        print(f"⚠ Warning: No rows were updated for {row['title']} ({row['director']})")
+                        
+                        self.cursor.execute("SELECT * FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)",
+                                       (row['title'].strip().lower(), row['director'].strip().lower()))
+                        existing_record = self.cursor.fetchone()
+                        print(f"🔍 Current DB Record Before Update: {existing_record}")
                 else:
-                    # Insert new record
+                    print(f"📌 Attempting to INSERT: {row['title']} ({row['director']})")
                     insert_sql = """
                         INSERT INTO movies 
-                        (rank, genres, nations, t_audience, c_audience, t_sales, c_sales, 
-                         release_date, title, director)
+                        (rank, genres, nations, t_audience, c_audience, t_sales, c_sales, release_date, title, director)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
                     insert_values = values + (row['title'].strip(), row['director'].strip())
+                    print(f"🎯 Insert Values: {insert_values}")
                     self.cursor.execute(insert_sql, insert_values)
-                
-                self.connection.commit()
-
-            except ValueError as e:
-                print(f"Data conversion error for {row['title']}: {str(e)}")
-                self.connection.rollback()
+                    print(f"✅ Inserted: {row['title']} ({row['director']})")
+                    self.connection.commit()               
+            
             except mysql.connector.Error as e:
                 print(f"Database error for {row['title']}: {str(e)}")
                 self.connection.rollback()
-
-    except mysql.connector.Error as e:
-        print(f"Fatal database error: {str(e)}")
+                continue
+                
+        print("Database update completed successfully.")
+        
+    except mysql.connector.Error as error:
+        print(f"Database error: {error}")
         if self.connection and self.connection.is_connected():
             self.connection.rollback()
     finally:
