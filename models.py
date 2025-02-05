@@ -754,27 +754,47 @@ class DBManager:
             return f"Error: {e}"
 
     def popcorns_lot(self, movie_id, movie_title, user_id):
+        """추첨 기능 (lots +1, popcorns -10)"""
         try:
             self.connect()
+
+            # 🔍 사용자의 현재 popcorns 조회
+            self.cursor.execute("SELECT popcorns FROM users WHERE user_id = %s", (user_id,))
+            user = self.cursor.fetchone()
+
+            if user is None:
+                return "사용자를 찾을 수 없습니다!"
+            
+            user_popcorns = user["popcorns"] if user["popcorns"] is not None else 0
+
+            if user_popcorns < 10:
+                return "팝콘이 부족합니다!"  # 🚨 팝콘 부족 오류 반환
+
+            # 🔍 lots 테이블 확인 (기존 데이터 있는지 체크)
             self.cursor.execute("SELECT popcorns FROM lots WHERE movie_id = %s AND user_id = %s", (movie_id, user_id))
             existing_lot = self.cursor.fetchone()
 
             if existing_lot:
                 # 기존 항목이 있으면 popcorns 증가
-                new_popcorns = existing_lot[0] + 10
+                new_popcorns = existing_lot["popcorns"] + 10
                 self.cursor.execute("UPDATE lots SET popcorns = %s WHERE movie_id = %s AND user_id = %s",
                                     (new_popcorns, movie_id, user_id))
             else:
                 # 없으면 새로 추가
-                self.cursor.execute("INSERT INTO lots (movie_id, movie_title, user_id, popcorns) VALUES (%s, %s, %s, 10)", 
+                self.cursor.execute("INSERT INTO lots (movie_id, movie_title, user_id, popcorns) VALUES (%s, %s, %s, 10)",
                                     (movie_id, movie_title, user_id))
 
-            self.connection.commit()  # ✅ 변경 사항 저장 (중요!)
-            return True
+            # 🔹 users 테이블 업데이트 (lots +1, popcorns -10)
+            self.cursor.execute("UPDATE users SET lots = IFNULL(lots, 0) + 1, popcorns = popcorns - 10 WHERE user_id = %s", (user_id,))
+
+            self.connection.commit()
+            return True  # ✅ 성공
 
         except mysql.connector.Error as error:
-            print(f"Error fetching reports: {error}")
-            return "Error loading reports."
+            print(f"Database error: {error}")
+            if self.connection:
+                self.connection.rollback()
+            return "데이터 처리 중 오류 발생!"
 
         finally:
             self.disconnect()

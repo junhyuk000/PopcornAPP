@@ -39,7 +39,12 @@
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.message);
+            if (data.error) {
+                alert(data.error);  // 팝콘 부족 등 오류 메시지 표시
+            } else {
+                alert(data.message);  // 정상적으로 추첨되었을 경우 메시지 표시
+                location.reload();  // 페이지 새로고침
+            }
         })
         .catch(error => console.error("Error:", error));
     }

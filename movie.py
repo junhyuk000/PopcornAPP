@@ -448,8 +448,12 @@ def movie_popcorns():
         if user_id is None:
             return jsonify({"error": "로그인이 필요합니다!"}), 401  # 로그인 필요
 
-        manager.popcorns_lot(movie_id, movie_title, user_id)
-        return redirect(url_for('movie_popcorns'), code=303)  # ✅ GET 요청으로 안전하게 리디렉션
+        result = manager.popcorns_lot(movie_id, movie_title, user_id)
+
+        if isinstance(result, str):  # 에러 메시지 반환 시
+            return jsonify({"error": result}), 400
+        else:
+            return jsonify({"message": f"🎟️ {movie_title}가 추첨되었습니다! (팝콘 -10)"}), 200
 
     movies = manager.get_all_popcorns_movies()
     return render_template('movie_popcorns.html', movies=movies)
