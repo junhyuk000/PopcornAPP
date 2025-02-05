@@ -692,14 +692,14 @@ class DBManager:
             return None
         finally:
             self.disconnect()
-    
+        
     def delete_comment(self, comment_id, user_id):
         try:
             self.connect()
 
             print(f"🔍 [DEBUG] delete_comment() 실행 - 댓글 ID: {comment_id}, 사용자 ID: {user_id}")
 
-            # 1️⃣ 댓글 삭제 (deleted_at 업데이트)
+            # 댓글 삭제 SQL 실행
             sql = "UPDATE comments SET deleted_at = NOW() WHERE id = %s AND deleted_at IS NULL;"
             value = (comment_id,)
             self.cursor.execute(sql, value)
@@ -731,6 +731,7 @@ class DBManager:
 
         finally:
             self.disconnect()
+
 
             
     def comment_post_count(self, id):
