@@ -655,13 +655,14 @@ class DBManager:
         cursor = None
         
         try:
-            # 새로운 연결 생성
+            # 새로운 연결 생성 (autocommit=True 추가)
             connection = mysql.connector.connect(
                 host='192.168.0.19',
                 user='junhyuk',
                 password='1234',
                 database='movie_db',
-                connection_timeout=600
+                connection_timeout=600,
+                autocommit=True
             )
             cursor = connection.cursor(dictionary=False)
             
@@ -695,10 +696,17 @@ class DBManager:
                             release_date = %s
                         WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)
                     """
+                    print(f"🔹 Update Values: {values}")
                     cursor.execute(update_sql, values)
                     
                     if cursor.rowcount == 0:
                         print(f"⚠ Warning: No rows were updated for {row['title']} ({row['director']})")
+                        
+                        # 업데이트 실패 시 데이터 조회하여 확인
+                        cursor.execute("SELECT * FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)",
+                                       (row['title'].strip().lower(), row['director'].strip().lower()))
+                        existing_record = cursor.fetchone()
+                        print(f"🔍 Current DB Record: {existing_record}")
                     else:
                         print(f"✅ Updated rows: {cursor.rowcount}")
                 else:
@@ -725,6 +733,7 @@ class DBManager:
             if connection and connection.is_connected():
                 connection.close()
                 print("Database connection closed.")
+
 
 
     ### movies_info 테이블에 당일 데이터 저장
