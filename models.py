@@ -649,7 +649,7 @@ class DBManager:
     # disconnect의 에러로 인한 connection과 disconnect기능 함수사용안하고 직접연결함
     def insert_data_with_no_duplicates(self, df):
         """
-        제목이 중복되면 UPDATE, 없으면 INSERT 수행
+        제목과 감독이 중복되면 UPDATE, 없으면 INSERT 수행
         """
         connection = None
         cursor = None
@@ -666,47 +666,47 @@ class DBManager:
             cursor = connection.cursor(dictionary=False)
             
             for _, row in df.iterrows():
-                print(f"Processing row: {row['title']}")
+                print(f"Processing row: {row['title']} ({row['director']})")
                 
-                # 중복 확인 쿼리
-                check_sql = "SELECT COUNT(*) FROM movies WHERE title = %s"
-                cursor.execute(check_sql, (row['title'],))
+                # 중복 확인 쿼리 (title + director 조합 확인)
+                check_sql = "SELECT COUNT(*) FROM movies WHERE title = %s AND director = %s"
+                cursor.execute(check_sql, (row['title'], row['director']))
                 record_exists = cursor.fetchone()[0] > 0
                 
                 values = (
                     int(row['rank']),
-                    str(row['genres']),
-                    str(row['director']),
-                    str(row['nations']),
+                    str(row['genres']).strip(),
+                    str(row['nations']).strip(),
                     int(row['t_audience']),
                     int(row['c_audience']),
                     int(row['t_sales']),
                     int(row['c_sales']),
                     row['release_date'],
-                    str(row['title'])  # WHERE 절에 사용할 제목
+                    str(row['title']).strip(),
+                    str(row['director']).strip()  # WHERE 절에 사용할 title + director
                 )
                 
                 if record_exists:
-                    # 중복이면 UPDATE 실행
+                    print(f"Updating: {row['title']} ({row['director']})")
                     update_sql = """
                         UPDATE movies
-                        SET rank = %s, genres = %s, director = %s, nations = %s,
+                        SET rank = %s, genres = %s, nations = %s,
                             t_audience = %s, c_audience = %s, t_sales = %s, c_sales = %s,
                             release_date = %s
-                        WHERE title = %s
+                        WHERE title = %s AND director = %s
                     """
                     cursor.execute(update_sql, values)
-                    print(f"Updated: {row['title']}")
+                    print(f"Updated rows: {cursor.rowcount}")
                 else:
-                    # 중복이 아니면 INSERT 실행
+                    print(f"Inserting: {row['title']} ({row['director']})")
                     insert_sql = """
                         INSERT INTO movies 
                         (rank, title, genres, director, nations, t_audience, c_audience, t_sales, c_sales, release_date)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
-                    insert_values = (values[0], row['title']) + values[1:]
+                    insert_values = (values[0], row['title'].strip(), row['director'].strip()) + values[1:]
                     cursor.execute(insert_sql, insert_values)
-                    print(f"Inserted: {row['title']}")
+                    print(f"Inserted: {row['title']} ({row['director']})")
                 
             connection.commit()
             print("Database update completed successfully.")
