@@ -378,16 +378,30 @@ def movie_review_comment(id):
 
 ### 댓글 삭제
 @app.route('/post/comment_delete/<int:id>/<int:comment_id>')
-def delete_comment(id,comment_id):
-    comment = manager.get_comment_by_id(comment_id)
-    user_id = session.get('id')
-    print(comment)
+def delete_comment(id, comment_id):
+    comment = manager.get_comment_by_id(comment_id)  # DB에서 댓글 가져오기
+    user_id = session.get('id')  # 세션에서 로그인된 사용자 ID 가져오기
+
+    print(f"🔍 [DEBUG] 요청된 댓글 ID: {comment_id}, 게시글 ID: {id}")
+    print(f"🔍 [DEBUG] 세션에서 가져온 user_id: {user_id}")
+    print(f"🔍 [DEBUG] DB에서 가져온 comment 데이터: {comment}")  
+
+    # 댓글이 존재하는 경우만 삭제 진행
     if comment:
-        manager.delete_comment(comment_id,user_id)
-        flash("댓글 삭제 성공!","success")
+        if not user_id:
+            flash("로그인이 필요합니다!", "error")
+            return redirect(request.referrer or url_for('view_post', id=id))
+
+        success = manager.delete_comment(comment_id, user_id)
+        if success:
+            flash("✅ 댓글 삭제 성공!", "success")
+        else:
+            flash("❌ 댓글 삭제 실패!", "error")
         return redirect(request.referrer or url_for('view_post', id=id))
-    flash("삭제실패",'error')
+
+    flash("❌ 삭제할 댓글이 존재하지 않습니다!", "error")
     return redirect(request.referrer or url_for('view_post', id=id))
+
 
 @app.route('/reports')
 def movie_report():

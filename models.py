@@ -697,17 +697,21 @@ class DBManager:
         try:
             self.connect()
 
+            print(f"🔍 [DEBUG] delete_comment() 실행 - 댓글 ID: {comment_id}, 사용자 ID: {user_id}")
+
             # 1️⃣ 댓글 삭제 (deleted_at 업데이트)
-            sql = "UPDATE comments SET deleted_at = NOW() WHERE id = %s;"
+            sql = "UPDATE comments SET deleted_at = NOW() WHERE id = %s AND deleted_at IS NULL;"
             value = (comment_id,)
             self.cursor.execute(sql, value)
 
-            # 2️⃣ 실제로 삭제된 행이 있는지 확인
-            if self.cursor.rowcount == 0:
-                print(f"⚠ Warning: 댓글 ID {comment_id} 삭제 실패 (해당 ID 없음 또는 이미 삭제됨)")
-                return False  # 삭제되지 않음
+            print(f"🔍 [DEBUG] 실행된 rowcount: {self.cursor.rowcount}")  # ✅ rowcount 확인
 
-            # 3️⃣ users 테이블 업데이트 (comments -1, popcorns -3, popcorns는 최소 0 이상)
+            # ✅ rowcount가 0이면 삭제되지 않은 것 → 원인 분석 필요
+            if self.cursor.rowcount == 0:
+                print(f"⚠ Warning: 댓글 ID {comment_id} 삭제 실패 (이미 삭제되었거나 존재하지 않음)")
+                return False
+
+            # 2️⃣ users 테이블 업데이트 (comments -1, popcorns -3, popcorns는 최소 0 이상)
             self.cursor.execute("""
                 UPDATE users 
                 SET comments = GREATEST(IFNULL(comments, 0) - 1, 0), 
@@ -727,6 +731,7 @@ class DBManager:
 
         finally:
             self.disconnect()
+
             
     def comment_post_count(self, id):
         try:
