@@ -595,7 +595,7 @@ class DBManager:
     def get_all_comments(self):
         try:
             self.connect()
-            sql = f"SELECT * FROM comments"
+            sql = f"SELECT * FROM comments where deleted_at IS NULL"
             self.cursor.execute(sql)
             return self.cursor.fetchall()
         except mysql.connector.Error as error:
