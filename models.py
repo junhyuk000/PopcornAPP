@@ -669,17 +669,15 @@ class DBManager:
             for _, row in df.iterrows():
                 print(f"Processing row: {row['title']} ({row['director']})")
                 
-                # 중복 확인 쿼리 (title + director 조합 확인, ID 가져오기)
-                check_sql = "SELECT id FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s) LIMIT 1"
+                # 중복 확인 쿼리 (title + director 조합 확인)
+                check_sql = "SELECT * FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)"
                 cursor.execute(check_sql, (row['title'].strip().lower(), row['director'].strip().lower()))
                 existing_record = cursor.fetchone()
                 
                 if existing_record:
                     record_exists = True
-                    movie_id = existing_record[0]
                 else:
                     record_exists = False
-                    movie_id = None
                 
                 values = (
                     int(row['rank']),
@@ -699,14 +697,21 @@ class DBManager:
                         SET rank = %s, genres = %s, nations = %s,
                             t_audience = %s, c_audience = %s, t_sales = %s, c_sales = %s,
                             release_date = %s
-                        WHERE id = %s
+                        WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)
                     """
-                    update_values = values + (movie_id,)
+                    update_values = values + (row['title'].strip().lower(), row['director'].strip().lower())
                     print(f"🔹 Update Values: {update_values}")
                     cursor.execute(update_sql, update_values)
+                    connection.commit()  # UPDATE 후 커밋 실행
                     
                     if cursor.rowcount == 0:
                         print(f"⚠ Warning: No rows were updated for {row['title']} ({row['director']})")
+                        
+                        # 업데이트 실패 시 데이터 조회하여 확인
+                        cursor.execute("SELECT * FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)",
+                                       (row['title'].strip().lower(), row['director'].strip().lower()))
+                        existing_record = cursor.fetchone()
+                        print(f"🔍 Current DB Record Before Update: {existing_record}")
                 else:
                     print(f"📌 Attempting to INSERT: {row['title']} ({row['director']})")
                     insert_sql = """
