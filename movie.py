@@ -375,30 +375,38 @@ def movie_review_comment(id):
     # 사용자가 왔던 페이지로 리다이렉트
     return redirect(request.referrer or url_for('view_post', id=id))
 
-@app.route('/post/comment_delete/<int:id>/<int:comment_id>', methods=['GET'])
-def delete_comment(id, comment_id):
-    print(f"🔍 [DEBUG] 댓글 삭제 요청이 들어옴! 댓글 ID: {comment_id}, 게시글 ID: {id}")  # ✅ 로그 추가
+@app.route('/post/comment_delete/<int:post_id>/<int:comment_id>', methods=['GET'])
+def delete_comment(post_id, comment_id):
+    print(f"🔍 [DEBUG] 댓글 삭제 요청 - 댓글 ID: {comment_id}, 게시글 ID: {post_id}")
 
-    comment = manager.get_comment_by_id(comment_id)
+    # 로그인 체크
     user_id = session.get('id')
+    if not user_id:
+        flash("로그인이 필요합니다!", "error")
+        return redirect(request.referrer or url_for('view_post', id=post_id))
 
-    print(f"🔍 [DEBUG] 세션에서 가져온 user_id: {user_id}")  # ✅ 세션 값 확인
-    print(f"🔍 [DEBUG] DB에서 가져온 comment 데이터: {comment}")  # ✅ DB에서 댓글 데이터 조회 확인
+    # 댓글 정보 조회
+    comment = manager.get_comment_by_id(comment_id)
+    print(f"🔍 [DEBUG] 댓글 정보: {comment}")
 
-    if comment:
-        if not user_id:
-            flash("로그인이 필요합니다!", "error")
-            return redirect(request.referrer or url_for('view_post', id=id))
+    if not comment:
+        flash("❌ 존재하지 않는 댓글입니다!", "error")
+        return redirect(request.referrer or url_for('view_post', id=post_id))
 
-        success = manager.delete_comment(comment_id, user_id)
-        if success:
-            flash("✅ 댓글 삭제 성공!", "success")
-        else:
-            flash("❌ 댓글 삭제 실패!", "error")
-        return redirect(request.referrer or url_for('view_post', id=id))
+    # 권한 체크 (작성자 또는 관리자)
+    if user_id != comment['user_id'] and user_id != 'admin':
+        flash("❌ 삭제 권한이 없습니다!", "error")
+        return redirect(request.referrer or url_for('view_post', id=post_id))
 
-    flash("❌ 삭제할 댓글이 존재하지 않습니다!", "error")
-    return redirect(request.referrer or url_for('view_post', id=id))
+    # 댓글 삭제 시도
+    success = manager.delete_comment(comment_id, user_id)
+    
+    if success:
+        flash("✅ 댓글이 삭제되었습니다.", "success")
+    else:
+        flash("❌ 댓글 삭제에 실패했습니다.", "error")
+
+    return redirect(request.referrer or url_for('view_post', id=post_id))
 
 
 @app.route('/reports')

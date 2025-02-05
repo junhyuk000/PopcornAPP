@@ -683,7 +683,7 @@ class DBManager:
     def get_comment_by_id(self, id):
         try:
             self.connect()
-            sql = f"SELECT * FROM comments WHERE id = %s where deleted_at IS NULL"
+            sql = f"SELECT * FROM comments WHERE id = %s and deleted_at IS NULL"
             value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             return self.cursor.fetchone()
