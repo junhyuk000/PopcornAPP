@@ -154,14 +154,32 @@ class DBManager:
     def insert_post(self, title, content, filename, userid, username, rating, spoiler, movie_title, movie_id):
         try:
             self.connect()
-            sql = f"INSERT INTO posts (title, content, filename, created_at, userid, username, rating, spoiler,movie_title,movie_id) values (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s)"
-            values = (title, content, filename, datetime.now(), userid, username, rating, spoiler, movie_title, movie_id)  # 튜플형태
+
+            # 1️⃣ 게시글 추가
+            sql = """
+                INSERT INTO posts (title, content, filename, created_at, userid, username, rating, spoiler, movie_title, movie_id) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            values = (title, content, filename, datetime.now(), userid, username, rating, spoiler, movie_title, movie_id)
             self.cursor.execute(sql, values)
-            self.connection.commit()
+
+            # 2️⃣ users 테이블 업데이트 (posts +1, popcorns +5)
+            self.cursor.execute("""
+                UPDATE users 
+                SET posts = IFNULL(posts, 0) + 1, 
+                    popcorns = IFNULL(popcorns, 0) + 5 
+                WHERE user_id = %s
+            """, (userid,))
+
+            self.connection.commit()  # ✅ 트랜잭션 커밋
             return True
+
         except mysql.connector.Error as error:
             print(f"게시글 추가 실패: {error}")
+            if self.connection:
+                self.connection.rollback()  # ❌ 오류 발생 시 롤백
             return False
+
         finally:
             self.disconnect()
        
@@ -599,19 +617,36 @@ class DBManager:
             self.disconnect()
 
     ### 댓글 추가
-    def insert_comment(self,post_id,user_id,user_name,content):
+    def insert_comment(self, post_id, user_id, user_name, content):
         try:
             self.connect()
+
+            # 1️⃣ 댓글 추가
             sql = """
                 INSERT INTO comments (post_id, user_id, user_name, content, created_at)
                 VALUES (%s, %s, %s, %s, %s)
             """
-            values = (post_id,user_id,user_name, content ,datetime.now())
+            values = (post_id, user_id, user_name, content, datetime.now())
             self.cursor.execute(sql, values)
-            self.connection.commit()
-            print("comments 테이블 업데이트 완료.")
+
+            # 2️⃣ users 테이블 업데이트 (comments +1, popcorns +3)
+            self.cursor.execute("""
+                UPDATE users 
+                SET comments = IFNULL(comments, 0) + 1, 
+                    popcorns = IFNULL(popcorns, 0) + 2 
+                WHERE user_id = %s
+            """, (user_id,))
+
+            self.connection.commit()  # ✅ 트랜잭션 커밋
+            print("✅ 댓글 추가 및 users 테이블 업데이트 완료.")
+            return True
+
         except mysql.connector.Error as error:
-            print(f"comments 테이블 데이터 삽입 실패: {error}")
+            print(f"❌ 댓글 추가 실패: {error}")
+            if self.connection:
+                self.connection.rollback()  # ❌ 오류 발생 시 롤백
+            return False
+
         finally:
             self.disconnect()
 
