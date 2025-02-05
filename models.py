@@ -739,13 +739,10 @@ class DBManager:
         try:
             self.connect()
             for _, row in df.iterrows():
-                print(f"Processing row: {row['title']} ({row['director']})")
-                
-                # 중복 확인 쿼리 (title + director 조합 확인)
                 check_sql = "SELECT * FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)"
                 self.cursor.execute(check_sql, (row['title'].strip().lower(), row['director'].strip().lower()))
                 existing_record = self.cursor.fetchone()
-                
+
                 if existing_record:
                     record_exists = True
                 else:
@@ -763,7 +760,6 @@ class DBManager:
                 )
                 
                 if record_exists:
-                    print(f"Updating: {row['title']} ({row['director']})")
                     update_sql = """
                         UPDATE movies
                         SET rank = %s, genres = %s, nations = %s,
@@ -773,7 +769,8 @@ class DBManager:
                     """
                     update_values = values + (row['title'].strip().lower(), row['director'].strip().lower())
                     print(f"🔹 Update Values: {update_values}")
-                    self.cursor.execute(update_sql, update_values)                 
+                    self.cursor.execute(update_sql, update_values)     
+                    self.connection.commit()            
                     if self.cursor.rowcount == 0:
                         print(f"⚠ Warning: No rows were updated for {row['title']} ({row['director']})")
                         
@@ -793,7 +790,7 @@ class DBManager:
                     print(f"🎯 Insert Values: {insert_values}")
                     self.cursor.execute(insert_sql, insert_values)
                     print(f"✅ Inserted: {row['title']} ({row['director']})")
-            self.connection.commit()               
+                    self.connection.commit()               
             print("Database update completed successfully.")
         
         except mysql.connector.Error as error:
