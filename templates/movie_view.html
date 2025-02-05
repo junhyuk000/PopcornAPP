@@ -81,7 +81,7 @@
                     </div>
                     {% if session['id'] == comment.user_id or session['id'] == 'admin' %}
                     <div class="btn-group">
-                        <a href="/post/comment_delete/{{post.id}}/{{ comment.id }}" 
+                        <a href="/post/comment_delete/{{post.id}}/{{comment.id}}" 
                            class="btn btn-sm btn-outline-danger"
                            onclick="return confirm('정말로 삭제하시겠습니까?');">
                             <i class="fas fa-trash"></i> 삭제

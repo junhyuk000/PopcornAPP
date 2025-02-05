@@ -375,30 +375,30 @@ def movie_review_comment(id):
     # 사용자가 왔던 페이지로 리다이렉트
     return redirect(request.referrer or url_for('view_post', id=id))
 
-@app.route('/post/comment_delete/<int:id>/<int:comment_id>')
+@app.route('/post/comment_delete/<int:id>/<int:comment_id>', methods=['GET'])
 def delete_comment(id, comment_id):
     print(f"🔍 [DEBUG] 댓글 삭제 요청이 들어옴! 댓글 ID: {comment_id}, 게시글 ID: {id}")  # ✅ 로그 추가
+    return jsonify({"message": "요청 정상 도착"})
+    # comment = manager.get_comment_by_id(comment_id)
+    # user_id = session.get('id')
 
-    comment = manager.get_comment_by_id(comment_id)
-    user_id = session.get('id')
+    # print(f"🔍 [DEBUG] 세션에서 가져온 user_id: {user_id}")  # ✅ 세션 값 확인
+    # print(f"🔍 [DEBUG] DB에서 가져온 comment 데이터: {comment}")  # ✅ DB에서 댓글 데이터 조회 확인
 
-    print(f"🔍 [DEBUG] 세션에서 가져온 user_id: {user_id}")  # ✅ 세션 값 확인
-    print(f"🔍 [DEBUG] DB에서 가져온 comment 데이터: {comment}")  # ✅ DB에서 댓글 데이터 조회 확인
+    # if comment:
+    #     if not user_id:
+    #         flash("로그인이 필요합니다!", "error")
+    #         return redirect(request.referrer or url_for('view_post', id=id))
 
-    if comment:
-        if not user_id:
-            flash("로그인이 필요합니다!", "error")
-            return redirect(request.referrer or url_for('view_post', id=id))
+    #     success = manager.delete_comment(comment_id, user_id)
+    #     if success:
+    #         flash("✅ 댓글 삭제 성공!", "success")
+    #     else:
+    #         flash("❌ 댓글 삭제 실패!", "error")
+    #     return redirect(request.referrer or url_for('view_post', id=id))
 
-        success = manager.delete_comment(comment_id, user_id)
-        if success:
-            flash("✅ 댓글 삭제 성공!", "success")
-        else:
-            flash("❌ 댓글 삭제 실패!", "error")
-        return redirect(request.referrer or url_for('view_post', id=id))
-
-    flash("❌ 삭제할 댓글이 존재하지 않습니다!", "error")
-    return redirect(request.referrer or url_for('view_post', id=id))
+    # flash("❌ 삭제할 댓글이 존재하지 않습니다!", "error")
+    # return redirect(request.referrer or url_for('view_post', id=id))
 
 
 @app.route('/reports')
