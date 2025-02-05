@@ -485,7 +485,7 @@ class DBManager:
         df3['t_sales'] = df3['t_sales'].astype(int)
 
         print("🎬 영화 정보 가져오기 완료!")
-        self.insert_data(df3)
+        # self.insert_data(df3)
         self.insert_data_with_no_duplicates(df3)
 
    
