@@ -1,7 +1,7 @@
 {% extends 'movie_base.html' %}
 
 {% block content %}
-<h2 style="color: white;">🎬 영화 리스트</h2>
+<h2 style="color: white; text-align: center;">🎬 영화 리스트</h2>
 <div class="movie-container">
     {% for movie in movies %}
     <div class="movie-card">
@@ -16,6 +16,7 @@
                 {{ (movie.c_audience // 10000) | string + '만명' if movie.c_audience >= 10000 else movie.c_audience|string + '명' }}
             </span>
         </p>
+        <p style="color: wheat;">🎟️ 팝콘: {{ movie.popcorns }}</p>
         <button class="lottery-btn" onclick="confirmLottery({{ movie.id }}, '{{ movie.title }}')">추첨하기</button>
     </div>
     {% endfor %}
@@ -51,10 +52,37 @@
 </script>
 
 <style>
-    .movie-container { display: flex; flex-wrap: wrap; gap: 20px; }
-    .movie-card { width: 200px; padding: 10px; border: 1px solid #ddd; text-align: center; }
-    .movie-card img { width: 100%; height: 250px; object-fit: cover; }
-    .lottery-btn { padding: 5px 10px; background-color: #ff9800; color: white; border: none; cursor: pointer; }
-    .audience { cursor: pointer; border-bottom: 1px dashed wheat; }
+    .movie-container { 
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: center; /* 중앙 정렬 */
+        gap: 20px; 
+    }
+    .movie-card { 
+        width: 220px; 
+        padding: 15px; 
+        border: 1px solid #ddd; 
+        text-align: center;
+        background-color: #222; 
+        border-radius: 10px; 
+    }
+    .movie-card img { 
+        width: 100%; 
+        height: 250px; 
+        object-fit: cover; 
+        border-radius: 8px;
+    }
+    .lottery-btn { 
+        padding: 5px 10px; 
+        background-color: #ff9800; 
+        color: white; 
+        border: none; 
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .audience { 
+        cursor: pointer; 
+        border-bottom: 1px dashed wheat; 
+    }
 </style>
 {% endblock %}

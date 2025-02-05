@@ -574,13 +574,24 @@ class DBManager:
         finally:
             self.disconnect()
 
-    ### 모든 영화 정보 가져오기
     def get_all_popcorns_movies(self):
+        """모든 영화 정보를 popcorns가 많은 순으로 가져오기"""
         try:
             self.connect()
-            sql = "SELECT * FROM movies order by id desc"
-            self.cursor.execute(sql, )
-            return self.cursor.fetchall()
+            query = """
+                SELECT m.id, m.title, m.director, m.rating, m.reviews, m.filename, m.c_audience, 
+                    COALESCE(l.popcorns, 0) AS popcorns
+                FROM movies m
+                LEFT JOIN (
+                    SELECT movie_id, SUM(popcorns) AS popcorns 
+                    FROM lots 
+                    GROUP BY movie_id
+                ) l ON m.id = l.movie_id
+                ORDER BY popcorns DESC
+            """
+            self.cursor.execute(query)
+            movies = self.cursor.fetchall()
+            return movies
         except mysql.connector.Error as error:
             print(f"영화 데이터 조회 실패: {error}")
             return []

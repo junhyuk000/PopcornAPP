@@ -455,6 +455,7 @@ def movie_popcorns():
         else:
             return jsonify({"message": f"🎟️ {movie_title}가 추첨되었습니다! (팝콘 -10)"}), 200
 
+    # `popcorns`가 많은 순서로 정렬된 영화 리스트 가져오기
     movies = manager.get_all_popcorns_movies()
     return render_template('movie_popcorns.html', movies=movies)
 
