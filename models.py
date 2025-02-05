@@ -518,8 +518,11 @@ class DBManager:
         df3['c_audience'] = df3['c_audience'].astype(int)
         df3['t_sales'] = df3['t_sales'].astype(int)
 
-        print("🎬 영화 정보 가져오기 완료!")
+        print("🔍 [DEBUG] insert_data_with_no_duplicates() 함수 실행 직전")
+        print(f"🔍 [DEBUG] df3 데이터 개수: {len(df3)}")
+        print(f"🔍 [DEBUG] df3 샘플 데이터:\n{df3.head()}")
         self.insert_data_with_no_duplicates(df3)
+
 
     def insert_data_with_no_duplicates(self, df):
         print("📌 insert_data_with_no_duplicates() 함수 실행 시작")
