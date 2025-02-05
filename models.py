@@ -141,7 +141,7 @@ class DBManager:
     def get_all_posts(self):
         try:
             self.connect()
-            sql = f"SELECT * FROM posts"
+            sql = f"SELECT * FROM posts where deleted_at IS NULL"
             self.cursor.execute(sql)
             return self.cursor.fetchall()
         except mysql.connector.Error as error:
