@@ -701,9 +701,7 @@ class DBManager:
                     """
                     update_values = values + (row['title'].strip().lower(), row['director'].strip().lower())
                     print(f"🔹 Update Values: {update_values}")
-                    cursor.execute(update_sql, update_values)
-                    connection.commit()  # UPDATE 후 커밋 실행
-                    
+                    cursor.execute(update_sql, update_values)                 
                     if cursor.rowcount == 0:
                         print(f"⚠ Warning: No rows were updated for {row['title']} ({row['director']})")
                         
@@ -722,9 +720,8 @@ class DBManager:
                     insert_values = values + (row['title'].strip(), row['director'].strip())
                     print(f"🎯 Insert Values: {insert_values}")
                     cursor.execute(insert_sql, insert_values)
-                    connection.commit()
                     print(f"✅ Inserted: {row['title']} ({row['director']})")
-                
+            connection.commit()               
             print("Database update completed successfully.")
         
         except mysql.connector.Error as error:
