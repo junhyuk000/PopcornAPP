@@ -439,7 +439,8 @@ def movie_notice():
 
 @app.route('/movie_popcorns')
 def movie_popcorns():
-    return render_template('movie_popcorns.html')
+    movies = manager.get_all_movies()
+    return render_template('movie_popcorns.html', movies = movies)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
