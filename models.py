@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from datetime import datetime, timedelta
+from pytz import timezone
 import pandas as pd
 import json
 import re
@@ -640,7 +641,8 @@ class DBManager:
     def get_all_movies(self):
         try:
             self.connect()
-            today_date = datetime.today().strftime('%Y-%m-%d')
+            seoul_tz = timezone('Asia/Seoul')
+            today_date = datetime.now(seoul_tz).strftime('%Y-%m-%d')  # 한국 시간 기준 날짜
             sql = "SELECT * FROM movies WHERE DATE(input_date) = %s order by rank asc"
             self.cursor.execute(sql, (today_date,))
             return self.cursor.fetchall()
