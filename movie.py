@@ -254,18 +254,19 @@ def edit_post(id):
 @app.route('/post/delete/<int:id>')
 def delete_post(id):
     post = manager.get_post_by_id(id)
+    user_id = session.get('id')
     if post:
         file = post.get('filename')
         if file:
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
             os.remove(file_path)
             flash("file삭제",'success')
-            if manager.delete_post(id):
+            if manager.delete_post(id,user_id):
                 flash("게시물 삭제 성공!","success")
                 return redirect(url_for('index'))
             return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for("register")}"</script>' # 스크립트로 alert알람창 띄우기
         else:
-            if manager.delete_post(id):
+            if manager.delete_post(id,user_id):
                 flash("게시물 삭제 성공!","success")
                 return redirect(url_for('index'))
         flash("삭제실패",'error')
@@ -391,9 +392,9 @@ def movie_report():
     reports = manager.view_reports()
     return render_template('movie_reports.html',reports=reports)
 
-@app.route('/show_movie_about')
+@app.route('/home')
 def index():
-    return render_template('movie_about.html')
+    return render_template('movie_movies.html')
 
 @app.route('/movie_about')
 def movie_about():
