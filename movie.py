@@ -380,8 +380,9 @@ def movie_review_comment(id):
 @app.route('/post/comment_delete/<int:id>/<int:comment_id>')
 def delete_comment(id,comment_id):
     comment = manager.get_comment_by_id(comment_id)
+    user_id = session.get('id')
     if comment:
-        manager.delete_comment(comment_id)
+        manager.delete_comment(comment_id,user_id)
         flash("댓글 삭제 성공!","success")
         return redirect(request.referrer or url_for('view_post', id=id))
     flash("삭제실패",'error')
