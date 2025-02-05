@@ -763,7 +763,7 @@ class DBManager:
         try:
             self.connect()
             today_date = datetime.today().strftime('%Y-%m-%d')
-            sql = "SELECT * FROM movies_info WHERE DATE(release_date) = %s"
+            sql = "SELECT * FROM movies WHERE DATE(input_date) = %s"
             self.cursor.execute(sql, (today_date,))
             return self.cursor.fetchall()
         except mysql.connector.Error as error:
@@ -771,7 +771,7 @@ class DBManager:
             return []
         finally:
             self.disconnect()
-            
+
     ### 댓글 추가
     def insert_comment(self,post_id,user_id,user_name,content):
         try:
