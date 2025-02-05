@@ -6,17 +6,17 @@
     {% for movie in movies %}
     <div class="movie-card">
         <img src="{{ url_for('static', filename='images/' + movie.filename) }}" alt="{{ movie.title }}">
-        <h3 style="color: white;">{{ movie.title }}</h3>
+        <h3 style="color: white;"><a href="/movie_youtube/{{movie.title}}">{{ movie.title }}</a></h3>
         <p style="color: wheat;">🎬 감독: {{ movie.director }}</p>
         <p style="color: wheat;">⭐ 평점: {{ movie.rating if movie.rating else 'N/A' }}</p>
         <p style="color: wheat;">💬 리뷰: {{ movie.reviews if movie.reviews else 0 }}개</p>
         <p style="color: wheat;">
-            🍿 관객수: 
+            👪 관객수: 
             <span class="audience" title="{{ movie.c_audience }}">
                 {{ (movie.c_audience // 10000) | string + '만명' if movie.c_audience >= 10000 else movie.c_audience|string + '명' }}
             </span>
         </p>
-        <p style="color: wheat;">🎟️ 팝콘: {{ movie.popcorns }}</p>
+        <p style="color: wheat;">🍿 팝콘: {{ movie.popcorns }}</p>
         <button class="lottery-btn" onclick="confirmLottery({{ movie.id }}, '{{ movie.title }}')">추첨하기</button>
     </div>
     {% endfor %}
