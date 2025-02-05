@@ -640,7 +640,8 @@ class DBManager:
                     int(row['c_audience']),
                     int(row['t_sales']),
                     int(row['c_sales']),
-                    row['release_date']
+                    row['release_date'],
+                    datetime.now()  # 현재 시간 추가
                 )
                 
                 if record_exists:
@@ -649,7 +650,8 @@ class DBManager:
                         UPDATE movies
                         SET rank = COALESCE(%s, rank), genres = COALESCE(%s, genres), nations = COALESCE(%s, nations),
                             t_audience = COALESCE(%s, t_audience), c_audience = COALESCE(%s, c_audience), t_sales = COALESCE(%s, t_sales),
-                            c_sales = COALESCE(%s, c_sales), release_date = COALESCE(%s, release_date)
+                            c_sales = COALESCE(%s, c_sales), release_date = COALESCE(%s, release_date),
+                            input_date = %s
                         WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)
                     """
                     update_values = values + (row['title'].strip(), row['director'].strip())
@@ -669,8 +671,8 @@ class DBManager:
                     print(f"📌 Attempting to INSERT: {row['title']} ({row['director']})")
                     insert_sql = """
                         INSERT INTO movies 
-                        (rank, genres, nations, t_audience, c_audience, t_sales, c_sales, release_date, title, director)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        (rank, genres, nations, t_audience, c_audience, t_sales, c_sales, release_date, title, director, input_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
                     insert_values = values + (row['title'].strip(), row['director'].strip())
                     print(f"🎯 Insert Values: {insert_values}")
