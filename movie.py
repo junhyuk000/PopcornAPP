@@ -437,7 +437,9 @@ def movie_about():
 def movie_notice():
     return render_template('movie_notice.html')
 
-
+@app.route('/movie_popcorns')
+def movie_popcorns():
+    return render_template('movie_popcorns.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

@@ -1,0 +1,41 @@
+{% extends 'movie_base.html' %}
+
+{% block content %}
+<h2>🎬 영화 리스트</h2>
+<div class="movie-container">
+    {% for movie in movies %}
+    <div class="movie-card">
+        <img src="{{ url_for('static', filename='images/' + movie.filename) }}" alt="{{ movie.title }}">
+        <h3>{{ movie.title }}</h3>
+        <p>🎬 감독: {{ movie.director }}</p>
+        <p>⭐ 평점: {{ movie.rating if movie.rating else 'N/A' }}</p>
+        <p>💬 리뷰: {{ movie.reviews if movie.reviews else 0 }}개</p>
+        <button class="lottery-btn" onclick="submitLottery({{ movie.id }}, '{{ movie.title }}')">추첨하기</button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    function submitLottery(movie_id, movie_title) {
+        fetch("/lottery", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ movie_id: movie_id, movie_title: movie_title })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
+<style>
+    .movie-container { display: flex; flex-wrap: wrap; gap: 20px; }
+    .movie-card { width: 200px; padding: 10px; border: 1px solid #ddd; text-align: center; }
+    .movie-card img { width: 100%; height: 250px; object-fit: cover; }
+    .lottery-btn { padding: 5px 10px; background-color: #ff9800; color: white; border: none; cursor: pointer; }
+</style>
+{% endblock %}
