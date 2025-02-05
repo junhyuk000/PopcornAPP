@@ -35,11 +35,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if session.get('id') %}
-                        <li class="nav-item"><a class="nav-link" href="/myinfo">{{session.get('name')}}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/myinfo" style="color: white;">{{session.get('name')}}</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login" style="color: white;">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register" style="color: white;">Register</a></li>
                     {% endif %}
                 </ul>
             </div>
