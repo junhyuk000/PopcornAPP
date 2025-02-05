@@ -520,9 +520,9 @@ class DBManager:
 
         print("🎬 영화 정보 가져오기 완료!")
         self.insert_data_with_no_duplicates(df3)
-        print(df3)
 
     def insert_data_with_no_duplicates(self, df):
+        print("instert_data 소환중",df)
         try:
             self.connect()
             for _, row in df.iterrows():
