@@ -1,15 +1,15 @@
 {% extends 'movie_base.html' %}
 
 {% block content %}
-<h2>🎬 영화 리스트</h2>
+<h2 style="color: white;">🎬 영화 리스트</h2>
 <div class="movie-container">
     {% for movie in movies %}
     <div class="movie-card">
         <img src="{{ url_for('static', filename='images/' + movie.filename) }}" alt="{{ movie.title }}">
-        <h3>{{ movie.title }}</h3>
-        <p>🎬 감독: {{ movie.director }}</p>
-        <p>⭐ 평점: {{ movie.rating if movie.rating else 'N/A' }}</p>
-        <p>💬 리뷰: {{ movie.reviews if movie.reviews else 0 }}개</p>
+        <h3 style="color: white;">{{ movie.title }}</h3>
+        <p style="color: white;">🎬 감독: {{ movie.director }}</p>
+        <p style="color: white;">⭐ 평점: {{ movie.rating if movie.rating else 'N/A' }}</p>
+        <p style="color: white;">💬 리뷰: {{ movie.reviews if movie.reviews else 0 }}개</p>
         <button class="lottery-btn" onclick="submitLottery({{ movie.id }}, '{{ movie.title }}')">추첨하기</button>
     </div>
     {% endfor %}
