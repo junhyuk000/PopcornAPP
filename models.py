@@ -522,7 +522,7 @@ class DBManager:
         self.insert_data_with_no_duplicates(df3)
 
     def insert_data_with_no_duplicates(self, df):
-        print("instert_data 소환중",df)
+        print("instert_data 소환중")
         try:
             self.connect()
             for _, row in df.iterrows():
