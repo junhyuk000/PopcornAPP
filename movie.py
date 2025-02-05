@@ -123,7 +123,7 @@ def delete_user():
         session.clear()
         return f'<script>alert("회원탈퇴 성공!");location.href="{url_for("login")}"</script>' # 스크립트로 alert알람창 띄우기
     else:
-        return f'<script>alert("회원탈퇴 실패!");location.href="{url_for("index")}"</script>'
+        return f'<script>alert("회원탈퇴 실패!");location.href="{url_for("movies")}"</script>'
     
 ### 회원 탈퇴(신고 추방)
 @app.route('/user/delete/<user_id>')
@@ -262,12 +262,12 @@ def delete_post(id):
             flash("file삭제",'success')
             if manager.delete_post(id,user_id):
                 flash("게시물 삭제 성공!","success")
-                return redirect(url_for('index'))
+                return redirect(url_for('movies'))
             return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for("register")}"</script>' # 스크립트로 alert알람창 띄우기
         else:
             if manager.delete_post(id,user_id):
                 flash("게시물 삭제 성공!","success")
-                return redirect(url_for('index'))
+                return redirect(url_for('movies'))
         flash("삭제실패",'error')
     
     return redirect(url_for('view'))
@@ -413,9 +413,9 @@ def movie_report():
     reports = manager.view_reports()
     return render_template('movie_reports.html',reports=reports)
 
-@app.route('/home')
-def index():
-    return render_template('movie_movies.html')
+@app.route('/show_movie_about')
+def show_movie_about():
+    return render_template('movie_about.html')
 
 @app.route('/movie_about')
 def movie_about():
