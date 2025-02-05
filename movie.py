@@ -381,6 +381,7 @@ def movie_review_comment(id):
 def delete_comment(id,comment_id):
     comment = manager.get_comment_by_id(comment_id)
     user_id = session.get('id')
+    print(comment)
     if comment:
         manager.delete_comment(comment_id,user_id)
         flash("댓글 삭제 성공!","success")
