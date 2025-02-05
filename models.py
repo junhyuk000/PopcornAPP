@@ -753,3 +753,25 @@ class DBManager:
         except requests.exceptions.RequestException as e:
             return f"Error: {e}"
 
+    def popcorns_lot(self,movie_id,movie_title,user_id):
+        try: 
+            self.connect()
+            self.cursor.execute("SELECT popcorns FROM lots WHERE movie_id = %s AND user_id = %s", (movie_id, user_id))
+            existing_lot = self.cursor.fetchone()
+
+            if existing_lot:
+                # 기존 항목이 있으면 popcorns 증가
+                new_popcorns = existing_lot[0] + 10
+                self.cursor.execute("UPDATE lots SET popcorns = %s WHERE movie_id = %s AND user_id = %s", (new_popcorns, movie_id, user_id))
+            else:
+                # 없으면 새로 추가
+                self.cursor.execute("INSERT INTO lots (movie_id, movie_title, user_id, popcorns) VALUES (%s, %s, %s, 10)", 
+                            (movie_id, movie_title, user_id))
+            return True
+        except mysql.connector.Error as error:
+            print(f"Error fetching reports: {error}")
+            return "Error loading reports."
+
+        finally:
+            self.disconnect()
+            

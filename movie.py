@@ -437,10 +437,19 @@ def movie_about():
 def movie_notice():
     return render_template('movie_notice.html')
 
-@app.route('/movie_popcorns')
+@app.route('/movie_popcorns', methods=['GET','POST'])
 def movie_popcorns():
+    if request.method == 'POST':
+        data = request.json
+        movie_id = data.get("movie_id")
+        movie_title = data.get("movie_title")
+        user_id = session.get['id']  # 실제 로그인 기능이 있다면 session에서 가져오기
+        manager.popcorns_lot(movie_id,movie_title,user_id)
+        return 
     movies = manager.get_all_popcorns_movies()
     return render_template('movie_popcorns.html', movies = movies)
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
