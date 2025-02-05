@@ -19,135 +19,16 @@ class DBManager:
         self.cursor = None
         
     def connect(self):
-        
         try:
             if not self.connection or not self.connection.is_connected():
                 self.connection = mysql.connector.connect(
-                host='192.168.0.19',
-                user='junhyuk',
-                password='1234',
-                database='movie_db',
-                connection_timeout=600  # 10분
+                    host='192.168.0.19',
+                    user='junhyuk',
+                    password='1234',
+                    database='movie_db',
+                    connection_timeout=600  # 10분
                 )
                 self.cursor = self.connection.cursor(dictionary=True)
-                # 영화 리뷰 데이터베이스 posts 테이블 생성
-                self.cursor.execute("""
-                                    CREATE TABLE `posts` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `userid` varchar(255) NOT NULL,
-                                    `username` varchar(255) NOT NULL,
-                                    `title` varchar(200) NOT NULL,
-                                    `content` text NOT NULL,
-                                    `rating` int(11) NOT NULL,
-                                    `spoiler` tinyint(1) NOT NULL,
-                                    `filename` varchar(255) DEFAULT NULL,
-                                    `movie_id` int(11) DEFAULT NULL,
-                                    `movie_title` varchar(255) DEFAULT NULL,
-                                    `views` int(11) DEFAULT 0,
-                                    `recommend` int(11) DEFAULT 0,
-                                    `report` int(11) DEFAULT 0,
-                                    `comment` int(11) DEFAULT 0,
-                                    `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-                                    `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                                    PRIMARY KEY (`id`),
-                                    KEY `fk_posts_user` (`userid`),
-                                    KEY `fk_posts_movie_id` (`movie_id`),
-                                    CONSTRAINT `fk_posts_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies_info` (`id`),
-                                    CONSTRAINT `fk_posts_user` FOREIGN KEY (`userid`) REFERENCES `users` (`user_id`)
-                                    )
-                                    """)
-                
-                # 회원 데이터베이스 users 테이블 생성
-                self.cursor.execute("""
-                                    CREATE TABLE `users` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `user_id` varchar(255) NOT NULL,
-                                    `name` varchar(255) NOT NULL,
-                                    `password` varchar(255) NOT NULL,
-                                    `user_ip` varchar(45) NOT NULL,
-                                    `filename` varchar(255) DEFAULT NULL,
-                                    `reg_date` datetime DEFAULT current_timestamp(),
-                                    `deleted_at` datetime DEFAULT NULL,
-                                    PRIMARY KEY (`id`),
-                                    UNIQUE KEY `user_id` (`user_id`)
-                                    )
-                                    """)
-                # 당일 영화 API 데이터 누적 저장 데이터베이스 movies 테이블 생성(데이터 분석용)
-                self.cursor.execute("""
-                                    CREATE TABLE `movies` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `rank` int(11) NOT NULL,
-                                    `title` varchar(255) NOT NULL,
-                                    `genres` varchar(255) NOT NULL,
-                                    `director` varchar(200) NOT NULL,
-                                    `nations` varchar(200) NOT NULL,
-                                    `rating` float DEFAULT NULL,
-                                    `reviews` int(11) DEFAULT NULL,
-                                    `t_audience` bigint(20) NOT NULL,
-                                    `c_audience` bigint(20) NOT NULL,
-                                    `t_sales` bigint(20) NOT NULL,
-                                    `c_sales` bigint(20) NOT NULL,
-                                    `filename` varchar(255) NOT NULL DEFAULT 'noimage.jpg',
-                                    `release_date` datetime NOT NULL,
-                                    `input_date` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                                    PRIMARY KEY (`id`)
-                                    )
-                                    """)
-                # 당일 영화 API 데이터 저장 데이터베이스 movies 테이블 생성
-                self.cursor.execute("""
-                                    CREATE TABLE `movies_info` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `rank` int(11) NOT NULL,
-                                    `title` varchar(255) NOT NULL,
-                                    `genres` varchar(255) NOT NULL,
-                                    `director` varchar(200) NOT NULL,
-                                    `nations` varchar(200) NOT NULL,
-                                    `rating` float DEFAULT NULL,
-                                    `reviews` int(11) DEFAULT NULL,
-                                    `t_audience` bigint(20) NOT NULL,
-                                    `c_audience` bigint(20) NOT NULL,
-                                    `t_sales` bigint(20) NOT NULL,
-                                    `c_sales` bigint(20) NOT NULL,
-                                    `filename` varchar(255) NOT NULL DEFAULT 'noimage.jpg',
-                                    `release_date` datetime NOT NULL,
-                                    `input_date` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                                    PRIMARY KEY (`id`)
-                                    )
-                                    """)
-                
-                self.cursor.execute("""
-                                    CREATE TABLE `reports` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `post_id` int(11) NOT NULL,
-                                    `writer_id` varchar(255) NOT NULL,
-                                    `reporter_id` varchar(255) NOT NULL,
-                                    `movie_title` varchar(255) NOT NULL,
-                                    `content` text NOT NULL,
-                                    `reason_code` int(11) NOT NULL,
-                                    `created_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                                    PRIMARY KEY (`id`),
-                                    KEY `fk_reports_post` (`post_id`),
-                                    CONSTRAINT `fk_reports_post` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
-                                    )
-                                    """)
-                
-                self.cursor.execute("""
-                                    CREATE TABLE `comments` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `post_id` int(11) NOT NULL,
-                                    `user_id` varchar(255) NOT NULL,
-                                    `user_name` varchar(255) NOT NULL,
-                                    `content` varchar(255) NOT NULL,
-                                    `created_at` datetime NOT NULL,
-                                    PRIMARY KEY (`id`),
-                                    KEY `fk_commentss_user` (`user_id`),
-                                    KEY `fk_comments_post` (`post_id`),
-                                    CONSTRAINT `fk_comments_post` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
-                                    CONSTRAINT `fk_commentss_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-                                    )
-                                    """)                 
-                
-            self.cursor = self.connection.cursor(dictionary=True)
         except mysql.connector.Error as error:
             print(f"데이터베이스 연결 실패: {error}")
             
