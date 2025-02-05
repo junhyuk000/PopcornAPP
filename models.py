@@ -361,7 +361,7 @@ class DBManager:
             filename = filename.replace(char, '_')
         return filename.strip()  # 앞뒤 공백 제거
 
-    ### 이미지파일 movies, movies_info 테이블에 업데이트
+    ### 이미지파일 movies 테이블에 업데이트
     def update_filename_in_db(self, table_name):
         """
         데이터베이스에서 title 컬럼에 해당하는 filename 값을 업데이트합니다.
@@ -489,21 +489,21 @@ class DBManager:
         self.insert_data_with_no_duplicates(df3)
 
    
-    ### 데이터베이스 movies_info 테이블은 당일 데이터만 저장하므로 당일 데이터 저장 전 기존 데이터 삭제
-    def clear_table(self):
-        """
-        테이블의 모든 데이터를 삭제
-        """
-        try:
-            self.connect()
-            sql = "TRUNCATE TABLE movies_info;"
-            self.cursor.execute(sql)
-            self.connection.commit()
-            print("Table movies_info cleared.")
-        except mysql.connector.Error as error:
-            print(f"movies_info 테이블 데이터 삭제 실패: {error}")
-        finally:
-            self.disconnect()
+    # ### 데이터베이스 movies_info 테이블은 당일 데이터만 저장하므로 당일 데이터 저장 전 기존 데이터 삭제
+    # def clear_table(self):
+    #     """
+    #     테이블의 모든 데이터를 삭제
+    #     """
+    #     try:
+    #         self.connect()
+    #         sql = "TRUNCATE TABLE movies_info;"
+    #         self.cursor.execute(sql)
+    #         self.connection.commit()
+    #         print("Table movies_info cleared.")
+    #     except mysql.connector.Error as error:
+    #         print(f"movies_info 테이블 데이터 삭제 실패: {error}")
+    #     finally:
+    #         self.disconnect()
 
     # ### 데이터베이스 movies 테이블은 누적하여 데이터를 저장하므로 중복 데이터를 저장 안 하기 위한 제목 중복 체크
     # def check_title_exists(self, title):
@@ -641,7 +641,7 @@ class DBManager:
                     int(row['t_sales']),
                     int(row['c_sales']),
                     row['release_date'],
-                    datetime.now()  # 현재 시간 추가
+                    datetime.now() + timedelta(hours=9)  # 현재 시간 추가
                 )
                 
                 if record_exists:
@@ -689,27 +689,27 @@ class DBManager:
         finally:
             self.disconnect()
 
-    ### movies_info 테이블에 당일 데이터 저장
-    def insert_data(self, df):
-        """
-        movies_info 테이블에 데이터를 삽입
-        """
-        try:
-            self.clear_table()
-            self.connect()
-            for _, row in df.iterrows():
-                sql = """
-                    INSERT INTO movies_info (rank, title, genres, director, nations, t_audience, c_audience, t_sales, c_sales, release_date)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """
-                values = (row['rank'], row['title'], row['genres'], row['director'], row['nations'], row['t_audience'], row['c_audience'], row['t_sales'], row['c_sales'], row['release_date'])
-                self.cursor.execute(sql, values)
-            self.connection.commit()
-            print("movies_info 테이블 업데이트 완료.")
-        except mysql.connector.Error as error:
-            print(f"movies_info 테이블 데이터 삽입 실패: {error}")
-        finally:
-            self.disconnect()
+    # ### movies_info 테이블에 당일 데이터 저장
+    # def insert_data(self, df):
+    #     """
+    #     movies_info 테이블에 데이터를 삽입
+    #     """
+    #     try:
+    #         self.clear_table()
+    #         self.connect()
+    #         for _, row in df.iterrows():
+    #             sql = """
+    #                 INSERT INTO movies_info (rank, title, genres, director, nations, t_audience, c_audience, t_sales, c_sales, release_date)
+    #                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    #             """
+    #             values = (row['rank'], row['title'], row['genres'], row['director'], row['nations'], row['t_audience'], row['c_audience'], row['t_sales'], row['c_sales'], row['release_date'])
+    #             self.cursor.execute(sql, values)
+    #         self.connection.commit()
+    #         print("movies_info 테이블 업데이트 완료.")
+    #     except mysql.connector.Error as error:
+    #         print(f"movies_info 테이블 데이터 삽입 실패: {error}")
+    #     finally:
+    #         self.disconnect()
 
     ### 오늘 날짜의 영화 정보 가져오기
     def get_all_movies(self):
@@ -852,11 +852,11 @@ class DBManager:
                     WHERE title = %s
                 """, (avg_rating, review_count, movie_title))
                 
-                self.cursor.execute("""
-                    UPDATE movies_info
-                    SET rating = %s, reviews = %s
-                    WHERE title = %s
-                """, (avg_rating, review_count, movie_title))
+                # self.cursor.execute("""
+                #     UPDATE movies_info
+                #     SET rating = %s, reviews = %s
+                #     WHERE title = %s
+                # """, (avg_rating, review_count, movie_title))
 
             # 변경사항 커밋
             self.connection.commit()

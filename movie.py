@@ -17,7 +17,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 manager = DBManager()
 manager.moives_info()
 manager.movies_images()
-manager.update_filename_in_db("movies_info")
+# manager.update_filename_in_db("movies_info")
 manager.update_filename_in_db("movies")
 
 
