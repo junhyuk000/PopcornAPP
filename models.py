@@ -668,9 +668,9 @@ class DBManager:
             for _, row in df.iterrows():
                 print(f"Processing row: {row['title']} ({row['director']})")
                 
-                # 중복 확인 쿼리 (title + director 조합 확인)
-                check_sql = "SELECT COUNT(*) FROM movies WHERE title = %s AND director = %s"
-                cursor.execute(check_sql, (row['title'], row['director']))
+                # 중복 확인 쿼리 (title + director 조합 확인, 공백 및 대소문자 무시)
+                check_sql = "SELECT COUNT(*) FROM movies WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)"
+                cursor.execute(check_sql, (row['title'].strip().lower(), row['director'].strip().lower()))
                 record_exists = cursor.fetchone()[0] > 0
                 
                 values = (
@@ -683,7 +683,7 @@ class DBManager:
                     int(row['c_sales']),
                     row['release_date'],
                     str(row['title']).strip(),
-                    str(row['director']).strip()  # WHERE 절에 사용할 title + director
+                    str(row['director']).strip()
                 )
                 
                 if record_exists:
@@ -693,10 +693,14 @@ class DBManager:
                         SET rank = %s, genres = %s, nations = %s,
                             t_audience = %s, c_audience = %s, t_sales = %s, c_sales = %s,
                             release_date = %s
-                        WHERE title = %s AND director = %s
+                        WHERE LOWER(title) = LOWER(%s) AND LOWER(director) = LOWER(%s)
                     """
                     cursor.execute(update_sql, values)
-                    print(f"Updated rows: {cursor.rowcount}")
+                    
+                    if cursor.rowcount == 0:
+                        print(f"⚠ Warning: No rows were updated for {row['title']} ({row['director']})")
+                    else:
+                        print(f"✅ Updated rows: {cursor.rowcount}")
                 else:
                     print(f"Inserting: {row['title']} ({row['director']})")
                     insert_sql = """
@@ -721,6 +725,7 @@ class DBManager:
             if connection and connection.is_connected():
                 connection.close()
                 print("Database connection closed.")
+
 
     ### movies_info 테이블에 당일 데이터 저장
     def insert_data(self, df):
