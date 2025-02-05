@@ -370,7 +370,7 @@ class DBManager:
         finally:
             self.disconnect()   
     
-    ### 리뷰 신고수수
+    ### 리뷰 신고수
     def report_post_count(self, id):
         try:
             # 데이터베이스 연결
@@ -649,7 +649,7 @@ class DBManager:
     # disconnect의 에러로 인한 connection과 disconnect기능 함수사용안하고 직접연결함
     def insert_data_with_no_duplicates(self, df):
         """
-        제목이 중복되지 않는 경우에만 데이터프레임의 데이터를 한 번에 삽입
+        제목이 중복되면 UPDATE, 없으면 INSERT 수행
         """
         connection = None
         cursor = None
@@ -665,52 +665,52 @@ class DBManager:
             )
             cursor = connection.cursor(dictionary=False)
             
-            # 중복이 없는 데이터를 저장할 리스트
-            data_to_insert = []
-
             for _, row in df.iterrows():
                 print(f"Processing row: {row['title']}")
                 
-                # 중복 확인을 위한 쿼리
+                # 중복 확인 쿼리
                 check_sql = "SELECT COUNT(*) FROM movies WHERE title = %s"
                 cursor.execute(check_sql, (row['title'],))
-                if cursor.fetchone()[0] == 0:  # 중복이 없는 경우
-                    try:
-                        values = (
-                            int(row['rank']),
-                            str(row['title']),
-                            str(row['genres']),
-                            str(row['director']),
-                            str(row['nations']),
-                            int(row['t_audience']),
-                            int(row['c_audience']),
-                            int(row['t_sales']),
-                            int(row['c_sales']),
-                            row['release_date']
-                        )
-                        data_to_insert.append(values)
-                        print(f"Added to insert list: {row['title']}")
-                    except ValueError as e:
-                        print(f"Data conversion error for {row['title']}: {e}")
-                else:
-                    print(f"Skipped duplicate: {row['title']}")
-
-            # 데이터가 있을 경우만 삽입
-            if data_to_insert:
-                sql = """
-                    INSERT INTO movies 
-                    (rank, title, genres, director, nations, t_audience, c_audience, t_sales, c_sales, release_date)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """
-                cursor.executemany(sql, data_to_insert)
-                connection.commit()
-                print(f"Successfully inserted {len(data_to_insert)} records.")
+                record_exists = cursor.fetchone()[0] > 0
                 
-                for record in data_to_insert:
-                    print(f"Inserted: {record[1]}")
-            else:
-                print("No new data to insert.")
-
+                values = (
+                    int(row['rank']),
+                    str(row['genres']),
+                    str(row['director']),
+                    str(row['nations']),
+                    int(row['t_audience']),
+                    int(row['c_audience']),
+                    int(row['t_sales']),
+                    int(row['c_sales']),
+                    row['release_date'],
+                    str(row['title'])  # WHERE 절에 사용할 제목
+                )
+                
+                if record_exists:
+                    # 중복이면 UPDATE 실행
+                    update_sql = """
+                        UPDATE movies
+                        SET rank = %s, genres = %s, director = %s, nations = %s,
+                            t_audience = %s, c_audience = %s, t_sales = %s, c_sales = %s,
+                            release_date = %s
+                        WHERE title = %s
+                    """
+                    cursor.execute(update_sql, values)
+                    print(f"Updated: {row['title']}")
+                else:
+                    # 중복이 아니면 INSERT 실행
+                    insert_sql = """
+                        INSERT INTO movies 
+                        (rank, title, genres, director, nations, t_audience, c_audience, t_sales, c_sales, release_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """
+                    insert_values = (values[0], row['title']) + values[1:]
+                    cursor.execute(insert_sql, insert_values)
+                    print(f"Inserted: {row['title']}")
+                
+            connection.commit()
+            print("Database update completed successfully.")
+        
         except mysql.connector.Error as error:
             print(f"Database error: {error}")
             if connection and connection.is_connected():
