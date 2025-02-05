@@ -439,7 +439,7 @@ def movie_notice():
 
 @app.route('/movie_popcorns')
 def movie_popcorns():
-    movies = manager.get_all_movies()
+    movies = manager.get_all_popcorns_movies()
     return render_template('movie_popcorns.html', movies = movies)
 
 if __name__ == '__main__':

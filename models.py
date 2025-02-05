@@ -574,6 +574,19 @@ class DBManager:
         finally:
             self.disconnect()
 
+    ### 모든 영화 정보 가져오기
+    def get_all_popcorns_movies(self):
+        try:
+            self.connect()
+            sql = "SELECT * FROM movies order by id desc"
+            self.cursor.execute(sql, )
+            return self.cursor.fetchall()
+        except mysql.connector.Error as error:
+            print(f"영화 데이터 조회 실패: {error}")
+            return []
+        finally:
+            self.disconnect()
+
     ### 댓글 추가
     def insert_comment(self,post_id,user_id,user_name,content):
         try:
