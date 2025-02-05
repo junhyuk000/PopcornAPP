@@ -693,7 +693,6 @@ class DBManager:
         finally:
             self.disconnect()
     
-    ### 댓글 삭제
     def delete_comment(self, comment_id, user_id):
         try:
             self.connect()
@@ -703,16 +702,21 @@ class DBManager:
             value = (comment_id,)
             self.cursor.execute(sql, value)
 
-            # 2️⃣ users 테이블 업데이트 (comments -1, popcorns -2, popcorns는 최소 0 이상)
+            # 2️⃣ 실제로 삭제된 행이 있는지 확인
+            if self.cursor.rowcount == 0:
+                print(f"⚠ Warning: 댓글 ID {comment_id} 삭제 실패 (해당 ID 없음 또는 이미 삭제됨)")
+                return False  # 삭제되지 않음
+
+            # 3️⃣ users 테이블 업데이트 (comments -1, popcorns -3, popcorns는 최소 0 이상)
             self.cursor.execute("""
                 UPDATE users 
                 SET comments = GREATEST(IFNULL(comments, 0) - 1, 0), 
-                    popcorns = GREATEST(IFNULL(popcorns, 0) - 2, 0) 
+                    popcorns = GREATEST(IFNULL(popcorns, 0) - 3, 0) 
                 WHERE user_id = %s
             """, (user_id,))
 
             self.connection.commit()  # ✅ 트랜잭션 커밋
-            print("✅ 댓글 삭제 및 users 테이블 업데이트 완료.")
+            print(f"✅ 댓글 삭제 완료: ID {comment_id}, 사용자 {user_id}")
             return True
 
         except mysql.connector.Error as error:
