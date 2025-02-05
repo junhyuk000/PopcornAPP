@@ -763,7 +763,7 @@ class DBManager:
         try:
             self.connect()
             today_date = datetime.today().strftime('%Y-%m-%d')
-            sql = "SELECT * FROM movies WHERE DATE(input_date) = %s order by rank desc"
+            sql = "SELECT * FROM movies WHERE DATE(input_date) = %s order by rank asc"
             self.cursor.execute(sql, (today_date,))
             return self.cursor.fetchall()
         except mysql.connector.Error as error:
