@@ -218,17 +218,33 @@ class DBManager:
             self.disconnect()
     
     ### 리뷰 삭제
-    def delete_post(self, id):
+    def delete_post(self, post_id, user_id):
         try:
             self.connect()
-            sql = f"UPDATE posts SET deleted_at = NOW() WHERE id = %s;"
-            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+
+            # 1️⃣ 리뷰 삭제 (deleted_at 업데이트)
+            sql = "UPDATE posts SET deleted_at = NOW() WHERE id = %s;"
+            value = (post_id,)
             self.cursor.execute(sql, value)
-            self.connection.commit()
+
+            # 2️⃣ users 테이블 업데이트 (posts -1, popcorns -5, popcorns는 최소 0 이상)
+            self.cursor.execute("""
+                UPDATE users 
+                SET posts = GREATEST(IFNULL(posts, 0) - 1, 0), 
+                    popcorns = GREATEST(IFNULL(popcorns, 0) - 5, 0) 
+                WHERE user_id = %s
+            """, (user_id,))
+
+            self.connection.commit()  # ✅ 트랜잭션 커밋
+            print("✅ 리뷰 삭제 및 users 테이블 업데이트 완료.")
             return True
+
         except mysql.connector.Error as error:
-            print(f"게시글 삭제 실패: {error}")
+            print(f"❌ 리뷰 삭제 실패: {error}")
+            if self.connection:
+                self.connection.rollback()  # ❌ 오류 발생 시 롤백
             return False
+
         finally:
             self.disconnect()
     
@@ -677,18 +693,34 @@ class DBManager:
         finally:
             self.disconnect()
     
-    ### 해당 댓글 삭제
-    def delete_comment(self, id):
+    ### 댓글 삭제
+    def delete_comment(self, comment_id, user_id):
         try:
             self.connect()
-            sql = f"UPDATE comments SET deleted_at = NOW() WHERE id = %s;"
-            value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
+
+            # 1️⃣ 댓글 삭제 (deleted_at 업데이트)
+            sql = "UPDATE comments SET deleted_at = NOW() WHERE id = %s;"
+            value = (comment_id,)
             self.cursor.execute(sql, value)
-            self.connection.commit()
+
+            # 2️⃣ users 테이블 업데이트 (comments -1, popcorns -2, popcorns는 최소 0 이상)
+            self.cursor.execute("""
+                UPDATE users 
+                SET comments = GREATEST(IFNULL(comments, 0) - 1, 0), 
+                    popcorns = GREATEST(IFNULL(popcorns, 0) - 2, 0) 
+                WHERE user_id = %s
+            """, (user_id,))
+
+            self.connection.commit()  # ✅ 트랜잭션 커밋
+            print("✅ 댓글 삭제 및 users 테이블 업데이트 완료.")
             return True
+
         except mysql.connector.Error as error:
-            print(f"댓글 삭제 실패: {error}")
+            print(f"❌ 댓글 삭제 실패: {error}")
+            if self.connection:
+                self.connection.rollback()  # ❌ 오류 발생 시 롤백
             return False
+
         finally:
             self.disconnect()
             
