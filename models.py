@@ -569,6 +569,15 @@ class DBManager:
 
                 if existing_record:
                     print(f"🛠 Updating: {row['title']} ({row['director']})")
+
+                    # 🔍 실제 DB에서 title, director 가져오기
+                    self.cursor.execute(
+                        "SELECT id, title, director FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)",
+                        (row['title'].strip(), row['director'].strip()),
+                    )
+                    db_check = self.cursor.fetchone()
+                    print(f"🔍 DB에서 가져온 데이터: {db_check}")
+
                     update_sql = """
                         UPDATE movies
                         SET rank = %s, genres = %s, nations = %s, 
@@ -582,8 +591,12 @@ class DBManager:
                     """
                     update_values = values + (row['title'].strip(), row['director'].strip())
                     print(f"🔹 Update Values: {update_values}")
+
                     self.cursor.execute(update_sql, update_values)
                     self.connection.commit()
+
+                    print(f"🛠 Updated rows: {self.cursor.rowcount}")
+
                 else:
                     print(f"🆕 Will attempt INSERT for {row['title']} ({row['director']})")
                     insert_sql = """
