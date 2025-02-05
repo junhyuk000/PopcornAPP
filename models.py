@@ -203,7 +203,7 @@ class DBManager:
     def delete_post(self, id):
         try:
             self.connect()
-            sql = f"DELETE FROM posts WHERE id = %s"
+            sql = f"UPDATE posts SET deleted_at = NOW() WHERE id = %s;"
             value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             self.connection.commit()
@@ -622,7 +622,7 @@ class DBManager:
     def delete_comment(self, id):
         try:
             self.connect()
-            sql = f"DELETE FROM comments WHERE id = %s"
+            sql = f"UPDATE comments SET deleted_at = NOW() WHERE id = %s;"
             value = (id,) # 튜플에 값이 한개만 들어갈때 ,해줘야됨 
             self.cursor.execute(sql, value)
             self.connection.commit()
