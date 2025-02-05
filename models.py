@@ -563,7 +563,7 @@ class DBManager:
                     int(row['c_audience']),
                     int(row['t_sales']),
                     int(row['c_sales']),
-                    release_date,
+                    row['release_date'],
                     datetime.now() + timedelta(hours=9)  # 한국 시간 기준
                 )
 
@@ -588,7 +588,7 @@ class DBManager:
                         (rank, genres, nations, t_audience, c_audience, t_sales, c_sales, release_date, title, director, input_date)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
-                    insert_values = values + (title, director)
+                    insert_values = values + (row['title'].strip(), row['director'].strip(), datetime.now() + timedelta(hours=9))
                     print(f"🎯 Insert Values: {insert_values}")
                     self.cursor.execute(insert_sql, insert_values)
 
