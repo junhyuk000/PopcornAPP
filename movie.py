@@ -445,7 +445,7 @@ def movie_popcorns():
         movie_title = data.get("movie_title")
         user_id = session.get['id']  # 실제 로그인 기능이 있다면 session에서 가져오기
         manager.popcorns_lot(movie_id,movie_title,user_id)
-        return 
+        return redirect(url_for('movie_popcorns'))  
     movies = manager.get_all_popcorns_movies()
     return render_template('movie_popcorns.html', movies = movies)
 
