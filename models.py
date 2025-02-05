@@ -532,6 +532,9 @@ class DBManager:
                 check_sql = "SELECT * FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)"
                 self.cursor.execute(check_sql, (row['title'].strip(), row['director'].strip()))
                 existing_record = self.cursor.fetchone()
+
+                print(f"🔍 DEBUG: Existing Record for {row['title']} ({row['director']}): {existing_record}")
+
                 
                 if existing_record:
                     record_exists = True
