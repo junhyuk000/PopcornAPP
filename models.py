@@ -758,15 +758,16 @@ class DBManager:
         finally:
             self.disconnect()
 
-    ### 모든 영화 정보 가져오기
+    ### 오늘 날짜의 영화 정보 가져오기
     def get_all_movies(self):
         try:
             self.connect()
-            sql = f"SELECT * FROM movies_info"
-            self.cursor.execute(sql)
+            today_date = datetime.today().strftime('%Y-%m-%d')
+            sql = "SELECT * FROM movies WHERE release_date = %s"
+            self.cursor.execute(sql, (today_date,))
             return self.cursor.fetchall()
         except mysql.connector.Error as error:
-            print(f"영화데이터 조회 실패: {error}")
+            print(f"영화 데이터 조회 실패: {error}")
             return []
         finally:
             self.disconnect()
