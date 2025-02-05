@@ -529,75 +529,73 @@ class DBManager:
 
 
     def insert_data_with_no_duplicates(self, df):
-        print("📌 insert_data_with_no_duplicates() 함수 실행 시작")
+        print("🔍 [DEBUG] insert_data_with_no_duplicates() 호출 전 데이터 확인")
+        print(f"🔍 df3 행 개수: {len(df)}")
+        print(f"🔍 df3 샘플 데이터:\n{df.head()}")
+
         try:
             self.connect()
             for _, row in df.iterrows():
-                print(f"Processing row: {row['title']} ({row['director']})")
-                
-                # ✅ 중복 확인 쿼리 실행
-                check_sql = "SELECT * FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)"
-                print(f"🔍 Checking existing record for {row['title']} ({row['director']})...")
+                print(f"📌 Checking whether to INSERT or UPDATE for {row['title']} ({row['director']})")
 
-                try:
-                    self.cursor.execute(check_sql, (row['title'].strip(), row['director'].strip()))
-                    existing_record = self.cursor.fetchone()
-                    print(f"✅ Existing Record: {existing_record}")  # 결과 확인
-                except mysql.connector.Error as error:
-                    print(f"❌ SQL Query Error: {error}")  # SQL 실행 오류 확인
-                    continue  # 다음 데이터로 넘어가기
+                # ✅ 중복 확인 (title + director)
+                check_sql = """
+                    SELECT id FROM movies 
+                    WHERE BINARY TRIM(title) = BINARY TRIM(%s) 
+                    AND BINARY TRIM(director) = BINARY TRIM(%s)
+                """
+                self.cursor.execute(check_sql, (row['title'].strip(), row['director'].strip()))
+                existing_record = self.cursor.fetchone()
 
-                # 중복 데이터 여부 확인
-                record_exists = bool(existing_record)
+                # ✅ `rank`값이 정수인지 확인
+                movie_rank = int(row['rank']) if pd.notna(row['rank']) else 0
 
-                # ✅ 데이터 정리 (None 방지)
-                title = row['title'].strip() if row['title'] else "Unknown"
-                director = row['director'].strip() if row['director'] else "Unknown"
-                release_date = row['release_date'] if row['release_date'] else datetime.now().date()
-
+                # ✅ 기본값 처리 (None 방지)
                 values = (
-                    int(row['rank']),
-                    str(row['genres']).strip(),
-                    str(row['nations']).strip(),
-                    int(row['t_audience']),
-                    int(row['c_audience']),
-                    int(row['t_sales']),
-                    int(row['c_sales']),
-                    row['release_date'],
-                    datetime.now() + timedelta(hours=9)  # 한국 시간 기준
+                    movie_rank,  # rank
+                    row['title'].strip(),  # title
+                    str(row['genres']).strip(),  # genres
+                    row['director'].strip(),  # director
+                    str(row['nations']).strip(),  # nations
+                    None,  # rating (기본값 NULL)
+                    None,  # reviews (기본값 NULL)
+                    int(row['t_audience']),  # t_audience
+                    int(row['c_audience']),  # c_audience
+                    int(row['t_sales']),  # t_sales
+                    int(row['c_sales']),  # c_sales
+                    row.get('filename', 'noimage.jpg'),  # filename 기본값 설정
+                    row['release_date'],  # release_date
                 )
 
-                print(f"📌 Checking whether to INSERT or UPDATE for {title} ({director})")
-                if record_exists:
-                    print(f"🔄 Will attempt UPDATE for {title} ({director})")
+                if existing_record:
+                    print(f"🛠 Updating: {row['title']} ({row['director']})")
                     update_sql = """
                         UPDATE movies
-                        SET rank = COALESCE(%s, rank), genres = COALESCE(%s, genres), nations = COALESCE(%s, nations),
-                            t_audience = COALESCE(%s, t_audience), c_audience = COALESCE(%s, c_audience), t_sales = COALESCE(%s, t_sales),
-                            c_sales = COALESCE(%s, c_sales), release_date = COALESCE(%s, release_date),
-                            input_date = %s
-                        WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)
+                        SET rank = %s, genres = %s, nations = %s, 
+                            rating = COALESCE(%s, rating), reviews = COALESCE(%s, reviews), 
+                            t_audience = %s, c_audience = %s, 
+                            t_sales = %s, c_sales = %s, 
+                            filename = %s, release_date = %s, 
+                            input_date = CURRENT_TIMESTAMP
+                        WHERE BINARY TRIM(title) = BINARY TRIM(%s) 
+                        AND BINARY TRIM(director) = BINARY TRIM(%s)
                     """
-                    update_values = values + (title, director)
+                    update_values = values + (row['title'].strip(), row['director'].strip())
                     print(f"🔹 Update Values: {update_values}")
                     self.cursor.execute(update_sql, update_values)
+                    self.connection.commit()
                 else:
-                    print(f"🆕 Will attempt INSERT for {title} ({director})")
+                    print(f"🆕 Will attempt INSERT for {row['title']} ({row['director']})")
                     insert_sql = """
                         INSERT INTO movies 
-                        (rank, genres, nations, t_audience, c_audience, t_sales, c_sales, release_date, title, director, input_date)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        (rank, title, genres, director, nations, rating, reviews, 
+                        t_audience, c_audience, t_sales, c_sales, filename, release_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
-                    insert_values = values + (row['title'].strip(), row['director'].strip(), datetime.now() + timedelta(hours=9))
-                    print(f"🎯 Insert Values: {insert_values}")
-                    self.cursor.execute(insert_sql, insert_values)
-
-                try:
+                    print(f"🎯 Insert Values: {values}")
+                    self.cursor.execute(insert_sql, values)
                     self.connection.commit()
-                    print(f"✅ Commit successful!")
-                except mysql.connector.Error as error:
-                    print(f"❌ Commit Error: {error}")
-                    self.connection.rollback()
+                    print(f"✅ Inserted: {row['title']} ({row['director']})")
 
             print("✅ Database update completed successfully.")
 
@@ -607,6 +605,7 @@ class DBManager:
                 self.connection.rollback()
         finally:
             self.disconnect()
+
 
 
     ### 오늘 날짜의 영화 정보 가져오기
