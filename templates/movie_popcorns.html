@@ -16,12 +16,19 @@
                 {{ (movie.c_audience // 10000) | string + '만명' if movie.c_audience >= 10000 else movie.c_audience|string + '명' }}
             </span>
         </p>
-        <button class="lottery-btn" onclick="submitLottery({{ movie.id }}, '{{ movie.title }}')">추첨하기</button>
+        <button class="lottery-btn" onclick="confirmLottery({{ movie.id }}, '{{ movie.title }}')">추첨하기</button>
     </div>
     {% endfor %}
 </div>
 
 <script>
+    function confirmLottery(movie_id, movie_title) {
+        let userConfirm = confirm("추첨을 하시겠습니까?");
+        if (userConfirm) {
+            submitLottery(movie_id, movie_title);
+        }
+    }
+
     function submitLottery(movie_id, movie_title) {
         fetch("/lottery", {
             method: "POST",
