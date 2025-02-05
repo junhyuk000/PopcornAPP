@@ -511,6 +511,10 @@ class DBManager:
         df1 = pd.DataFrame(t_datas)
         df2 = pd.DataFrame(m_infos)
         df3 = pd.merge(df1, df2, on='moviecd', how='inner')
+        print("🔍 [DEBUG] df1 데이터 개수:", len(df1))
+        print(df1.head())  # ✅ df1이 비어있는지 확인
+        print("🔍 [DEBUG] df2 데이터 개수:", len(df2))
+        print(df2.head())  # ✅ df2가 비어있는지 확인
 
         df3['c_sales'] = df3['c_sales'].fillna(0).astype('int64')
         df3['rank'] = df3['rank'].astype(int)
