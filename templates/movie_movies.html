@@ -87,19 +87,19 @@
 {% block content %}
 <div class="container">
     <div class="movie-info">
-        <h2 style="color: #ad7b67;">{{ movies_info[0].title }}</h2>
-        <p>Rating: {{ movies_info[0].rating }}</p>
-        <p>Rank: {{ movies_info[0].rank }}</p>
-        <p>Reviews: {{ movies_info[0].reviews }}</p>
-        <a href="/movie_youtube/{{ movies_info[0].title }}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
-        <a href="/reviews/{{ movies_info[0].title }}/{{movies_info[0].id}}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
+        <h2 style="color: #ad7b67;" id="movie-title"></h2>
+        <p id="movie-rating"></p>
+        <p id="movie-rank"></p>
+        <p id="movie-reviews"></p>
+        <a id="movie-trailer" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
+        <a id="movie-review" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
     </div>
 
     <!-- Swiper 슬라이더 -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info %}
-            <div class="swiper-slide">
+            <div class="swiper-slide" data-index="{{ loop.index0 }}">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
             </div>
             {% endfor %}
@@ -109,6 +109,9 @@
         <div class="swiper-button-prev"></div>
     </div>
 </div>
+<script>
+    var moviesData = JSON.parse('{{ movies_info | tojson | safe }}');
+</script>
 {% endblock %}
 
 {% block js %}
@@ -138,15 +141,22 @@
         on: {
             slideChange: function () {
                 var activeIndex = swiper.realIndex;
-                var movieInfo = {{ movies_info | tojson }};
-                document.querySelector(".movie-info h2").textContent = movieInfo[activeIndex].title;
-                document.querySelector(".movie-info p:nth-child(2)").textContent = "Rating: " + movieInfo[activeIndex].rating;
-                document.querySelector(".movie-info p:nth-child(3)").textContent = "Rank: " + movieInfo[activeIndex].rank;
-                document.querySelector(".movie-info p:nth-child(4)").textContent = "Reviews: " + movieInfo[activeIndex].reviews;
-                document.querySelector(".movie-info a:nth-child(5)").href = "/movie_youtube/" + movieInfo[activeIndex].title;
-                document.querySelector(".movie-info a:nth-child(6)").href = "/reviews/" + movieInfo[activeIndex].title + "/" + movieInfo[activeIndex].id;
+                document.getElementById("movie-title").textContent = moviesData[activeIndex].title;
+                document.getElementById("movie-rating").textContent = "Rating: " + moviesData[activeIndex].rating;
+                document.getElementById("movie-rank").textContent = "Rank: " + moviesData[activeIndex].rank;
+                document.getElementById("movie-reviews").textContent = "Reviews: " + moviesData[activeIndex].reviews;
+                document.getElementById("movie-trailer").href = "/movie_youtube/" + moviesData[activeIndex].title;
+                document.getElementById("movie-review").href = "/reviews/" + moviesData[activeIndex].title + "/" + moviesData[activeIndex].id;
             }
         }
     });
+
+    // 초기 정보 설정
+    document.getElementById("movie-title").textContent = moviesData[0].title;
+    document.getElementById("movie-rating").textContent = "Rating: " + moviesData[0].rating;
+    document.getElementById("movie-rank").textContent = "Rank: " + moviesData[0].rank;
+    document.getElementById("movie-reviews").textContent = "Reviews: " + moviesData[0].reviews;
+    document.getElementById("movie-trailer").href = "/movie_youtube/" + moviesData[0].title;
+    document.getElementById("movie-review").href = "/reviews/" + moviesData[0].title + "/" + moviesData[0].id;
 </script>
 {% endblock %}
