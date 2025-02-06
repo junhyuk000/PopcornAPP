@@ -11,30 +11,6 @@
         color: #a79696;
     }
 
-    /* 캐러셀 좌우 버튼 색 변경 */
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        filter: invert(1);
-    }
-
-    /* Carousel Indicators 아래로 이동 및 색상 변경 */
-    .carousel-indicators {
-        position: absolute;
-        bottom: -50px;
-    }
-
-    .carousel-indicators button {
-        background-color: #bfa187 !important;
-        border: 1px solid #fff;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-    }
-
-    .carousel-indicators .active {
-        background-color: #8a6f55 !important;
-    }
-
     /* Swiper 스타일 */
     .swiper {
         width: 90%;
@@ -50,8 +26,8 @@
         transition: transform 0.3s ease-in-out;
     }
     .swiper-slide img {
-        width: 100%;
-        height: 100%;
+        width: 80%;
+        height: 70%;
         object-fit: cover;
         border-radius: 15px;
         transition: transform 0.3s ease-in-out;
@@ -61,10 +37,22 @@
         box-shadow: none;
     }
 
-    /* 영화 정보 상단으로 이동 */
+    /* 영화 정보 상단으로 이동 및 정렬 조정 */
     .movie-info {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    .movie-info h2, .movie-info p {
+        margin: 5px 0;
+        color: #ad7b67;
+    }
+
+    /* 버튼 간격 조정 */
+    .movie-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
     }
 
     /* 네비게이션 버튼 위치 및 색상 조정 */
@@ -75,10 +63,10 @@
         height: 50px;
     }
     .swiper-button-next {
-        right: -80px;
+        right: -100px;
     }
     .swiper-button-prev {
-        left: -80px;
+        left: -100px;
     }
 </style>
 {% endblock %}
@@ -87,12 +75,14 @@
 {% block content %}
 <div class="container">
     <div class="movie-info">
-        <h2 style="color: #ad7b67;" id="movie-title"></h2>
+        <h2 id="movie-title"></h2>
         <p id="movie-rating"></p>
         <p id="movie-rank"></p>
         <p id="movie-reviews"></p>
-        <a id="movie-trailer" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
-        <a id="movie-review" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
+        <div class="movie-buttons">
+            <a id="movie-trailer" class="btn btn-outline-light" style="color: #ad7b67;">예고편</a>
+            <a id="movie-review" class="btn btn-outline-light" style="color: #ad7b67;">Review</a>
+        </div>
     </div>
 
     <!-- Swiper 슬라이더 -->
@@ -119,7 +109,7 @@
 <script>
     var swiper = new Swiper(".mySwiper", {
         slidesPerView: 3,
-        spaceBetween: 20,
+        spaceBetween: 50,
         centeredSlides: true,
         loop: true,
         autoplay: {
@@ -133,8 +123,8 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 100,
-            depth: 200,
+            stretch: 150,
+            depth: 250,
             modifier: 1,
             slideShadows: false,
         },
