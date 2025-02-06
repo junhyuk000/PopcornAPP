@@ -125,6 +125,8 @@
         <div class="swiper-wrapper">
             {% for movie in movies_info|sort(attribute='rank') %}  <!-- ✅ Rank 순 정렬 -->
             <div class="swiper-slide">
+                <h4 class="rank-text" style="color: #283618;">{{ movie.rank }}위</p>
+                <h4 class="rank-text" style="color: #283618;">{{ movie.title }}</p>
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
                 
                 <!-- ✅ 기존 정보 유지 -->
@@ -136,9 +138,7 @@
                     <a href="/reviews/{{ movie.title }}/{{ movie.id }}" class="btn btn-outline-light mx-2">Review</a>
                 </div>
 
-                <!-- ✅ Rank 추가 -->
-                <h4 class="rank-text" style="color: #283618;">{{ movie.title }}</p>
-                <h4 class="rank-text" style="color: #283618;">{{ movie.rank }}위</p>
+
                 
             </div>
             {% endfor %}
