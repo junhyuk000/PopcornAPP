@@ -50,7 +50,7 @@
     }
 
     .swiper-slide img {
-        width: 100%;  /* 🔹 이미지 크기 확대 */
+        width: 90%;  /* 🔹 이미지 크기 확대 */
         height: auto;
         max-height: 500px;  /* 🔹 너무 커지지 않도록 제한 */
         object-fit: cover;
@@ -168,6 +168,11 @@
             modifier: 1,
             slideShadows: false,
         }
+    });
+        // 이미지 위에서 자동 슬라이드 멈춤
+    document.querySelectorAll('.swiper-slide').forEach(slide => {
+        slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
+        slide.addEventListener('mouseleave', () => swiper.autoplay.start());
     });
 </script>
 {% endblock %}
