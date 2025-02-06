@@ -49,6 +49,11 @@
         bottom: 10px;
     }
 
+    .text-overlay h5,
+    .text-overlay p {
+        color: #ffffff; /* ✅ 글자색을 밝게 조정 */
+    }
+
     .swiper-pagination {
         position: absolute;
         bottom: 20px; /* ✅ 버튼을 아래 배치 */
@@ -66,6 +71,24 @@
 
     .swiper-pagination-bullet-active {
         background-color: #8a6f55 !important;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #bfa187 !important;
+        width: 50px;
+        height: 50px;
+        z-index: 10;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .swiper-button-next {
+        right: 20px;
+    }
+
+    .swiper-button-prev {
+        left: 20px;
     }
 </style>
 {% endblock %}
@@ -90,6 +113,8 @@
             </div>
             {% endfor %}
         </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
         <div class="swiper-pagination"></div> <!-- ✅ 캐러셀 버튼 추가 -->
     </div>
 </div>
@@ -112,6 +137,10 @@
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
             }
         });
 
