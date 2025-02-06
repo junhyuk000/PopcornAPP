@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        /* Wix 스타일 적용 */
+        /* 스타일 적용 */
         @font-face {
             font-family: 'SBAggroB';
             src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
@@ -18,7 +18,7 @@
 
         body {
             font-family: 'SBAggroB', sans-serif;
-            background-color: #fff;
+            background-color: #f8f9fa;
             color: #333;
             margin: 0;
             padding: 0;
@@ -31,12 +31,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px 40px;
         }
 
-        .top-header .logo {
+        .top-header .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .top-header .logo a {
             font-size: 1.5rem;
             font-weight: bold;
+            color: white;
+            text-decoration: none;
         }
 
         .top-header .user-menu {
@@ -58,9 +65,7 @@
         .navbar {
             background-color: #14142b;
             color: white;
-            padding: 15px 0;
-            text-align: center;
-            font-weight: bold;
+            padding: 15px 40px;
             display: flex;
             justify-content: center;
             gap: 30px;
@@ -70,74 +75,24 @@
             color: white;
             text-decoration: none;
             font-size: 1.1rem;
-            text-transform: uppercase;
             padding: 10px 15px;
         }
 
-        .navbar a:hover {
-            color: #bfa187;
-            border-bottom: 2px solid #bfa187;
+        .navbar a:hover, .navbar a.active {
+            background-color: #bfa187;
+            color: white;
+            border-radius: 5px;
         }
 
-        /* Hero Section */
-        .hero {
-            background-color: #faf8f6;
-            height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #333;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: #666;
-        }
-
-        /* 컨텐츠 스타일 */
+        /* 메인 컨텐츠 스타일 */
         .container {
             max-width: 1200px;
             margin: 50px auto;
             padding: 20px;
-            text-align: left;
-        }
-
-        h2 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 30px;
-            text-transform: uppercase;
             text-align: center;
         }
 
-        /* 카드 스타일 */
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .card p {
-            font-size: 1.1rem;
-            color: #666;
-        }
-
-        /* 푸터 스타일 */
+        /* 푸터 스타일 (고정 해제) */
         footer {
             background-color: #0c0c24;
             color: white;
@@ -145,15 +100,12 @@
             padding: 20px;
             margin-top: 50px;
         }
-
     </style>
-    {% block css %}{% endblock %}
 </head>
 <body>
-    <!-- Top Header -->
     <div class="top-header">
         <div class="logo">
-            <a href="/movies" style="color: white; text-decoration: none;"><img src="/images/32movie.png">PopcornAPP</a>
+            <a href="/movies"><img src="/images/32movie.png">PopcornAPP</a>
         </div>
         <div class="user-menu">
             {% if session.get('id') %}
@@ -165,8 +117,7 @@
             {% endif %}
         </div>
     </div>
-    
-    <!-- Navigation Bar -->
+
     <nav class="navbar">
         <a href="/movies">Home</a>
         <a href="/movie_review_rank">Reviews</a>
@@ -179,20 +130,29 @@
             <a href="/reports">Reports</a>
         {% endif %}
     </nav>
-    
-    <!-- Main Content -->
-    <div class="container my-5">
+
+    <div class="container">
         {% block content %}
         {% endblock %}
     </div>
 
-    <!-- Footer -->
     <footer>
-
-            <p>&copy; 2025 PopcornAPP | <a href="https://www.megabox.co.kr/" class="text-light"><img src="{{ url_for('img_file', filename='megabox.png') }}" width="8%"></a> | <a href="https://www.lottecinema.co.kr/" class="text-light"><img src="{{ url_for('img_file', filename='lotte.png') }}" width="8%"></a> | <a href="https://www.cgv.co.kr/" class="text-light"><img src="{{ url_for('img_file', filename='cgv.png') }}" width="3%"></a></p>
-
+        <p>&copy; 2025 PopcornAPP | 
+            <a href="https://www.megabox.co.kr/"><img src="{{ url_for('img_file', filename='megabox.png') }}" width="8%"></a> | 
+            <a href="https://www.lottecinema.co.kr/"><img src="{{ url_for('img_file', filename='lotte.png') }}" width="8%"></a> | 
+            <a href="https://www.cgv.co.kr/"><img src="{{ url_for('img_file', filename='cgv.png') }}" width="3%"></a>
+        </p>
     </footer>
-    {% block js %}{% endblock %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const navLinks = document.querySelectorAll(".navbar a");
+            navLinks.forEach(link => {
+                if (link.href === window.location.href) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
