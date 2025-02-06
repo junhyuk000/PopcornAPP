@@ -1,18 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>PopcornAPP</title>
     <link rel="icon" href="/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    {% block css %}{%endblock%}
+    {% block css %}{% endblock %}
 </head>
-<body style="font-family: 'SBAggroB', sans-serif;">
+<body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/movies"><img src="/images/32movie.png"> PopcornAPP</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,31 +20,36 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movies">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_review_rank">Reviews</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_popcorns">Popcorns</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_ranks">Trends</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_map">Find Cinemas</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/movie_notice">Notice</a></li>
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/show_movie_about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/movies">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/movie_review_rank">Reviews</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/movie_popcorns">Popcorns</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/movie_ranks">Trends</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/movie_map">Find Cinemas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/movie_notice">Notice</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/show_movie_about">About</a></li>
                     {% if session.get('id') == 'admin' %}
-                    <li class="nav-item"><a class="nav-link" style="color: white;" href="/reports">Reports</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
                     {% endif %}
-                </ul>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
                     {% if session.get('id') %}
-                        <li class="nav-item"><a class="nav-link" href="/myinfo" style="color: white;">{{session.get('name')}}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/myinfo">{{ session.get('name') }}</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/login" style="color: white;">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/register" style="color: white;">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content text-center">
+            <h1>Welcome to PopcornAPP</h1>
+            <p>Discover the best movies, reviews, and more.</p>
+            <a href="/movies" class="btn btn-primary">Explore Now</a>
+        </div>
+    </header>
 
     <!-- Main Content -->
     <div class="container my-5">
@@ -53,21 +58,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-3">
-        <div class="container text-center">
+    <footer class="bg-dark text-light text-center py-3">
+        <div class="container">
             <p>&copy; 2025 PopcornAPP | <a href="https://www.megabox.co.kr/" class="text-light"><img src="{{ url_for('img_file', filename='megabox.png') }}" width="10%"></a> | <a href="https://www.lottecinema.co.kr/" class="text-light"><img src="{{ url_for('img_file', filename='lotte.png') }}" width="10%"></a> | <a href="https://www.cgv.co.kr/" class="text-light"><img src="{{ url_for('img_file', filename='cgv.png') }}" width="4%"></a></p>
         </div>
     </footer>
+
     {% block js %}{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        setTimeout(function() {
-            const flashMessages = document.getElementById('flash-messages');
-            if (flashMessages) {
-                flashMessages.classList.add('hide');  // `hide` 클래스를 추가
-                setTimeout(() => flashMessages.style.display = 'none', 500);  // 0.5초 후 완전히 숨김
-            }
-        }, 3000);  // 3초 후 시작
-    </script>
 </body>
 </html>
