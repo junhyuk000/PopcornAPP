@@ -11,16 +11,41 @@
         color: #a79696;
     }
 
+    /* 캐러셀 좌우 버튼 색 변경 */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: invert(1); /* 화살표 아이콘 색상을 반전 */
+    }
+
+    /* Carousel Indicators 아래로 이동 및 색상 변경 */
+    .carousel-indicators {
+        position: absolute;
+        bottom: -50px; /* Carousel 아래로 이동 */
+    }
+
+    .carousel-indicators button {
+        background-color: #bfa187 !important; /* 인디케이터 점 색상 */
+        border: 1px solid #fff;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .carousel-indicators .active {
+        background-color: #8a6f55 !important; /* 활성화된 점 색상 */
+    }
+
     /* Swiper 스타일 */
     .swiper {
         width: 90%;
-        height: 650px;
+        height: 550px;
         padding: 40px 0;
         display: flex;
         justify-content: center;
     }
     .swiper-slide {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         transition: transform 0.3s ease-in-out;
@@ -37,22 +62,16 @@
         box-shadow: none;
     }
 
-    /* 영화 정보 상단으로 이동 및 정렬 조정 */
-    .movie-info {
-        text-align: center;
-        margin-bottom: 30px;
+    /* 가운데 활성화된 슬라이드만 내용 표시 */
+    .swiper-slide .text-center {
+        display: none;
     }
-    .movie-info h2, .movie-info p {
-        margin: 5px 0;
-        color: #ad7b67;
-    }
-
-    /* 버튼 간격 조정 */
-    .movie-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 10px;
+    .swiper-slide-active .text-center {
+        display: block;
+        background: none;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
     }
 
     /* 네비게이션 버튼 위치 및 색상 조정 */
@@ -63,10 +82,10 @@
         height: 50px;
     }
     .swiper-button-next {
-        right: -100px;
+        right: -60px;
     }
     .swiper-button-prev {
-        left: -100px;
+        left: -60px;
     }
 </style>
 {% endblock %}
@@ -74,23 +93,20 @@
 
 {% block content %}
 <div class="container">
-    <div class="movie-info">
-        <h2 id="movie-title"></h2>
-        <p id="movie-rating"></p>
-        <p id="movie-rank"></p>
-        <p id="movie-reviews"></p>
-        <div class="movie-buttons">
-            <a id="movie-trailer" class="btn btn-outline-light" style="color: #ad7b67;">예고편</a>
-            <a id="movie-review" class="btn btn-outline-light" style="color: #ad7b67;">Review</a>
-        </div>
-    </div>
-
     <!-- Swiper 슬라이더 -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info %}
-            <div class="swiper-slide" data-index="{{ loop.index0 }}">
+            <div class="swiper-slide">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
+                <div class="text-center mt-4">
+                    <h5 style="color: #ad7b67;">{{ movie.title }}</h5>
+                    <p>Rating: {{movie.rating}}</p>
+                    <p>Rank: {{ movie.rank }}</p>
+                    <p>Reviews: {{movie.reviews}}</p>
+                    <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
+                    <a href="/reviews/{{ movie.title }}/{{movie.id}}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -99,9 +115,6 @@
         <div class="swiper-button-prev"></div>
     </div>
 </div>
-<script>
-    var moviesData = JSON.parse('{{ movies_info | tojson | safe }}');
-</script>
 {% endblock %}
 
 {% block js %}
@@ -109,7 +122,7 @@
 <script>
     var swiper = new Swiper(".mySwiper", {
         slidesPerView: 3,
-        spaceBetween: 50,
+        spaceBetween: 20,
         centeredSlides: true,
         loop: true,
         autoplay: {
@@ -123,30 +136,11 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 150,
-            depth: 250,
+            stretch: 100,
+            depth: 200,
             modifier: 1,
             slideShadows: false,
-        },
-        on: {
-            slideChange: function () {
-                var activeIndex = swiper.realIndex;
-                document.getElementById("movie-title").textContent = moviesData[activeIndex].title;
-                document.getElementById("movie-rating").textContent = "Rating: " + moviesData[activeIndex].rating;
-                document.getElementById("movie-rank").textContent = "Rank: " + moviesData[activeIndex].rank;
-                document.getElementById("movie-reviews").textContent = "Reviews: " + moviesData[activeIndex].reviews;
-                document.getElementById("movie-trailer").href = "/movie_youtube/" + moviesData[activeIndex].title;
-                document.getElementById("movie-review").href = "/reviews/" + moviesData[activeIndex].title + "/" + moviesData[activeIndex].id;
-            }
         }
     });
-
-    // 초기 정보 설정
-    document.getElementById("movie-title").textContent = moviesData[0].title;
-    document.getElementById("movie-rating").textContent = "Rating: " + moviesData[0].rating;
-    document.getElementById("movie-rank").textContent = "Rank: " + moviesData[0].rank;
-    document.getElementById("movie-reviews").textContent = "Reviews: " + moviesData[0].reviews;
-    document.getElementById("movie-trailer").href = "/movie_youtube/" + moviesData[0].title;
-    document.getElementById("movie-review").href = "/reviews/" + moviesData[0].title + "/" + moviesData[0].id;
 </script>
 {% endblock %}
