@@ -16,8 +16,8 @@
         font-size: 14px; /* 버튼 글꼴 크기 줄이기 */
     }
 </style>
-
 {% endblock %}
+
 {% block content %}
 <div class="text-center">
     <h1 class="mb-4"  id="rank-title" style="color:  #ad7b67;">일일 관객수</h1>
@@ -27,7 +27,7 @@
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')" style="color:  #ad7b67;">누적 매출액</button>
-        </div>
+        </div><br>
     <div class="row">
         <!-- 차트 영역 -->
         <div class="col-md-8">
@@ -49,8 +49,6 @@
             </table>
         </div>
     </div>
-
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -107,7 +105,8 @@
                         color: 'black' // X축 텍스트 색상
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)' // X축 그리드 색상
+                        color: 'rgba(0, 0, 0, 0.2)', // X축 그리드 선 가시성 개선
+                        drawBorder: true
                     }
                 },
                 y: {
@@ -115,7 +114,8 @@
                         color: 'black' // Y축 텍스트 색상
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)' // Y축 그리드 색상
+                        color: 'rgba(0, 0, 0, 0.2)', // Y축 그리드 선 가시성 개선
+                        drawBorder: true
                     }
                 }
             },
@@ -123,59 +123,5 @@
             maintainAspectRatio: false
         }
     });
-
-// 차트 및 순위 업데이트
-    function updateChartAndRank(metric) {
-        currentMetric = metric;
-
-        // 차트 데이터 및 제목 업데이트
-        chart.data.datasets[0].data = dataSets[metric];
-        chart.data.datasets[0].label = getLabel(metric);
-        chart.update();
-
-        // 표 업데이트
-        updateRanking(metric);
-
-        // 순위표 제목 업데이트
-        const rankTitle = document.getElementById('rank-title');
-        rankTitle.textContent = `${getLabel(metric)}`;
-    }
-
-
-    // 순위 업데이트 함수
-    function updateRanking(metric) {
-        const rankingTableBody = document.getElementById('ranking-table-body');
-        rankingTableBody.innerHTML = ''; // 기존 데이터 삭제
-
-        // 데이터 정렬
-        const sortedMovies = [...moviesData].sort((a, b) => b[metric] - a[metric]);
-
-        // 정렬된 데이터로 표 생성
-        sortedMovies.forEach((movie, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="color: black;">${index + 1}</td>
-                <td style="color: black; white-space: nowrap;">${movie.title}</td>
-            `;
-            rankingTableBody.appendChild(row);
-        });
-    }
-
-    // 메트릭별 레이블 반환
-    function getLabel(metric) {
-        switch (metric) {
-            case 't_audience': return '일일 관객수';
-            case 'c_audience': return '누적 관객수';
-            case 't_sales': return '일일 매출액';
-            case 'c_sales': return '누적 매출액';
-            default: return '';
-        }
-    }
-
-    // 초기 순위 업데이트
-    updateRanking(currentMetric);
 </script>
-
-
-
 {% endblock %}
