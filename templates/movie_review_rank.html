@@ -26,6 +26,14 @@
         text-align: center;
         margin: 0 20px;
         position: relative;
+        border-radius: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ✅ 그림자 효과 추가 */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .podium-item:hover {
+        transform: scale(1.05); /* ✅ 마우스 오버 시 확대 */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* ✅ 그림자 더 강조 */
     }
 
     .podium-item:first-child { background-color: silver; }
@@ -55,11 +63,16 @@
         font-weight: bold;
     }
 
-    .podium-item .rank { font-size: 18px; color: white; margin-top: 5px; }
+    .podium-item .rank { 
+        font-size: 18px; 
+        color: white; 
+        margin-top: 5px; 
+    }
 
     .first { height: 180px; width: 200px; }
     .second { height: 140px; width: 200px; }
     .third { height: 100px; width: 200px; }
+
 
     .button-container {
         display: flex;
