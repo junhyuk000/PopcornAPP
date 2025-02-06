@@ -20,6 +20,7 @@
         align-items: center;
         justify-content: center;
         width: auto;
+        position: relative;
     }
 
     .swiper-slide img {
@@ -32,26 +33,32 @@
 
     .text-overlay {
         position: absolute;
-        bottom: -100px;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
+        transform: translate(-50%, -50%);
+        width: 80%;
         text-align: center;
         background: rgba(0, 0, 0, 0.8);
         padding: 15px;
         border-radius: 10px;
-        transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+        transition: opacity 0.3s ease-in-out;
         opacity: 0;
     }
 
     .swiper-slide:hover .text-overlay {
         opacity: 1;
-        bottom: 10px;
     }
 
-    .text-overlay h5,
-    .text-overlay p {
+    .text-overlay p, .text-overlay a {
         color: #ffffff; /* ✅ 글자색을 밝게 조정 */
+    }
+
+    .movie-info {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #ffffff;
     }
 
     .swiper-pagination {
@@ -103,14 +110,13 @@
             <div class="swiper-slide">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
                 <div class="text-overlay">
-                    <h5>{{ movie.title }}</h5>
                     <p>Rating: {{ movie.rating }}</p>
-                    <p>Rank: {{ movie.rank }}</p>
                     <p>Reviews: {{ movie.reviews }}</p>
                     <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2">예고편</a>
                     <a href="/reviews/{{ movie.title }}/{{ movie.id }}" class="btn btn-outline-light mx-2">Review</a>
                 </div>
             </div>
+            <div class="movie-info">{{ movie.title }} - Rank: {{ movie.rank }}</div>
             {% endfor %}
         </div>
         <div class="swiper-button-next"></div>
