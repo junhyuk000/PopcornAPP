@@ -2,6 +2,17 @@
 
 {% block css %}
 <style>
+    /* a 태그 기본 스타일 */
+    a {
+        color: inherit; /* ✅ 부모 요소의 기본 글자색을 그대로 사용 */
+        text-decoration: none; /* ✅ 밑줄 제거 */
+        transition: color 0.3s ease-in-out; /* ✅ 부드러운 색상 변경 효과 */
+    }
+
+    /* a 태그 hover 시 색상 변경 */
+    a:hover {
+        color: #dda15e; /* ✅ 마우스를 올리면 색상이 변경됨 */
+    }
     .podium {
         display: flex;
         justify-content: center;
@@ -39,7 +50,7 @@
     }
 
     .podium-item .name a {
-        color: white;
+        color: #283618;
         text-decoration: none;
         font-weight: bold;
     }
@@ -86,7 +97,7 @@
 
     .ranking-table td { color: black; }
 
-    h1 { font-size: 2.5rem; color:  #ad7b67; margin-bottom: 10px; }
+    h1 { font-size: 2.5rem; color:  #bc6c25; margin-bottom: 10px; }
 </style>
 {% endblock %}
 
