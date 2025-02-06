@@ -44,48 +44,43 @@
         justify-content: center;
     }
     .swiper-slide {
+        position: relative;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         transition: transform 0.3s ease-in-out;
     }
     .swiper-slide img {
-        width: 80%;
-        height: 70%;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
         border-radius: 15px;
-        transition: transform 0.3s ease-in-out;
     }
-    .swiper-slide-active {
-        transform: scale(1.2);
-        box-shadow: none;
-    }
-
-    /* 가운데 활성화된 슬라이드만 내용 표시 */
-    .swiper-slide .text-center {
-        display: none;
-    }
-    .swiper-slide-active .text-center {
-        display: block;
-        background: none;
-        padding: 15px;
+    /* 이미지 위에 텍스트 오버레이 */
+    .text-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+        padding: 20px;
         border-radius: 10px;
-        margin-top: 15px;
     }
-
-    /* 네비게이션 버튼 위치 및 색상 조정 */
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #ad7b67 !important;
-        width: 50px;
-        height: 50px;
+    .text-overlay h5,
+    .text-overlay p {
+        color: #fff;
+        margin: 5px 0;
     }
-    .swiper-button-next {
-        right: -60px;
+    .text-overlay a {
+        color: #ad7b67;
+        border-color: #ad7b67;
     }
-    .swiper-button-prev {
-        left: -60px;
+    /* 버튼 스타일 조정 */
+    .text-overlay a:hover {
+        background-color: #ad7b67;
+        color: #fff;
     }
 </style>
 {% endblock %}
@@ -99,18 +94,17 @@
             {% for movie in movies_info %}
             <div class="swiper-slide">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
-                <div class="text-center mt-4">
-                    <h5 style="color: #ad7b67;">{{ movie.title }}</h5>
-                    <p>Rating: {{movie.rating}}</p>
+                <div class="text-overlay">
+                    <h5>{{ movie.title }}</h5>
+                    <p>Rating: {{ movie.rating }}</p>
                     <p>Rank: {{ movie.rank }}</p>
-                    <p>Reviews: {{movie.reviews}}</p>
-                    <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
-                    <a href="/reviews/{{ movie.title }}/{{movie.id}}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
+                    <p>Reviews: {{ movie.reviews }}</p>
+                    <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2">예고편</a>
+                    <a href="/reviews/{{ movie.title }}/{{ movie.id }}" class="btn btn-outline-light mx-2">Review</a>
                 </div>
             </div>
             {% endfor %}
         </div>
-        <!-- 네비게이션 버튼 -->
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
     </div>
