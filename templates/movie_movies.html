@@ -1,10 +1,6 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
-    body {
-        background-color: #faf8f6 !important; /* 배경색을 강제로 적용 */
-        color: #333 !important;
-    }
 
     .carousel-item h5 {
         font-size: 1.5rem;
@@ -21,14 +17,14 @@
         position: absolute;
         bottom: -100px; /* Carousel 아래로 이동 */
     }    
-    
+
 </style>
 {% endblock %}
 {% block title %}Movie Rankings{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1 class="text-center my-4" style="color: white;">Real-Time Movie Ranking</h1>
+    <h1 class="text-center my-4" style="color: #ad7b67;">Real-Time Movie Ranking</h1>
     
     <!-- Bootstrap Carousel -->
     <div id="movie-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -49,7 +45,7 @@
                 
                 <!-- 텍스트 (이미지 아래) -->
                 <div class="text-center mt-3">
-                    <h5 style="color: white;">{{ movie.title }}</h5>
+                    <h5 style="color: #ad7b67;">{{ movie.title }}</h5>
                     <p>Rating: {{movie.rating}}</p>
                     <p>Rank: {{ movie.rank }}</p>
                     <p>Reviews: {{movie.reviews}}</p>
