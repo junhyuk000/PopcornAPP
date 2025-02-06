@@ -93,6 +93,11 @@
 {% block content %}
 <div class="text-center">
     <h1 class="mb-4" id="ranking-title">👍 추천수</h1>
+    <div class="button-container">
+        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', '👍 추천수')" style="color: #ad7b67;">추천수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_views', '👓 조회수')" style="color: #ad7b67;">조회수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_comments', '💬 댓글수')" style="color: #ad7b67;">댓글수</button>
+    </div>
     <div class="row">
         <div class="podium">
             <div id="second" class="podium-item second">
@@ -135,11 +140,7 @@
         </table>
     </div>
 
-    <div class="button-container">
-        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', '👍 추천수')" style="color: #ad7b67;">추천수</button>
-        <button class="btn btn-outline-light" onclick="updateRank('top_views', '👓 조회수')" style="color: #ad7b67;">조회수</button>
-        <button class="btn btn-outline-light" onclick="updateRank('top_comments', '💬 댓글수')" style="color: #ad7b67;">댓글수</button>
-    </div>
+
 </div>
 {% endblock %}
 
