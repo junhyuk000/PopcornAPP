@@ -156,9 +156,9 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var swiper = new Swiper(".swiper", {
-            slidesPerView: 3, // ✅ 이미지 크기 맞추기 위해 조정
+            slidesPerView: 3, // ✅ 기본: 3개씩 보이도록 설정
             slidesPerGroup: 1,
-            spaceBetween: 20, // ✅ 간격 조정
+            spaceBetween: 20,
             centeredSlides: true,
             loop: true,
             autoplay: {
@@ -174,11 +174,23 @@
                 prevEl: ".swiper-button-prev",
             },
             breakpoints: {
-            768: {  // ✅ 모바일에서 적용
-                slidesPerView: 1,  // 한 개씩 보이게 설정
-                spaceBetween: 10
+                320: {  // ✅ 작은 모바일 화면 (예: iPhone SE)
+                    slidesPerView: 1,
+                    spaceBetween: 5
+                },
+                480: {  // ✅ 일반적인 모바일 화면
+                    slidesPerView: 1,
+                    spaceBetween: 10
+                },
+                768: {  // ✅ 태블릿 화면 (너비 768px 이상)
+                    slidesPerView: 2,
+                    spaceBetween: 15
+                },
+                1024: {  // ✅ 데스크탑 화면
+                    slidesPerView: 3, // 🚀 PC에서는 3개씩 표시
+                    spaceBetween: 20
+                }
             }
-        }
         });
 
         document.querySelector(".swiper").addEventListener("mouseenter", function() {
@@ -188,6 +200,7 @@
             swiper.autoplay.start();
         });
     });
+
 
 </script>
 {% endblock %}
