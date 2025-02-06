@@ -40,18 +40,18 @@
     width: 90%;
     height: 550px;
     padding: 40px 0;
-    overflow: visible;  /* 화살표 숨김 문제 해결 */
+    overflow: visible; /* 화살표 안 보이는 문제 해결 */
     }
+
     .swiper-slide {
-        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.3s ease-in-out;
     }
+
     .swiper-slide img {
-        width: 100%;
-        height: 100%;
+        width: 80%;
+        height: auto;
         object-fit: cover;
         border-radius: 15px;
     }
@@ -95,25 +95,26 @@
     }
 
     /* 네비게이션 버튼 스타일 수정 */
+    /* 🔺 화살표 크기 조정 + 명확하게 보이도록 수정 */
     .swiper-button-next,
     .swiper-button-prev {
         color: #ad7b67 !important;
-        width: 50px;
-        height: 50px;
-        z-index: 10; /* 화살표가 숨겨지는 경우 대비 */
+        width: 60px;
+        height: 60px;
+        z-index: 10;
         top: 50%;
         transform: translateY(-50%);
     }
 
-    /* 화살표 위치를 더 넓게 조정 */
+    /* 🔺 화살표 위치 더 바깥쪽으로 조정 */
     .swiper-button-next {
-        right: -50px;
+        right: -70px;
     }
 
     .swiper-button-prev {
-        left: -50px;
+        left: -70px;
     }
-</style>
+    </style>
 {% endblock %}
 {% block title %}Movie Rankings{% endblock %}
 
@@ -146,9 +147,9 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: "auto",
+        slidesPerView: 5,  // 🔹 좌우 균형 맞추기 위해 5개씩 표시
         spaceBetween: 20,
-        centeredSlides: true,
+        centeredSlides: true, // 🔹 메인 슬라이드를 중앙에 배치
         initialSlide: 2,
         loop: true,
         loopAdditionalSlides: 2,
