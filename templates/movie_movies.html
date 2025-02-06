@@ -172,7 +172,13 @@
             navigation: {
                 nextEl: ".swiper-button-next",
                 prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+            768: {  // ✅ 모바일에서 적용
+                slidesPerView: 1,  // 한 개씩 보이게 설정
+                spaceBetween: 10
             }
+        }
         });
 
         document.querySelector(".swiper").addEventListener("mouseenter", function() {
