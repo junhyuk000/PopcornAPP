@@ -190,7 +190,7 @@ def view_post(id,title):
     for comment in all_comments:
         if comment['post_id'] == id:
             comments.append(comment)
-    return render_template('movie_view.html',title=title,post=post, views=views, comments=comments)
+    return render_template('movie_view.html',title=title,post=post, views=views, comments=comments, id=id)
 
 
 ### 리뷰 추가
