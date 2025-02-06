@@ -34,6 +34,7 @@
     .carousel-indicators .active {
         background-color: #8a6f55 !important; /* 활성화된 점 색상 */
     }
+
 </style>
 {% endblock %}
 {% block title %}Movie Rankings{% endblock %}
@@ -57,7 +58,7 @@
             
             <div class="carousel-item {% if loop.first %}active{% endif %}">
                 <!-- 이미지 -->
-                <img src="images/{{ movie.filename }}" id ='dynamicImage' class="d-block mx-auto" alt="{{ movie.title }}" style="max-height: 400px;">
+                <img src="images/{{ movie.filename }}" id ='dynamicImage' class="d-block mx-auto" alt="{{ movie.title }}" style="max-height: 400px; box-shadow: 5px 5px 15px rgba(0,0,0,0.3); border-radius: 5px;">
                 
                 <!-- 텍스트 (이미지 아래) -->
                 <div class="text-center mt-3">
@@ -65,8 +66,8 @@
                     <p>Rating: {{movie.rating}}</p>
                     <p>Rank: {{ movie.rank }}</p>
                     <p>Reviews: {{movie.reviews}}</p>
-                    <a href="/movie_youtube/{{ movie.title }}" class="btn btn-dark">예고편</a>
-                    <a href="/reviews/{{ movie.title }}/{{movie.id}}" class="btn btn-dark">Review</a>
+                    <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
+                    <a href="/reviews/{{ movie.title }}/{{movie.id}}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
                 </div>
             </div>
             {% endfor %}
