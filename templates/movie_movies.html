@@ -5,7 +5,7 @@
         position: relative;
         width: 100%;
         max-width: 100vw;
-        height: 650px; /* ✅ 더 크게 조정 */
+        height: 650px;
         padding: 40px 0;
         overflow: hidden;
     }
@@ -22,43 +22,28 @@
         width: auto;
     }
 
+    /* ✅ 이미지 그림자 추가 */
     .swiper-slide img {
         width: 100%;
         height: auto;
-        max-height: 550px; /* ✅ 이미지 크기 조정 */
+        max-height: 550px;
         object-fit: cover;
         border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* 그림자 효과 */
+        transition: transform 0.3s ease-in-out;
     }
 
-    .text-overlay {
-        position: absolute;
-        bottom: -100px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.8);
-        padding: 15px;
-        border-radius: 10px;
-        transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
-        opacity: 0;
+    .swiper-slide:hover img {
+        transform: scale(1.05); /* 마우스 올릴 때 확대 효과 */
     }
 
-    .swiper-slide:hover .text-overlay {
-        opacity: 1;
-        bottom: 10px;
-    }
-
-    .text-overlay h5,
-    .text-overlay p {
-        color: #ffffff; /* ✅ 글자색을 밝게 조정 */
-    }
-
+    /* ✅ 페이지네이션(버튼) 중앙 아래 정렬 */
     .swiper-pagination {
         position: absolute;
-        bottom: 20px; /* ✅ 버튼을 아래 배치 */
+        bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
+        z-index: 10;
     }
 
     .swiper-pagination-bullet {
@@ -73,6 +58,7 @@
         background-color: #8a6f55 !important;
     }
 
+    /* ✅ 캐러셀 네비게이션 버튼 */
     .swiper-button-next,
     .swiper-button-prev {
         color: #bfa187 !important;
@@ -90,6 +76,7 @@
     .swiper-button-prev {
         left: 20px;
     }
+
 </style>
 {% endblock %}
 
