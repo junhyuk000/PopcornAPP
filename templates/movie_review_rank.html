@@ -23,7 +23,7 @@
 
     .podium-item .medal {
         font-size: 50px;
-        color: white;
+        color: black;
         font-weight: bold;
         position: absolute;
         top: -70px;
@@ -34,7 +34,7 @@
     .podium-item .name {
         font-size: 20px;
         font-weight: bold;
-        color: white;
+        color: black;
         margin-top: 10px;
     }
 
@@ -80,7 +80,7 @@
 
     .ranking-table th {
         background-color: #333;
-        color: black;
+        color: white;
 
     }
 
@@ -92,7 +92,7 @@
 
 {% block content %}
 <div class="text-center">
-    <h1 class="mb-4" id="ranking-title">Review 추천수</h1>
+    <h1 class="mb-4" id="ranking-title">👍 추천수</h1>
     <div class="row">
         <div class="podium">
             <div id="second" class="podium-item second">
@@ -136,9 +136,9 @@
     </div>
 
     <div class="button-container">
-        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', 'Review 추천수')">추천수</button>
-        <button class="btn btn-outline-light" onclick="updateRank('top_views', 'Review 조회수')">조회수</button>
-        <button class="btn btn-outline-light" onclick="updateRank('top_comments', 'Review 댓글수')">댓글수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_recommend', '👍 추천수')">추천수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_views', '👓 조회수')">조회수</button>
+        <button class="btn btn-outline-light" onclick="updateRank('top_comments', '💬 댓글수')">댓글수</button>
     </div>
 </div>
 {% endblock %}
