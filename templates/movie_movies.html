@@ -36,11 +36,11 @@
     }
 
     .swiper {
-        width: 90%;
-        height: 550px;
-        padding: 40px 0;
-        display: flex;
-        justify-content: center;
+    position: relative;
+    width: 90%;
+    height: 550px;
+    padding: 40px 0;
+    overflow: visible;  /* 화살표 숨김 문제 해결 */
     }
     .swiper-slide {
         position: relative;
@@ -100,12 +100,18 @@
         color: #ad7b67 !important;
         width: 50px;
         height: 50px;
+        z-index: 10; /* 화살표가 숨겨지는 경우 대비 */
+        top: 50%;
+        transform: translateY(-50%);
     }
+
+    /* 화살표 위치를 더 넓게 조정 */
     .swiper-button-next {
-        right: -80px; /* 버튼을 더 바깥으로 이동 */
+        right: -50px;
     }
+
     .swiper-button-prev {
-        left: -80px;
+        left: -50px;
     }
 </style>
 {% endblock %}
@@ -140,10 +146,12 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 3,
+        slidesPerView: "auto",
         spaceBetween: 20,
         centeredSlides: true,
+        initialSlide: 2,
         loop: true,
+        loopAdditionalSlides: 2,
         autoplay: {
             delay: 2000,
             disableOnInteraction: false,
@@ -161,7 +169,6 @@
             slideShadows: false,
         }
     });
-
     // 이미지 위에서 자동 슬라이드 멈춤
     document.querySelectorAll('.swiper-slide').forEach(slide => {
         slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
