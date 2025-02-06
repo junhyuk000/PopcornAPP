@@ -1,79 +1,77 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
-    .button-container {
-        display: flex;
-        flex-wrap: wrap; /* ✅ 버튼이 화면에 맞게 줄바꿈 */
-        justify-content: center; /* ✅ 가운데 정렬 */
-        gap: 10px; /* ✅ 버튼 간격 조정 */
-        margin-top: 20px;
-        margin-bottom: 20px; /* ✅ 하단 여백 줄이기 */
-    }
+.button-container {
+    display: flex;
+    flex-wrap: wrap; /* ✅ 버튼이 화면에 맞게 줄바꿈 */
+    justify-content: center; /* ✅ 가운데 정렬 */
+    gap: 10px; /* ✅ 버튼 간격 조정 */
+    margin-top: 20px;
+    margin-bottom: 20px; /* ✅ 하단 여백 줄이기 */
+}
 
-    .button-container .btn {
-        min-width: 120px; /* ✅ 버튼 최소 너비 설정 */
-        padding: 10px 15px; /* ✅ 버튼 여백 설정 */
-        font-size: 14px; /* ✅ 버튼 글꼴 크기 줄이기 */
-    }
+.button-container .btn {
+    min-width: 120px; /* ✅ 버튼 최소 너비 설정 */
+    padding: 10px 15px; /* ✅ 버튼 여백 설정 */
+    font-size: 14px; /* ✅ 버튼 글꼴 크기 줄이기 */
+}
 
-    /* ✅ 차트가 모바일에서도 적절한 크기로 표시되도록 조정 */
-    .chart-container {
-        display: flex;
-        justify-content: center;
-        max-width: 100%;
-        overflow-x: auto;
-    }
+/* ✅ 차트가 모바일에서도 적절한 크기로 표시되도록 조정 */
+.chart-container {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    overflow-x: auto;
+}
 
-    canvas {
-        max-width: 100%;
-        height: auto !important;
-    }
+canvas {
+    max-width: 100%;
+    height: auto !important;
+}
 
-    /* ✅ 테이블이 모바일에서도 넘치지 않도록 조정 */
-    .table-container {
-        width: 100%;
-        overflow-x: auto;
-    }
+/* ✅ 테이블이 모바일에서도 넘치지 않도록 조정 */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
 
+.table {
+    min-width: 400px; /* ✅ 최소 너비 설정하여 너무 작아지지 않게 함 */
+}
+
+/* ✅ 모바일에서 표 폰트 크기 및 여백 조정 */
+@media (max-width: 768px) {
     .table {
-        min-width: 400px; /* ✅ 최소 너비 설정하여 너무 작아지지 않게 함 */
+        font-size: 12px; /* ✅ 모바일에서 폰트 크기 줄이기 */
     }
 
-    /* ✅ 모바일에서 표 폰트 크기 및 여백 조정 */
-    @media (max-width: 768px) {
-        .table {
-            font-size: 12px; /* ✅ 모바일에서 폰트 크기 줄이기 */
-        }
-
-        .table th, .table td {
-            padding: 6px; /* ✅ 여백 줄이기 */
-            white-space: nowrap; /* ✅ 텍스트가 줄바꿈되지 않도록 설정 */
-        }
+    .table th, .table td {
+        padding: 6px; /* ✅ 여백 줄이기 */
+        white-space: nowrap; /* ✅ 텍스트가 줄바꿈되지 않도록 설정 */
     }
+}
 
 </style>
 
 {% endblock %}
 {% block content %}
 <div class="text-center">
-    <h1 class="mb-4" id="rank-title" style="color: #bc6c25;">일일 관객수</h1>
-
-    <!-- 차트 전환 버튼 -->
-    <div class="button-container">
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color: #ad7b67;">일일 관객수</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color: #ad7b67;">누적 관객수</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color: #ad7b67;">일일 매출액</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')" style="color: #ad7b67;">누적 매출액</button>
-    </div>
-
+    <h1 class="mb-4"  id="rank-title" style="color: #bc6c25;">일일 관객수</h1>
+        <!-- 차트 전환 버튼 -->
+        <div class="d-flex flex-wrap justify-content-center mt-4 gap-2">
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color:  #ad7b67;">일일 관객수</button>
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')" style="color:  #ad7b67;">누적 매출액</button>
+        </div><br>
     <div class="row">
-        <!-- ✅ 차트 영역 (반응형 적용) -->
-        <div class="col-md-8 chart-container">
-            <canvas id="chart"></canvas>
+        <!-- 차트 영역 -->
+        <div class="col-md-8">
+            <canvas id="chart" style="max-width: 100%; height: 60vh;"></canvas>
         </div>
 
-        <!-- ✅ 매출액 순위 (반응형 적용) -->
-        <div class="col-md-4 table-container">
+        <!-- 매출액 순위 -->
+        <div class="col-md-4">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
@@ -87,8 +85,9 @@
             </table>
         </div>
     </div>
-</div>
 
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
