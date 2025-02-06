@@ -146,12 +146,12 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 4,  // ✅ 양쪽 4개씩 표시하도록 조정
+        slidesPerView: 3,  // ✅ 왼쪽 2개 + 중앙 1개 + 오른쪽 2개
         spaceBetween: 20,
-        centeredSlides: true,  // ✅ 중앙 맞춤 유지
+        centeredSlides: true,  // ✅ 중앙 슬라이드 유지
         initialSlide: 2,
         loop: true,
-        loopAdditionalSlides: 3,  // ✅ 양쪽 균형을 맞추기 위해 조정
+        loopAdditionalSlides: 2,  // ✅ 자연스럽게 넘기기 위해 조정
         autoplay: {
             delay: 2000,
             disableOnInteraction: false,
@@ -163,12 +163,13 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 60,  // ✅ 너무 넓지 않도록 조정
+            stretch: 50,  // ✅ 좌우 슬라이드가 너무 멀어지지 않도록 조정
             depth: 250,  // ✅ 중앙 슬라이드 강조
             modifier: 1,
             slideShadows: false,
         }
     });
+
         // 이미지 위에서 자동 슬라이드 멈춤
     document.querySelectorAll('.swiper-slide').forEach(slide => {
         slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
