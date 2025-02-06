@@ -1,4 +1,19 @@
 {% extends 'movie_base.html' %}
+{% block css %}
+<style>
+    /* a 태그 기본 스타일 */
+    a {
+        color: inherit; /* ✅ 부모 요소의 기본 글자색을 그대로 사용 */
+        text-decoration: none; /* ✅ 밑줄 제거 */
+        transition: color 0.3s ease-in-out; /* ✅ 부드러운 색상 변경 효과 */
+    }
+
+    /* a 태그 hover 시 색상 변경 */
+    a:hover {
+        color: #dda15e; /* ✅ 마우스를 올리면 색상이 변경됨 */
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="container mt-4">
 
@@ -30,12 +45,12 @@
             <tbody>
                 {% for post in posts %}
                 <tr>
-                    <td class="row-number" style="text-align:center;color: white;"></td>
-                    <td style="text-align:center; color: white;"><a href="/post/{{title}}/{{post.id}}">
+                    <td class="row-number" style="text-align:center;color: black;"></td>
+                    <td style="text-align:center; color: black;"><a href="/post/{{title}}/{{post.id}}">
                         {{post.movie_title}}</a>
                     </td>
                     <td>
-                        <a href="/post/{{title}}/{{post.id}}" style="color: white;" class="text-decoration-none">
+                        <a href="/post/{{title}}/{{post.id}}" style="color: black;" class="text-decoration-none">
                             {% if post.spoiler %}❗스포일러가 포함되어 있습니다.{% else %}{{post.title}}{% endif %}
                         </a>
                     </td>
