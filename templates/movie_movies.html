@@ -120,13 +120,14 @@
 {% block title %}Movie Rankings{% endblock %}
 
 {% block content %}
+<h2 style="color:  #bc6c25; text-align: center;">🎬 오늘 영화 순위 </h2>
 <div class="container">
     <div class="swiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info|sort(attribute='rank') %}  <!-- ✅ Rank 순 정렬 -->
             <div class="swiper-slide">
-                <h4 class="rank-text" style="color: #283618;">{{ movie.rank }}위</p>
-                <h4 class="rank-text" style="color: #283618;">{{ movie.title }}</p>
+                <h4 class="rank-text" style="color: #dda15e;">{{ movie.rank }}위</p>
+                <h4 class="rank-text" style="color: #606c38;">{{ movie.title }}</p>
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
                 
                 <!-- ✅ 기존 정보 유지 -->
