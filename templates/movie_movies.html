@@ -35,7 +35,6 @@
         background-color: #8a6f55 !important; /* 활성화된 점 색상 */
     }
 
-    /* Swiper 스타일 */
     .swiper {
         width: 90%;
         height: 550px;
@@ -56,18 +55,31 @@
         object-fit: cover;
         border-radius: 15px;
     }
-    /* 이미지 위에 텍스트 오버레이 */
+    
+    /* 이미지 위에서 자동 슬라이드 멈춤 */
+    .swiper-slide:hover {
+        cursor: pointer;
+    }
+
+    /* 이미지 아래 텍스트 */
     .text-overlay {
         position: absolute;
-        top: 50%;
+        bottom: -100px; /* 이미지 아래 배치 */
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
         width: 90%;
         text-align: center;
-        background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-        padding: 20px;
+        background: rgba(0, 0, 0, 0.8); /* 반투명 배경 */
+        padding: 15px;
         border-radius: 10px;
+        transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+        opacity: 0; /* 기본적으로 숨김 */
     }
+    .swiper-slide:hover .text-overlay {
+        opacity: 1; /* 마우스를 올리면 표시 */
+        bottom: 10px;
+    }
+
     .text-overlay h5,
     .text-overlay p {
         color: #fff;
@@ -77,10 +89,23 @@
         color: #ad7b67;
         border-color: #ad7b67;
     }
-    /* 버튼 스타일 조정 */
     .text-overlay a:hover {
         background-color: #ad7b67;
         color: #fff;
+    }
+
+    /* 네비게이션 버튼 스타일 수정 */
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #ad7b67 !important;
+        width: 50px;
+        height: 50px;
+    }
+    .swiper-button-next {
+        right: -80px; /* 버튼을 더 바깥으로 이동 */
+    }
+    .swiper-button-prev {
+        left: -80px;
     }
 </style>
 {% endblock %}
@@ -135,6 +160,12 @@
             modifier: 1,
             slideShadows: false,
         }
+    });
+
+    // 이미지 위에서 자동 슬라이드 멈춤
+    document.querySelectorAll('.swiper-slide').forEach(slide => {
+        slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
+        slide.addEventListener('mouseleave', () => swiper.autoplay.start());
     });
 </script>
 {% endblock %}
