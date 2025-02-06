@@ -43,6 +43,15 @@
     overflow: visible;
     }
 
+    .swiper-container {
+        position: relative;
+        width: 100%;
+        max-width: 100vw; /* ✅ 화면 크기 넘지 않도록 제한 */
+        height: 550px;
+        padding: 40px 0;
+        overflow: hidden; /* ✅ 바깥으로 넘치는 문제 해결 */
+    }
+
     .swiper-slide {
         display: flex;
         align-items: center;
@@ -50,9 +59,9 @@
     }
 
     .swiper-slide img {
-        width: 100%;  /* 🔹 이미지 크기 확대 */
+        width: 80%;  /* ✅ 너무 커지지 않도록 조정 */
         height: auto;
-        max-height: 500px;  /* 🔹 너무 커지지 않도록 제한 */
+        max-height: 450px;  /* ✅ 적절한 크기 유지 */
         object-fit: cover;
         border-radius: 15px;
     }
@@ -99,19 +108,19 @@
     .swiper-button-next,
     .swiper-button-prev {
         color: #ad7b67 !important;
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         z-index: 10;
         top: 50%;
         transform: translateY(-50%);
     }
 
     .swiper-button-next {
-        right: -70px;
+        right: -50px;
     }
 
     .swiper-button-prev {
-        left: -70px;
+        left: -50px;
     }
     </style>
 {% endblock %}
@@ -146,12 +155,13 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 3,  // ✅ 한 번에 3개만 보이도록 설정
+        slidesPerView: 3,  // ✅ 한 번에 3개만 보이게 제한
         slidesPerGroup: 1, // ✅ 넘길 때 1개씩 이동
         spaceBetween: 20,
         centeredSlides: true,  // ✅ 중앙 슬라이드 유지
-        loop: true,  // ✅ 무한 루프 설정
-        loopAdditionalSlides: 2,  // ✅ 스크롤 시 부드럽게 넘김
+        initialSlide: 2,
+        loop: true,
+        loopAdditionalSlides: 2,  // ✅ 부드럽게 넘기기 위해 설정
         autoplay: {
             delay: 2000,
             disableOnInteraction: false,
@@ -163,12 +173,13 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 50,
-            depth: 250,
+            stretch: 40,  // ✅ 너무 커지는 문제 해결 (기존 50 → 40)
+            depth: 200,  // ✅ 중앙 슬라이드 강조 유지
             modifier: 1,
             slideShadows: false,
         }
     });
+
         // 이미지 위에서 자동 슬라이드 멈춤
     document.querySelectorAll('.swiper-slide').forEach(slide => {
         slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
