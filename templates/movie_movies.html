@@ -1,6 +1,11 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
+    body {
+        background-color: #faf8f6 !important; /* 배경색을 강제로 적용 */
+        color: #333 !important;
+    }
+
     .carousel-item h5 {
         font-size: 1.5rem;
         color: #cababa;
@@ -10,15 +15,15 @@
         font-size: 1rem;
         color: #a79696;
     }
-    
+
     /* Carousel Indicators 아래로 이동 */
     .carousel-indicators {
         position: absolute;
         bottom: -100px; /* Carousel 아래로 이동 */
     }    
-
+    
 </style>
-{%endblock%}
+{% endblock %}
 {% block title %}Movie Rankings{% endblock %}
 
 {% block content %}
