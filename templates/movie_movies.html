@@ -35,21 +35,20 @@
         background-color: #8a6f55 !important; /* 활성화된 점 색상 */
     }
 
+    /* ✅ Swiper 컨테이너 설정 */
     .swiper {
-    position: relative;
-    width: 90%;
-    height: 600px; /* 높이 증가 */
-    padding: 40px 0;
-    overflow: visible;
-    }
-
-    .swiper-container {
         position: relative;
         width: 100%;
         max-width: 100vw; /* ✅ 화면 크기 넘지 않도록 제한 */
         height: 550px;
         padding: 40px 0;
-        overflow: hidden; /* ✅ 바깥으로 넘치는 문제 해결 */
+        overflow: hidden; /* ✅ 넘치는 부분 숨김 */
+    }
+
+    /* ✅ Swiper 내부 슬라이드가 넘치지 않도록 설정 */
+    .swiper-wrapper {
+        overflow: hidden;
+        max-width: 100vw;
     }
 
     .swiper-slide {
@@ -59,11 +58,11 @@
     }
 
     .swiper-slide img {
-        width: 80%;  /* ✅ 너무 커지지 않도록 조정 */
-        height: auto;
-        max-height: 450px;  /* ✅ 적절한 크기 유지 */
-        object-fit: cover;
-        border-radius: 15px;
+    width: 75%;  /* ✅ 너무 커지지 않도록 조정 */
+    height: auto;
+    max-height: 450px;  /* ✅ 적절한 크기 유지 */
+    object-fit: cover;
+    border-radius: 15px;
     }
     
     /* 이미지 위에서 자동 슬라이드 멈춤 */
@@ -103,7 +102,6 @@
         background-color: #ad7b67;
         color: #fff;
     }
-
     /* 🔺 화살표 크기 & 위치 유지 */
     .swiper-button-next,
     .swiper-button-prev {
@@ -121,6 +119,26 @@
 
     .swiper-button-prev {
         left: -50px;
+    }
+
+    /* 이미지 아래 텍스트 */
+    .text-overlay {
+        position: absolute;
+        bottom: -100px; /* 이미지 아래 배치 */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.8); /* 반투명 배경 */
+        padding: 15px;
+        border-radius: 10px;
+        transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
+        opacity: 0; /* 기본적으로 숨김 */
+    }
+
+    .swiper-slide:hover .text-overlay {
+        opacity: 1; /* 마우스를 올리면 표시 */
+        bottom: 10px;
     }
     </style>
 {% endblock %}
@@ -154,14 +172,14 @@
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
-    var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 3,  // ✅ 한 번에 3개만 보이게 제한
-        slidesPerGroup: 1, // ✅ 넘길 때 1개씩 이동
+    var swiper = new Swiper(".swiper", {  // ✅ .swiper를 컨테이너로 직접 사용
+        slidesPerView: 2.5,  // ✅ 한 번에 2.5개만 보이게 조정 (좌우 균형 유지)
+        slidesPerGroup: 1, // ✅ 한 번에 1개씩 이동
         spaceBetween: 20,
-        centeredSlides: true,  // ✅ 중앙 슬라이드 유지
+        centeredSlides: true,
         initialSlide: 2,
         loop: true,
-        loopAdditionalSlides: 2,  // ✅ 부드럽게 넘기기 위해 설정
+        loopAdditionalSlides: 1,  // ✅ 불필요한 추가 슬라이드 제거
         autoplay: {
             delay: 2000,
             disableOnInteraction: false,
@@ -173,17 +191,20 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 40,  // ✅ 너무 커지는 문제 해결 (기존 50 → 40)
-            depth: 200,  // ✅ 중앙 슬라이드 강조 유지
+            stretch: 30,  // ✅ 너무 크지 않게 조정
+            depth: 180,
             modifier: 1,
             slideShadows: false,
         }
     });
 
-        // 이미지 위에서 자동 슬라이드 멈춤
-    document.querySelectorAll('.swiper-slide').forEach(slide => {
-        slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
-        slide.addEventListener('mouseleave', () => swiper.autoplay.start());
+    // ✅ 자동 슬라이드 멈춤 기능 수정
+    swiper.el.addEventListener("mouseenter", function () {
+        swiper.autoplay.stop();
     });
+    swiper.el.addEventListener("mouseleave", function () {
+        swiper.autoplay.start();
+    });
+
 </script>
 {% endblock %}
