@@ -35,20 +35,20 @@
         background-color: #8a6f55 !important; /* 활성화된 점 색상 */
     }
 
-    /* ✅ Swiper 컨테이너 설정 */
     .swiper {
-        position: relative;
-        width: 100%;
-        max-width: 100vw; /* ✅ 화면 크기 넘지 않도록 제한 */
-        height: 550px;
-        padding: 40px 0;
-        overflow: hidden; /* ✅ 넘치는 부분 숨김 */
+    position: relative;
+    width: 100%;
+    max-width: 100vw; /* ✅ 화면 넘치지 않도록 제한 */
+    height: 550px;
+    padding: 40px 0;
+    overflow: hidden; /* ✅ 넘치는 부분 숨김 */
+    visibility: visible; /* ✅ Swiper가 숨겨지지 않도록 설정 */
     }
 
-    /* ✅ Swiper 내부 슬라이드가 넘치지 않도록 설정 */
     .swiper-wrapper {
         overflow: hidden;
         max-width: 100vw;
+        display: flex; /* ✅ 슬라이드들이 가로로 정렬되도록 설정 */
     }
 
     .swiper-slide {
@@ -58,13 +58,12 @@
     }
 
     .swiper-slide img {
-    width: 75%;  /* ✅ 너무 커지지 않도록 조정 */
-    height: auto;
-    max-height: 450px;  /* ✅ 적절한 크기 유지 */
-    object-fit: cover;
-    border-radius: 15px;
+        width: 75%;  /* ✅ 적절한 크기로 유지 */
+        height: auto;
+        max-height: 450px;
+        object-fit: cover;
+        border-radius: 15px;
     }
-    
     /* 이미지 위에서 자동 슬라이드 멈춤 */
     .swiper-slide:hover {
         cursor: pointer;
@@ -147,7 +146,7 @@
 {% block content %}
 <div class="container">
     <!-- Swiper 슬라이더 -->
-    <div class="swiper mySwiper">
+    <div class="swiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info %}
             <div class="swiper-slide">
@@ -172,38 +171,40 @@
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
-    var swiper = new Swiper(".swiper", {  // ✅ .swiper를 컨테이너로 직접 사용
-        slidesPerView: 2.5,  // ✅ 한 번에 2.5개만 보이게 조정 (좌우 균형 유지)
-        slidesPerGroup: 1, // ✅ 한 번에 1개씩 이동
-        spaceBetween: 20,
-        centeredSlides: true,
-        initialSlide: 2,
-        loop: true,
-        loopAdditionalSlides: 1,  // ✅ 불필요한 추가 슬라이드 제거
-        autoplay: {
-            delay: 2000,
-            disableOnInteraction: false,
-        },
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        effect: "coverflow",
-        coverflowEffect: {
-            rotate: 0,
-            stretch: 30,  // ✅ 너무 크지 않게 조정
-            depth: 180,
-            modifier: 1,
-            slideShadows: false,
-        }
-    });
+    document.addEventListener("DOMContentLoaded", function() {
+        var swiper = new Swiper(".swiper", {  // ✅ Swiper 컨테이너 연결 확인
+            slidesPerView: 2.5,  // ✅ 한 번에 2.5개만 보이게 조정
+            slidesPerGroup: 1, // ✅ 한 번에 1개씩 이동
+            spaceBetween: 20,
+            centeredSlides: true,
+            initialSlide: 2,
+            loop: true,
+            loopAdditionalSlides: 1,
+            autoplay: {
+                delay: 2000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            effect: "coverflow",
+            coverflowEffect: {
+                rotate: 0,
+                stretch: 30,  // ✅ 너무 크지 않게 조정
+                depth: 180,
+                modifier: 1,
+                slideShadows: false,
+            }
+        });
 
-    // ✅ 자동 슬라이드 멈춤 기능 수정
-    swiper.el.addEventListener("mouseenter", function () {
-        swiper.autoplay.stop();
-    });
-    swiper.el.addEventListener("mouseleave", function () {
-        swiper.autoplay.start();
+        // ✅ 자동 슬라이드 멈춤 기능 추가
+        document.querySelector(".swiper").addEventListener("mouseenter", function() {
+            swiper.autoplay.stop();
+        });
+        document.querySelector(".swiper").addEventListener("mouseleave", function() {
+            swiper.autoplay.start();
+        });
     });
 
 </script>
