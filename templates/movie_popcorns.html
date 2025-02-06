@@ -17,14 +17,9 @@
         flex-wrap: wrap; 
         justify-content: center; /* 중앙 정렬 */
         gap: 20px; 
-        box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.3); /* ✅ 오른쪽 아래 그림자 */
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
     }
-    /* ✅ 마우스 오버 시 살짝 더 강조 */
-    .movie-container:hover {
-        transform: scale(1.05);
-        box-shadow: 10px 10px 14px rgba(0, 0, 0, 0.5); /* ✅ 마우스 올리면 조금 더 진한 그림자 */
-    }
+
 
     .movie-card { 
         width: 220px; 
@@ -33,6 +28,13 @@
         text-align: center;
         background-color: #bc6c25; 
         border-radius: 10px; 
+        box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.3); /* ✅ 오른쪽 아래 그림자 */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+        /* ✅ 마우스 오버 시 살짝 더 강조 */
+    .movie-card:hover {
+        transform: scale(1.05);
+        box-shadow: 10px 10px 14px rgba(0, 0, 0, 0.5); /* ✅ 마우스 올리면 조금 더 진한 그림자 */
     }
     .movie-card img { 
         width: 100%; 
