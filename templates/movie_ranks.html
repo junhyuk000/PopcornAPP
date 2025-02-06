@@ -21,6 +21,13 @@
 {% block content %}
 <div class="text-center">
     <h1 class="mb-4"  id="rank-title" style="color:  #ad7b67;">일일 관객수</h1>
+        <!-- 차트 전환 버튼 -->
+        <div class="d-flex flex-wrap justify-content-center mt-4 gap-2">
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color:  #ad7b67;">일일 관객수</button>
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
+            <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')" style="color:  #ad7b67;">누적 매출액</button>
+        </div>
     <div class="row">
         <!-- 차트 영역 -->
         <div class="col-md-8">
@@ -43,13 +50,7 @@
         </div>
     </div>
 
-    <!-- 차트 전환 버튼 -->
-    <div class="d-flex flex-wrap justify-content-center mt-4 gap-2">
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color:  #ad7b67;">일일 관객수</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')" style="color:  #ad7b67;">누적 매출액</button>
-    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -98,14 +99,6 @@
             plugins: {
                 legend: {
                     display: false // 범례 표시 안 함
-                },
-                title: {
-                    display: true,
-                    text: '일일 관객수',
-                    color: 'black', // 제목 색상
-                    font: {
-                        size: 20
-                    }
                 }
             },
             scales: {
@@ -138,7 +131,6 @@
         // 차트 데이터 및 제목 업데이트
         chart.data.datasets[0].data = dataSets[metric];
         chart.data.datasets[0].label = getLabel(metric);
-        chart.options.plugins.title.text = getLabel(metric); // 차트 제목 업데이트
         chart.update();
 
         // 표 업데이트
@@ -162,8 +154,8 @@
         sortedMovies.forEach((movie, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td style="color: white;">${index + 1}</td>
-                <td style="color: white; white-space: nowrap;">${movie.title}</td>
+                <td style="color: black;">${index + 1}</td>
+                <td style="color: black; white-space: nowrap;">${movie.title}</td>
             `;
             rankingTableBody.appendChild(row);
         });
