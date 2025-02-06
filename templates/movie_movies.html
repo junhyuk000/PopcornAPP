@@ -20,7 +20,6 @@
         align-items: center;
         justify-content: center;
         width: auto;
-        position: relative;
     }
 
     .swiper-slide img {
@@ -33,39 +32,63 @@
 
     .text-overlay {
         position: absolute;
-        top: 50%;
+        bottom: -100px;
         left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80%;
+        transform: translateX(-50%);
+        width: 90%;
         text-align: center;
         background: rgba(0, 0, 0, 0.8);
         padding: 15px;
         border-radius: 10px;
-        transition: opacity 0.3s ease-in-out;
+        transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
         opacity: 0;
     }
 
     .swiper-slide:hover .text-overlay {
         opacity: 1;
+        bottom: 10px;
     }
 
-    .text-overlay p, .text-overlay a {
+    .text-overlay h5,
+    .text-overlay p {
         color: #ffffff; /* ✅ 글자색을 밝게 조정 */
-    }
-
-    .movie-info {
-        text-align: center;
-        font-weight: bold;
-        font-size: 1.2rem;
-        color: #ffffff;
-        margin-bottom: 10px;
     }
 
     .swiper-pagination {
         position: absolute;
-        bottom: 20px;
+        bottom: 20px; /* ✅ 버튼을 아래 배치 */
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    .swiper-pagination-bullet {
+        background-color: #bfa187 !important;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        opacity: 0.7;
+    }
+
+    .swiper-pagination-bullet-active {
+        background-color: #8a6f55 !important;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #bfa187 !important;
+        width: 50px;
+        height: 50px;
+        z-index: 10;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .swiper-button-next {
+        right: 20px;
+    }
+
+    .swiper-button-prev {
+        left: 20px;
     }
 </style>
 {% endblock %}
@@ -74,16 +97,15 @@
 
 {% block content %}
 <div class="container">
-    {% for movie in movies_info %}
-    <div class="movie-info">{{ movie.title }} - Rank: {{ movie.rank }}</div>
-    {% endfor %}
     <div class="swiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info %}
             <div class="swiper-slide">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
                 <div class="text-overlay">
+                    <h5>{{ movie.title }}</h5>
                     <p>Rating: {{ movie.rating }}</p>
+                    <p>Rank: {{ movie.rank }}</p>
                     <p>Reviews: {{ movie.reviews }}</p>
                     <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2">예고편</a>
                     <a href="/reviews/{{ movie.title }}/{{ movie.id }}" class="btn btn-outline-light mx-2">Review</a>
@@ -93,7 +115,7 @@
         </div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div>
+        <div class="swiper-pagination"></div> <!-- ✅ 캐러셀 버튼 추가 -->
     </div>
 </div>
 {% endblock %}
@@ -103,7 +125,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var swiper = new Swiper(".swiper", {
-            slidesPerView: 5,
+            slidesPerView: 5,  // ✅ 더 넓게 보이도록 변경
             slidesPerGroup: 1,
             spaceBetween: 30,
             centeredSlides: true,
