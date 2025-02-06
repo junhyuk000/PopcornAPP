@@ -38,27 +38,26 @@
     .swiper {
     position: relative;
     width: 100%;
-    max-width: 100vw; /* ✅ 화면 넘치지 않도록 제한 */
+    max-width: 100vw; /* ✅ 화면 넘지 않도록 제한 */
     height: 550px;
     padding: 40px 0;
     overflow: hidden; /* ✅ 넘치는 부분 숨김 */
-    visibility: visible; /* ✅ Swiper가 숨겨지지 않도록 설정 */
     }
 
     .swiper-wrapper {
-        overflow: hidden;
-        max-width: 100vw;
-        display: flex; /* ✅ 슬라이드들이 가로로 정렬되도록 설정 */
+        display: flex; /* ✅ 슬라이드들을 가로로 정렬 */
     }
 
     .swiper-slide {
+        flex: 0 0 auto; /* ✅ Swiper가 자동으로 크기를 계산하도록 설정 */
         display: flex;
         align-items: center;
         justify-content: center;
+        width: auto; /* ✅ 슬라이드가 너무 작아지는 것 방지 */
     }
 
     .swiper-slide img {
-        width: 75%;  /* ✅ 적절한 크기로 유지 */
+        width: 100%;  /* ✅ 부모 요소 크기를 따르게 설정 */
         height: auto;
         max-height: 450px;
         object-fit: cover;
@@ -172,8 +171,8 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var swiper = new Swiper(".swiper", {  // ✅ Swiper 컨테이너 연결 확인
-            slidesPerView: 2.5,  // ✅ 한 번에 2.5개만 보이게 조정
+        var swiper = new Swiper(".swiper", {
+            slidesPerView: 2.5,  // ✅ 한 번에 2.5개만 보이도록 조정
             slidesPerGroup: 1, // ✅ 한 번에 1개씩 이동
             spaceBetween: 20,
             centeredSlides: true,
@@ -191,7 +190,7 @@
             effect: "coverflow",
             coverflowEffect: {
                 rotate: 0,
-                stretch: 30,  // ✅ 너무 크지 않게 조정
+                stretch: 30,
                 depth: 180,
                 modifier: 1,
                 slideShadows: false,
