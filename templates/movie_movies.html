@@ -55,47 +55,17 @@
 
     .movie-info {
         text-align: center;
-        margin-top: 10px;
         font-weight: bold;
         font-size: 1.2rem;
         color: #ffffff;
+        margin-bottom: 10px;
     }
 
     .swiper-pagination {
         position: absolute;
-        bottom: 20px; /* ✅ 버튼을 아래 배치 */
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-    }
-
-    .swiper-pagination-bullet {
-        background-color: #bfa187 !important;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        opacity: 0.7;
-    }
-
-    .swiper-pagination-bullet-active {
-        background-color: #8a6f55 !important;
-    }
-
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #bfa187 !important;
-        width: 50px;
-        height: 50px;
-        z-index: 10;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .swiper-button-next {
-        right: 20px;
-    }
-
-    .swiper-button-prev {
-        left: 20px;
     }
 </style>
 {% endblock %}
@@ -104,6 +74,9 @@
 
 {% block content %}
 <div class="container">
+    {% for movie in movies_info %}
+    <div class="movie-info">{{ movie.title }} - Rank: {{ movie.rank }}</div>
+    {% endfor %}
     <div class="swiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info %}
@@ -116,12 +89,11 @@
                     <a href="/reviews/{{ movie.title }}/{{ movie.id }}" class="btn btn-outline-light mx-2">Review</a>
                 </div>
             </div>
-            <div class="movie-info">{{ movie.title }} - Rank: {{ movie.rank }}</div>
             {% endfor %}
         </div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div> <!-- ✅ 캐러셀 버튼 추가 -->
+        <div class="swiper-pagination"></div>
     </div>
 </div>
 {% endblock %}
@@ -131,7 +103,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var swiper = new Swiper(".swiper", {
-            slidesPerView: 5,  // ✅ 더 넓게 보이도록 변경
+            slidesPerView: 5,
             slidesPerGroup: 1,
             spaceBetween: 30,
             centeredSlides: true,
