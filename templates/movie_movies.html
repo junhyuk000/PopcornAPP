@@ -146,12 +146,12 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 3.5,  // 🔹 이미지 크기를 키우면서 좌우 균형 유지
+        slidesPerView: 4,  // ✅ 양쪽 4개씩 표시하도록 조정
         spaceBetween: 20,
-        centeredSlides: true,
+        centeredSlides: true,  // ✅ 중앙 맞춤 유지
         initialSlide: 2,
         loop: true,
-        loopAdditionalSlides: 2,
+        loopAdditionalSlides: 3,  // ✅ 양쪽 균형을 맞추기 위해 조정
         autoplay: {
             delay: 2000,
             disableOnInteraction: false,
@@ -163,8 +163,8 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 50,  // 🔹 중앙 슬라이드가 더 크게 보이도록 조정
-            depth: 300,  // 🔹 입체감 증가 (값을 키우면 중앙이 더 부각됨)
+            stretch: 60,  // ✅ 너무 넓지 않도록 조정
+            depth: 250,  // ✅ 중앙 슬라이드 강조
             modifier: 1,
             slideShadows: false,
         }
