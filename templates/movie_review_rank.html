@@ -27,13 +27,14 @@
         margin: 0 20px;
         position: relative;
         border-radius: 10px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ✅ 그림자 효과 추가 */
+        box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.5); /* ✅ 오른쪽 아래 그림자 */
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
 
+    /* ✅ 마우스 오버 시 살짝 더 강조 */
     .podium-item:hover {
-        transform: scale(1.05); /* ✅ 마우스 오버 시 확대 */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* ✅ 그림자 더 강조 */
+        transform: scale(1.05);
+        box-shadow: 10px 10px 14px rgba(0, 0, 0, 0.6); /* ✅ 마우스 올리면 조금 더 진한 그림자 */
     }
 
     .podium-item:first-child { background-color: silver; }
