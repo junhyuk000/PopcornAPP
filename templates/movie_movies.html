@@ -38,9 +38,9 @@
     .swiper {
     position: relative;
     width: 90%;
-    height: 550px;
+    height: 600px; /* 높이 증가 */
     padding: 40px 0;
-    overflow: visible; /* 화살표 안 보이는 문제 해결 */
+    overflow: visible;
     }
 
     .swiper-slide {
@@ -50,8 +50,9 @@
     }
 
     .swiper-slide img {
-        width: 80%;
+        width: 100%;  /* 🔹 이미지 크기 확대 */
         height: auto;
+        max-height: 500px;  /* 🔹 너무 커지지 않도록 제한 */
         object-fit: cover;
         border-radius: 15px;
     }
@@ -94,8 +95,7 @@
         color: #fff;
     }
 
-    /* 네비게이션 버튼 스타일 수정 */
-    /* 🔺 화살표 크기 조정 + 명확하게 보이도록 수정 */
+    /* 🔺 화살표 크기 & 위치 유지 */
     .swiper-button-next,
     .swiper-button-prev {
         color: #ad7b67 !important;
@@ -106,7 +106,6 @@
         transform: translateY(-50%);
     }
 
-    /* 🔺 화살표 위치 더 바깥쪽으로 조정 */
     .swiper-button-next {
         right: -70px;
     }
@@ -147,9 +146,9 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 5,  // 🔹 좌우 균형 맞추기 위해 5개씩 표시
+        slidesPerView: 3.5,  // 🔹 이미지 크기를 키우면서 좌우 균형 유지
         spaceBetween: 20,
-        centeredSlides: true, // 🔹 메인 슬라이드를 중앙에 배치
+        centeredSlides: true,
         initialSlide: 2,
         loop: true,
         loopAdditionalSlides: 2,
@@ -164,16 +163,11 @@
         effect: "coverflow",
         coverflowEffect: {
             rotate: 0,
-            stretch: 100,
-            depth: 200,
+            stretch: 50,  // 🔹 중앙 슬라이드가 더 크게 보이도록 조정
+            depth: 300,  // 🔹 입체감 증가 (값을 키우면 중앙이 더 부각됨)
             modifier: 1,
             slideShadows: false,
         }
-    });
-    // 이미지 위에서 자동 슬라이드 멈춤
-    document.querySelectorAll('.swiper-slide').forEach(slide => {
-        slide.addEventListener('mouseenter', () => swiper.autoplay.stop());
-        slide.addEventListener('mouseleave', () => swiper.autoplay.start());
     });
 </script>
 {% endblock %}
