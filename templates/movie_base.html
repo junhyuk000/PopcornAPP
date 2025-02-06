@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
 
     <style>
-        /* Wix 스타일 적용 */
+
         /* Pretendard 폰트 적용 */
         @font-face {
             font-family: 'Pretendard';
@@ -20,12 +20,31 @@
             src: url('https://cdn.jsdelivr.net/npm/pretendard/dist/web/static/pretendard.css') format('css');
         }
 
+        /* ✅ 목가파임 폰트 추가 (CDN 사용) */
+        @font-face {
+            font-family: 'MokgaPaim';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/MokgaPaim.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             font-family: 'Pretendard', sans-serif;
             background-color: #e8e6e6;
             color: #333;
             margin: 0;
             padding: 0;
+        }
+
+        /* ✅ h2 태그에만 목가파임 폰트 적용 */
+        h2 {
+            font-family: 'MokgaPaim', sans-serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            text-align: center;
+            color: #bc6c25; /* 기존 색상 유지 */
         }
 
         /* ✅ Top Header 아래 그림자 추가 */
