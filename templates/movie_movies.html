@@ -1,7 +1,6 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
-
     .carousel-item h5 {
         font-size: 1.5rem;
         color: #cababa;
@@ -12,12 +11,29 @@
         color: #a79696;
     }
 
-    /* Carousel Indicators 아래로 이동 */
+    /* 캐러셀 좌우 버튼 색 변경 */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: invert(1); /* 화살표 아이콘 색상을 반전 */
+    }
+
+    /* Carousel Indicators 아래로 이동 및 색상 변경 */
     .carousel-indicators {
         position: absolute;
-        bottom: -100px; /* Carousel 아래로 이동 */
-    }    
+        bottom: -50px; /* Carousel 아래로 이동 */
+    }
 
+    .carousel-indicators button {
+        background-color: #bfa187 !important; /* 인디케이터 점 색상 */
+        border: 1px solid #fff;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .carousel-indicators .active {
+        background-color: #8a6f55 !important; /* 활성화된 점 색상 */
+    }
 </style>
 {% endblock %}
 {% block title %}Movie Rankings{% endblock %}
