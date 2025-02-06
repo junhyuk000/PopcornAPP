@@ -1,4 +1,4 @@
-/* Wix 스타일 개선 적용 */
+/* Wix 스타일 적용 */
 @font-face {
     font-family: 'SBAggroB';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
@@ -8,125 +8,96 @@
 
 body {
     font-family: 'SBAggroB', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #fff;
     color: #333;
     margin: 0;
     padding: 0;
 }
 
-/* 네비게이션 바 스타일 수정 */
+/* 네비게이션 바 스타일 */
 .navbar {
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 15px 20px;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
+    background-color: #0c0c24;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    font-weight: bold;
 }
 
-.navbar .nav-link {
-    color: #333;
-    font-size: 1rem;
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    margin-right: 15px;
-    transition: color 0.3s ease-in-out;
 }
 
-.navbar .nav-link:hover {
-    color: #e74c3c;
+.navbar a:hover {
+    color: #bfa187;
 }
 
-/* Hero Section 개선 */
+/* Hero Section */
 .hero {
-    background: url('/static/images/hero-bg.jpg') no-repeat center center/cover;
-    height: 80vh;
+    background-color: #faf8f6;
+    height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: white;
-    padding: 50px;
+    color: #333;
 }
 
-.hero-content h1 {
-    font-size: 4rem;
+.hero h1 {
+    font-size: 3rem;
     font-weight: bold;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
 }
 
-.hero-content p {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-}
-
-.hero-content .btn {
-    background-color: #e74c3c;
-    color: white;
+.hero p {
     font-size: 1.3rem;
-    padding: 15px 30px;
-    border-radius: 5px;
-    transition: background 0.3s ease-in-out;
-    border: none;
+    margin-bottom: 20px;
+    color: #666;
 }
 
-.hero-content .btn:hover {
-    background-color: #c0392b;
-}
-
-/* 메인 컨텐츠 스타일 개선 */
+/* 컨텐츠 스타일 */
 .container {
-    max-width: 1100px;
-    margin: 100px auto;
+    max-width: 1200px;
+    margin: 50px auto;
     padding: 20px;
+    text-align: left;
 }
 
 h2 {
     font-size: 2.5rem;
     font-weight: bold;
-    text-align: center;
     margin-bottom: 30px;
+    text-transform: uppercase;
+    text-align: center;
 }
 
-/* 영화 랭킹 스타일 개선 */
-.movie-card {
+/* 카드 스타일 */
+.card {
     background: white;
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
-.movie-card img {
-    max-width: 100%;
-    border-radius: 10px;
-}
-
-.movie-card h3 {
+.card h3 {
     font-size: 1.8rem;
-    margin-top: 15px;
+    font-weight: bold;
 }
 
-.movie-card .btn {
-    margin-top: 10px;
-    background-color: #444;
-    color: white;
-    font-size: 1rem;
-    padding: 8px 15px;
-    border-radius: 5px;
+.card p {
+    font-size: 1.1rem;
+    color: #666;
 }
 
-.movie-card .btn:hover {
-    background-color: #222;
-}
-
-/* 푸터 스타일 수정 */
+/* 푸터 스타일 */
 footer {
-    background-color: #222;
+    background-color: #0c0c24;
     color: white;
     text-align: center;
     padding: 20px;
-    font-size: 0.9rem;
+    margin-top: 50px;
 }
