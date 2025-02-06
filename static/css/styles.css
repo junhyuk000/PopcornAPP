@@ -14,25 +14,59 @@ body {
     padding: 0;
 }
 
-/* 네비게이션 바 스타일 */
-.navbar {
+/* 최상단 헤더 스타일 */
+.top-header {
     background-color: #0c0c24;
     color: white;
-    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.top-header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.top-header .user-menu {
+    display: flex;
+    gap: 15px;
+}
+
+.top-header .user-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.top-header .user-menu a:hover {
+    color: #bfa187;
+}
+
+/* 네비게이션 바 스타일 */
+.navbar {
+    background-color: #14142b;
+    color: white;
+    padding: 15px 0;
     text-align: center;
     font-weight: bold;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
 }
 
 .navbar a {
     color: white;
     text-decoration: none;
-    margin: 0 15px;
     font-size: 1.1rem;
     text-transform: uppercase;
+    padding: 10px 15px;
 }
 
 .navbar a:hover {
     color: #bfa187;
+    border-bottom: 2px solid #bfa187;
 }
 
 /* Hero Section */
