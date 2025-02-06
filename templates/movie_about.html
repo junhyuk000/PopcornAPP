@@ -29,7 +29,6 @@
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
-        font-family: 'Roboto', sans-serif;
         font-size: 16px;
         line-height: 1.8;
     }
@@ -61,9 +60,9 @@
 
     <!-- 버튼 -->
     <div class="button-container">
-        <button class="btn btn-outline-light" onclick="updateChart('yearly_avg')">연도별 관람객</button>
-        <button class="btn btn-outline-light" onclick="updateChart('pre_post_covid')">코로나 전후 비교</button>
-        <button class="btn btn-outline-light" onclick="updateChart('pre_post_netflix')">OTT 전후 비교</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChart('yearly_avg')" style="color:  #ad7b67;">연도별 관람객</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChart('pre_post_covid')" style="color:  #ad7b67;">코로나 전후 비교</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChart('pre_post_netflix')" style="color:  #ad7b67;">OTT 전후 비교</button>
     </div>
 
     <!-- 그래프 영역 -->
@@ -130,7 +129,6 @@
             return;
         }
 
-        // 초기화: 연도별 평균 관람객 그래프 표시
         const ctx = document.getElementById('mainChart').getContext('2d');
         mainChart = new Chart(ctx, {
             type: 'bar',
@@ -141,56 +139,70 @@
                     data: data.yearly_avg.map(item => item.audiCnt),
                     backgroundColor: data.yearly_avg.map(item =>
                         item.year % 2 === 0 ? 'rgba(54, 162, 235, 0.8)' : 'rgba(255, 99, 132, 0.8)'
-                    ) // 짝수년도는 파란색, 홀수년도는 빨간색
+                    )
                 }]
             },
             options: {
                 plugins: {
                     legend: {
-                        display: false // 범례를 숨김
+                        display: false
                     },
                     title: {
                         display: true,
                         text: '연도별 평균 일일 관객 수',
-                        color: 'black'
+                        color: '#333',
+                        font: {
+                            size: 18
+                        }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: 'black' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        ticks: {
+                            color: '#333',  /* ✅ X축 눈금 글자 색상 */
+                            font: {
+                                size: 14, /* ✅ X축 글자 크기 */
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.2)', /* ✅ X축 눈금선 색상 */
+                            lineWidth: 1.5
+                        }
                     },
                     y: {
                         ticks: {
-                            color: 'black',
+                            color: '#333',  /* ✅ Y축 눈금 글자 색상 */
+                            font: {
+                                size: 14, /* ✅ Y축 글자 크기 */
+                                weight: 'bold'
+                            },
                             callback: function(value) {
-                                return value.toLocaleString() + ' 명'; // 값에 '명' 단위 추가
-                            }
+                                return value.toLocaleString() + ' 명'; /* ✅ 값에 '명' 추가 */
+                            },
+                            stepSize: 500000  /* ✅ Y축 눈금 간격 조정 (예시) */
                         },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.2)', /* ✅ Y축 눈금선 색상 */
+                            lineWidth: 1.5
+                        }
                     }
                 }
             }
         });
 
-        // 버튼 클릭 시 차트를 업데이트하는 함수
         window.updateChart = (metric) => {
             if (metric === 'yearly_avg') {
                 mainChart.data.labels = data.yearly_avg.map(item => item.year);
                 mainChart.data.datasets[0].data = data.yearly_avg.map(item => item.audiCnt);
-                mainChart.data.datasets[0].backgroundColor = data.yearly_avg.map(item =>
-                    item.year % 2 === 0 ? 'rgba(54, 162, 235, 0.8)' : 'rgba(255, 99, 132, 0.8)'
-                ); // 짝수년도는 파란색, 홀수년도는 빨간색
                 mainChart.options.plugins.title.text = '연도별 평균 일일 관객 수';
             } else if (metric === 'pre_post_netflix') {
                 mainChart.data.labels = ['OTT 이전', 'OTT 이후'];
                 mainChart.data.datasets[0].data = data.pre_post_netflix;
-                mainChart.data.datasets[0].backgroundColor = ['rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)'];
                 mainChart.options.plugins.title.text = 'OTT 전후 평균 일일 관객 수 비교';
             } else if (metric === 'pre_post_covid') {
                 mainChart.data.labels = ['코로나 이전', '코로나 이후'];
                 mainChart.data.datasets[0].data = data.pre_post_covid;
-                mainChart.data.datasets[0].backgroundColor = ['rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)'];
                 mainChart.options.plugins.title.text = '코로나 전후 평균 일일 관객 수 비교';
             }
             mainChart.update();
