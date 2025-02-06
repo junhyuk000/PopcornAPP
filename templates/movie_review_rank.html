@@ -82,34 +82,54 @@
         margin-top: 10px;
     }
 
+    /* ✅ 테이블을 감싸는 컨테이너 스타일 */
     .ranking-table-container {
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        overflow-x: auto; /* ✅ 모바일에서 가로 스크롤 가능하게 설정 */
+        width: 100%; /* ✅ 부모 요소의 크기에 맞춤 */
     }
 
+    /* ✅ 표 스타일 */
     .ranking-table {
         width: 80%;
         height: 70%;
         border-collapse: collapse;
         text-align: center;
         margin: auto;
+        min-width: 700px; /* ✅ 최소 너비 설정 */
     }
 
+    /* ✅ 테이블 헤더 & 셀 스타일 */
     .ranking-table th, .ranking-table td {
         border: 1px solid #ddd;
         padding: 8px;
         white-space: nowrap; /* ✅ 줄바꿈 방지 */
-        padding: 10px; /* ✅ 내부 여백 조정 */
+        padding: 10px;
     }
 
     .ranking-table th {
         background-color: #333;
         color: white;
-
     }
 
-    .ranking-table td { color: black; }
+    .ranking-table td {
+        color: black;
+    }
+
+    /* ✅ 모바일에서 표 크기 조정 */
+    @media (max-width: 768px) {
+        .ranking-table {
+            font-size: 12px; /* ✅ 모바일에서 폰트 크기 줄이기 */
+            min-width: 600px; /* ✅ 최소 너비 조정 */
+        }
+
+        .ranking-table th, .ranking-table td {
+            padding: 6px; /* ✅ 여백 줄이기 */
+        }
+    }
+
 
     h1 { font-size: 2.5rem; color:  #bc6c25; margin-bottom: 10px; }
 </style>
