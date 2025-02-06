@@ -25,6 +25,11 @@ manager.update_filename_in_db("movies")
 def img_file(filename):
     return send_from_directory('static/images', filename)
 
+# 정적 폴더에서 폰트 파일 제공
+@app.route('/static/fonts/<path:filename>')
+def serve_fonts(filename):
+    return send_from_directory('static/fonts', filename)
+
 ### js 폴더 static/js 폴더로 연결
 @app.route('/js/<path:filename>')
 def js_file(filename):
