@@ -141,13 +141,24 @@
             color: #666;
         }
 
-        /* 푸터 스타일 */
+        html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+        }
+
         footer {
             background-color: #283618;
             color: #fefae0;
             text-align: center;
             padding: 20px;
-            margin-top: 50px;
+            margin-top: auto; /* 자동으로 하단 정렬 */
         }
 
     </style>
