@@ -14,17 +14,17 @@
     /* 캐러셀 좌우 버튼 색 변경 */
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
-        filter: invert(1); /* 화살표 아이콘 색상을 반전 */
+        filter: invert(1);
     }
 
     /* Carousel Indicators 아래로 이동 및 색상 변경 */
     .carousel-indicators {
         position: absolute;
-        bottom: -50px; /* Carousel 아래로 이동 */
+        bottom: -50px;
     }
 
     .carousel-indicators button {
-        background-color: #bfa187 !important; /* 인디케이터 점 색상 */
+        background-color: #bfa187 !important;
         border: 1px solid #fff;
         width: 12px;
         height: 12px;
@@ -32,27 +32,26 @@
     }
 
     .carousel-indicators .active {
-        background-color: #8a6f55 !important; /* 활성화된 점 색상 */
+        background-color: #8a6f55 !important;
     }
 
     /* Swiper 스타일 */
     .swiper {
         width: 90%;
-        height: 550px;
+        height: 650px;
         padding: 40px 0;
         display: flex;
         justify-content: center;
     }
     .swiper-slide {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         transition: transform 0.3s ease-in-out;
     }
     .swiper-slide img {
-        width: 80%;
-        height: 70%;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
         border-radius: 15px;
         transition: transform 0.3s ease-in-out;
@@ -62,16 +61,10 @@
         box-shadow: none;
     }
 
-    /* 가운데 활성화된 슬라이드만 내용 표시 */
-    .swiper-slide .text-center {
-        display: none;
-    }
-    .swiper-slide-active .text-center {
-        display: block;
-        background: none;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 15px;
+    /* 영화 정보 상단으로 이동 */
+    .movie-info {
+        text-align: center;
+        margin-bottom: 20px;
     }
 
     /* 네비게이션 버튼 위치 및 색상 조정 */
@@ -82,10 +75,10 @@
         height: 50px;
     }
     .swiper-button-next {
-        right: -60px;
+        right: -80px;
     }
     .swiper-button-prev {
-        left: -60px;
+        left: -80px;
     }
 </style>
 {% endblock %}
@@ -93,20 +86,21 @@
 
 {% block content %}
 <div class="container">
+    <div class="movie-info">
+        <h2 style="color: #ad7b67;">{{ movies_info[0].title }}</h2>
+        <p>Rating: {{ movies_info[0].rating }}</p>
+        <p>Rank: {{ movies_info[0].rank }}</p>
+        <p>Reviews: {{ movies_info[0].reviews }}</p>
+        <a href="/movie_youtube/{{ movies_info[0].title }}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
+        <a href="/reviews/{{ movies_info[0].title }}/{{movies_info[0].id}}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
+    </div>
+
     <!-- Swiper 슬라이더 -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
             {% for movie in movies_info %}
             <div class="swiper-slide">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
-                <div class="text-center mt-4">
-                    <h5 style="color: #ad7b67;">{{ movie.title }}</h5>
-                    <p>Rating: {{movie.rating}}</p>
-                    <p>Rank: {{ movie.rank }}</p>
-                    <p>Reviews: {{movie.reviews}}</p>
-                    <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">예고편</a>
-                    <a href="/reviews/{{ movie.title }}/{{movie.id}}" class="btn btn-outline-light mx-2" style="color: #ad7b67;">Review</a>
-                </div>
             </div>
             {% endfor %}
         </div>
@@ -140,6 +134,18 @@
             depth: 200,
             modifier: 1,
             slideShadows: false,
+        },
+        on: {
+            slideChange: function () {
+                var activeIndex = swiper.realIndex;
+                var movieInfo = {{ movies_info | tojson }};
+                document.querySelector(".movie-info h2").textContent = movieInfo[activeIndex].title;
+                document.querySelector(".movie-info p:nth-child(2)").textContent = "Rating: " + movieInfo[activeIndex].rating;
+                document.querySelector(".movie-info p:nth-child(3)").textContent = "Rank: " + movieInfo[activeIndex].rank;
+                document.querySelector(".movie-info p:nth-child(4)").textContent = "Reviews: " + movieInfo[activeIndex].reviews;
+                document.querySelector(".movie-info a:nth-child(5)").href = "/movie_youtube/" + movieInfo[activeIndex].title;
+                document.querySelector(".movie-info a:nth-child(6)").href = "/reviews/" + movieInfo[activeIndex].title + "/" + movieInfo[activeIndex].id;
+            }
         }
     });
 </script>
