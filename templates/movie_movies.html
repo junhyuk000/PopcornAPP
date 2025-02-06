@@ -5,7 +5,7 @@
         position: relative;
         width: 100%;
         max-width: 100vw;
-        height: 600px; /* ✅ 캐러셀 높이 조정 */
+        height: 650px; /* ✅ 높이 조정 */
         padding: 40px 0;
         overflow: hidden;
     }
@@ -21,17 +21,17 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 250px; /* ✅ 슬라이드 크기 조정 */
+        width: 250px;
         position: relative;
     }
 
-    /* ✅ 이미지 스타일 조정 */
+    /* ✅ 이미지 스타일 */
     .swiper-slide img {
-        width: 250px; /* ✅ 고정된 크기 */
-        height: 380px; /* ✅ 비율 유지 */
+        width: 250px;
+        height: 380px;
         object-fit: cover;
         border-radius: 15px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ✅ 그림자 조정 */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         transition: transform 0.3s ease-in-out;
     }
 
@@ -40,10 +40,10 @@
         transform: scale(1.05);
     }
 
-    /* ✅ 텍스트 오버레이 위치 조정 */
+    /* ✅ 기존 텍스트 오버레이 유지 */
     .text-overlay {
         position: absolute;
-        bottom: 10px; /* ✅ 위치 수정 */
+        bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
@@ -65,10 +65,19 @@
         margin: 5px 0;
     }
 
+    /* ✅ Rank 텍스트 스타일 추가 */
+    .rank-text {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+        color: #333;
+        text-align: center;
+    }
+
     /* ✅ 페이지네이션 중앙 정렬 */
     .swiper-pagination {
         position: absolute;
-        bottom: 15px; /* ✅ 위치 조정 */
+        bottom: 15px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 10;
@@ -114,26 +123,31 @@
 <div class="container">
     <div class="swiper">
         <div class="swiper-wrapper">
-            {% for movie in movies_info %}
+            {% for movie in movies_info|sort(attribute='rank') %}  <!-- ✅ Rank 순 정렬 -->
             <div class="swiper-slide">
                 <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
+                
+                <!-- ✅ 기존 정보 유지 -->
                 <div class="text-overlay">
                     <h5>{{ movie.title }}</h5>
                     <p>Rating: {{ movie.rating }}</p>
-                    <p>Rank: {{ movie.rank }}</p>
                     <p>Reviews: {{ movie.reviews }}</p>
                     <a href="/movie_youtube/{{ movie.title }}" class="btn btn-outline-light mx-2">예고편</a>
                     <a href="/reviews/{{ movie.title }}/{{ movie.id }}" class="btn btn-outline-light mx-2">Review</a>
                 </div>
+
+                <!-- ✅ Rank 추가 -->
+                <p class="rank-text">Rank: {{ movie.rank }}위</p>
             </div>
             {% endfor %}
         </div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div> <!-- ✅ 캐러셀 버튼 추가 -->
+        <div class="swiper-pagination"></div>
     </div>
 </div>
 {% endblock %}
+
 
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
