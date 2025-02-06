@@ -38,8 +38,10 @@
     /* Swiper 스타일 */
     .swiper {
         width: 90%;
-        height: 500px;
+        height: 550px;
         padding: 40px 0;
+        display: flex;
+        justify-content: center;
     }
     .swiper-slide {
         display: flex;
@@ -57,7 +59,33 @@
     }
     .swiper-slide-active {
         transform: scale(1.2);
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+        box-shadow: none;
+    }
+
+    /* 가운데 활성화된 슬라이드만 내용 표시 */
+    .swiper-slide .text-center {
+        display: none;
+    }
+    .swiper-slide-active .text-center {
+        display: block;
+        background: none;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    /* 네비게이션 버튼 위치 및 색상 조정 */
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #ad7b67 !important;
+        width: 50px;
+        height: 50px;
+    }
+    .swiper-button-next {
+        right: -60px;
+    }
+    .swiper-button-prev {
+        left: -60px;
     }
 </style>
 {% endblock %}
