@@ -35,32 +35,41 @@
         background-color: #8a6f55 !important; /* 활성화된 점 색상 */
     }
 
+    /* Swiper 스타일 */
+    .swiper {
+        width: 80%;
+        height: 300px;
+        padding: 20px 0;
+    }
+    .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease-in-out;
+    }
+    .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+        transition: transform 0.3s ease-in-out;
+    }
+    .swiper-slide-active {
+        transform: scale(1.2);
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+    }
 </style>
 {% endblock %}
 {% block title %}Movie Rankings{% endblock %}
 
 {% block content %}
 <div class="container">
-
-    
-    <!-- Bootstrap Carousel -->
-    <div id="movie-carousel" class="carousel slide" data-bs-ride="carousel">
-        <!-- Indicators -->
-        <div class="carousel-indicators">
+    <!-- Swiper 슬라이더 -->
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
             {% for movie in movies_info %}
-            <button type="button" data-bs-target="#movie-carousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-label="Slide {{ loop.index }}"></button>
-            {% endfor %}
-        </div>
-
-        <!-- Carousel Items -->
-        <div class="carousel-inner" style="height: 500%;">
-            {% for movie in movies_info %}
-            
-            <div class="carousel-item {% if loop.first %}active{% endif %}">
-                <!-- 이미지 -->
-                <img src="images/{{ movie.filename }}" id ='dynamicImage' class="d-block mx-auto" alt="{{ movie.title }}" style="max-height: 400px; box-shadow: 5px 5px 15px rgba(0,0,0,0.3); border-radius: 5px;">
-                
-                <!-- 텍스트 (이미지 아래) -->
+            <div class="swiper-slide">
+                <img src="/static/images/{{ movie.filename }}" alt="{{ movie.title }}">
                 <div class="text-center mt-3">
                     <h5 style="color: #ad7b67;">{{ movie.title }}</h5>
                     <p>Rating: {{movie.rating}}</p>
@@ -72,29 +81,37 @@
             </div>
             {% endfor %}
         </div>
-
-        <!-- Navigation Controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#movie-carousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#movie-carousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+        <!-- 네비게이션 버튼 -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
-    // 이미지 경로 수정
-    window.onload = function () {
-        const imageElement = document.getElementById('dynamicImage');
-        const originalSrc = imageElement.dataset.src; // Python에서 전달된 데이터 (예: "example:filename.jpg")
-        const updatedSrc = originalSrc.replace(/:/g, '_'); // ':'를 '_'로 변환
-        imageElement.src = `/static/images/${updatedSrc}`; // 이미지 경로 설정
-    };
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 20,
+        centeredSlides: true,
+        loop: true,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        effect: "coverflow",
+        coverflowEffect: {
+            rotate: 0,
+            stretch: 100,
+            depth: 200,
+            modifier: 1,
+            slideShadows: false,
+        }
+    });
 </script>
-
 {% endblock %}
