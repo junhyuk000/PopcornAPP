@@ -20,7 +20,7 @@
 {% endblock %}
 {% block content %}
 <div class="text-center">
-    <h1 class="mb-4" style="color: white;">Audience & Revenue Trends</h1>
+    <h1 class="mb-4" style="color:  #ad7b67;">Audience & Revenue Trends</h1>
     <div class="row">
         <!-- 차트 영역 -->
         <div class="col-md-8">
@@ -29,12 +29,12 @@
 
         <!-- 매출액 순위 -->
         <div class="col-md-4">
-            <h3 style="color: white;" id="rank-title">일일 관객수</h3>
+            <h3 style="color: black;" id="rank-title">일일 관객수</h3>
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th style="color: white;">Rank</th>
-                        <th style="color: white;">Title</th>
+                        <th style="color: black;">Rank</th>
+                        <th style="color: black;">Title</th>
                     </tr>
                 </thead>
                 <tbody id="ranking-table-body">
@@ -46,10 +46,10 @@
 
     <!-- 차트 전환 버튼 -->
     <div class="d-flex flex-wrap justify-content-center mt-4 gap-2">
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')">일일 관객수</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')">누적 관객수</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')">일일 매출액</button>
-        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')">누적 매출액</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color:  #ad7b67;">일일 관객수</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
+        <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_sales')" style="color:  #ad7b67;">누적 매출액</button>
     </div>
 </div>
 
@@ -103,7 +103,7 @@
                 title: {
                     display: true,
                     text: '일일 관객수',
-                    color: 'white', // 제목 색상
+                    color: 'black', // 제목 색상
                     font: {
                         size: 20
                     }
@@ -112,7 +112,7 @@
             scales: {
                 x: {
                     ticks: {
-                        color: 'white' // X축 텍스트 색상
+                        color: 'black' // X축 텍스트 색상
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)' // X축 그리드 색상
@@ -120,7 +120,7 @@
                 },
                 y: {
                     ticks: {
-                        color: 'white' // Y축 텍스트 색상
+                        color: 'black' // Y축 텍스트 색상
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)' // Y축 그리드 색상

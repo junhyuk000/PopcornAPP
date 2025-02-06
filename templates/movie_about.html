@@ -2,8 +2,7 @@
 
 {% block css %}
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
     .button-container {
         display: flex;
         justify-content: center;
@@ -26,7 +25,7 @@
         margin-top: 30px;
         margin-bottom: 200px;
         text-align: left;
-        color: white;
+        color: black;
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
@@ -58,7 +57,7 @@
 
 {% block content %}
 <div class="text-center">
-    <h1 style="color: white;">홈페이지 소개</h1>
+    <h1 style="color:  #ad7b67;">홈페이지 소개</h1>
 
     <!-- 버튼 -->
     <div class="button-container">
@@ -153,17 +152,17 @@
                     title: {
                         display: true,
                         text: '연도별 평균 일일 관객 수',
-                        color: 'white'
+                        color: 'black'
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: 'white' },
+                        ticks: { color: 'black' },
                         grid: { color: 'rgba(255, 255, 255, 0.1)' }
                     },
                     y: {
                         ticks: {
-                            color: 'white',
+                            color: 'black',
                             callback: function(value) {
                                 return value.toLocaleString() + ' 명'; // 값에 '명' 단위 추가
                             }
