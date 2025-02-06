@@ -1,4 +1,59 @@
 {% extends 'movie_base.html' %}
+{% block css %}
+<style>
+     /* a 태그 기본 스타일 */
+    a {
+        color: inherit; /* ✅ 부모 요소의 기본 글자색을 그대로 사용 */
+        text-decoration: none; /* ✅ 밑줄 제거 */
+        transition: color 0.3s ease-in-out; /* ✅ 부드러운 색상 변경 효과 */
+    }
+
+    /* a 태그 hover 시 색상 변경 */
+    a:hover {
+        color: #dda15e; /* ✅ 마우스를 올리면 색상이 변경됨 */
+    }
+    .movie-container { 
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: center; /* 중앙 정렬 */
+        gap: 20px; 
+        box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.3); /* ✅ 오른쪽 아래 그림자 */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    /* ✅ 마우스 오버 시 살짝 더 강조 */
+    .movie-container:hover {
+        transform: scale(1.05);
+        box-shadow: 10px 10px 14px rgba(0, 0, 0, 0.5); /* ✅ 마우스 올리면 조금 더 진한 그림자 */
+    }
+
+    .movie-card { 
+        width: 220px; 
+        padding: 15px; 
+        border: 1px solid #ddd; 
+        text-align: center;
+        background-color: #bc6c25; 
+        border-radius: 10px; 
+    }
+    .movie-card img { 
+        width: 100%; 
+        height: 250px; 
+        object-fit: cover; 
+        border-radius: 8px;
+    }
+    .lottery-btn { 
+        padding: 5px 10px; 
+        background-color:  #dda15e; 
+        color: white; 
+        border: none; 
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .audience { 
+        cursor: pointer; 
+        border-bottom: 1px dashed wheat; 
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <h2 style="color:  #ad7b67; text-align: center;">🎬 영화 리스트</h2>
@@ -51,38 +106,5 @@
     }
 </script>
 
-<style>
-    .movie-container { 
-        display: flex; 
-        flex-wrap: wrap; 
-        justify-content: center; /* 중앙 정렬 */
-        gap: 20px; 
-    }
-    .movie-card { 
-        width: 220px; 
-        padding: 15px; 
-        border: 1px solid #ddd; 
-        text-align: center;
-        background-color: #222; 
-        border-radius: 10px; 
-    }
-    .movie-card img { 
-        width: 100%; 
-        height: 250px; 
-        object-fit: cover; 
-        border-radius: 8px;
-    }
-    .lottery-btn { 
-        padding: 5px 10px; 
-        background-color: #ff9800; 
-        color: white; 
-        border: none; 
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    .audience { 
-        cursor: pointer; 
-        border-bottom: 1px dashed wheat; 
-    }
-</style>
+
 {% endblock %}
