@@ -4,96 +4,71 @@
 <div class="container">
     <h1 class="mt-4 mb-4 text-center">🎬 영화 데이터 조회</h1>
 
-    <!-- 검색창 -->
-    <div class="input-group mb-3">
-        <input type="text" id="searchQuery" class="form-control" placeholder="검색어 입력 (국가, 감독, 배우)">
-        <button class="btn btn-primary" onclick="searchMovies()">🔍 검색</button>
+    <!-- 검색 필터 -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label>제목</label>
+            <input type="text" id="title" class="form-control" placeholder="영화 제목 입력">
+        </div>
+        <div class="col-md-4">
+            <label>장르</label>
+            <select id="genre" class="form-control">
+                <option value="">-- 전체 --</option>
+                {% for g in filters.genres %}
+                <option value="{{ g }}">{{ g }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label>국가</label>
+            <select id="nation" class="form-control">
+                <option value="">-- 전체 --</option>
+                {% for n in filters.nations %}
+                <option value="{{ n }}">{{ n }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
 
-    <!-- 정렬 버튼 -->
-    <div class="text-center mb-3">
-        <button class="btn btn-outline-primary" onclick="loadMovies('total_audience')">📊 누적 관람객 순</button>
-        <button class="btn btn-outline-secondary" onclick="loadMovies('total_sales')">💰 누적 매출액 순</button>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label>감독</label>
+            <input type="text" id="director" class="form-control" placeholder="감독 입력">
+        </div>
+        <div class="col-md-4">
+            <label>배우</label>
+            <input type="text" id="actor" class="form-control" placeholder="배우 입력">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-primary w-100" onclick="searchMovies()">🔍 검색</button>
+        </div>
     </div>
 
-    <!-- 영화 데이터 테이블 -->
-    <table id="movieTable" class="table table-striped table-bordered">
-        <thead class="thead-dark">
+    <!-- 테이블 -->
+    <table id="movieTable" class="table table-striped">
+        <thead>
             <tr>
                 <th>순위</th>
-                <th>영화 제목</th>
+                <th>제목</th>
                 <th>장르</th>
                 <th>국가</th>
                 <th>감독</th>
                 <th>배우</th>
-                <th>누적 매출액</th>
-                <th>누적 관람객</th>
+                <th>매출액</th>
+                <th>관객수</th>
             </tr>
         </thead>
-        <tbody id="movieData">
-            {% for row in data %}
-            <tr>
-                <td>{{ row.rank }}</td>
-                <td>{{ row.movie_title }}</td>
-                <td>{{ row.genre }}</td>
-                <td>{{ row.nations }}</td>
-                <td>{{ row.director }}</td>
-                <td>{{ row.actors }}</td>
-                <td>{{ "{:,}".format(row.total_sales) }} 원</td>
-                <td>{{ "{:,}".format(row.total_audience) }} 명</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tbody id="movieData"></tbody>
     </table>
-
-    <!-- 검색 결과 없을 때 메시지 -->
-    <div id="noResultsMessage" class="alert alert-danger text-center" style="display: none;">
-        ❌ 검색 결과가 없습니다.
-    </div>
 </div>
 
-<!-- AJAX를 활용한 정렬 & 검색 기능 -->
+<!-- AJAX -->
 <script>
-    function loadMovies(orderBy) {
-        let searchQuery = document.getElementById("searchQuery").value.trim();
-        fetch(`/filter?order_by=${orderBy}&search=${searchQuery}`)
-            .then(response => response.json())
-            .then(data => updateTable(data));
-    }
-
     function searchMovies() {
-        let searchQuery = document.getElementById("searchQuery").value.trim();
-        fetch(`/filter?search=${searchQuery}`)
+        let query = `?title=${document.getElementById("title").value}&genre=${document.getElementById("genre").value}&nation=${document.getElementById("nation").value}&director=${document.getElementById("director").value}&actor=${document.getElementById("actor").value}`;
+        fetch(`/filter${query}`)
             .then(response => response.json())
             .then(data => updateTable(data));
-    }
-
-    function updateTable(data) {
-        let tableBody = document.getElementById("movieData");
-        let noResultsMessage = document.getElementById("noResultsMessage");
-
-        if (data.message) {
-            tableBody.innerHTML = "";  // 테이블 내용 초기화
-            noResultsMessage.style.display = "block";  // "검색 결과 없음" 메시지 표시
-            return;
-        }
-
-        noResultsMessage.style.display = "none";  // "검색 결과 없음" 메시지 숨김
-        tableBody.innerHTML = "";  // 기존 데이터 삭제
-
-        data.forEach(row => {
-            let tr = `<tr>
-                <td>${row.rank}</td>
-                <td>${row.movie_title}</td>
-                <td>${row.genre}</td>
-                <td>${row.nations}</td>
-                <td>${row.director}</td>
-                <td>${row.actors}</td>
-                <td>${row.total_sales.toLocaleString()} 원</td>
-                <td>${row.total_audience.toLocaleString()} 명</td>
-            </tr>`;
-            tableBody.innerHTML += tr;
-        });
     }
 </script>
 

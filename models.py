@@ -940,10 +940,12 @@ class DBManager:
             self.disconnect()
 
 
-    def get_all_movie_data(self, order_by="total_audience", search_query=None):
+    def get_all_movie_data(self, order_by="total_audience", title="", genre="", nation="", director="", actor=""):
         """영화 데이터를 정렬/검색하여 반환하는 함수"""
         try:
             self.connect()
+
+            print(f"🟢 [DEBUG] 검색 요청: order_by={order_by}, title={title}, genre={genre}, nation={nation}, director={director}, actor={actor}")
 
             # 기본 조회 쿼리 (100개 제한)
             base_query = f"""
@@ -951,19 +953,26 @@ class DBManager:
                     ROW_NUMBER() OVER (ORDER BY {order_by} DESC) AS rank,
                     movie_title, genre, nations, director, actors, total_sales, total_audience
                 FROM movie_summary
+                WHERE 1=1
             """
 
-            # 검색 조건 추가
             query_params = []
-            if search_query:
-                base_query += """
-                WHERE movie_title LIKE %s 
-                OR nations LIKE %s 
-                OR director LIKE %s 
-                OR actors LIKE %s
-                """
-                search_term = f"%{search_query}%"
-                query_params.extend([search_term] * 4)
+            
+            if title:
+                base_query += " AND movie_title LIKE %s"
+                query_params.append(f"%{title}%")
+            if genre:
+                base_query += " AND genre LIKE %s"
+                query_params.append(f"%{genre}%")
+            if nation:
+                base_query += " AND nations LIKE %s"
+                query_params.append(f"%{nation}%")
+            if director:
+                base_query += " AND director LIKE %s"
+                query_params.append(f"%{director}%")
+            if actor:
+                base_query += " AND actors LIKE %s"
+                query_params.append(f"%{actor}%")
 
             base_query += f" ORDER BY {order_by} DESC LIMIT 100"
 
@@ -982,3 +991,17 @@ class DBManager:
 
         finally:
             self.disconnect()  # 항상 연결 종료
+
+    def get_genres_and_nations(self):
+        """장르 및 국가 목록 가져오기"""
+        try:
+            self.connect()
+            self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
+            genres = [row[0] for row in self.cursor.fetchall()]
+            
+            self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
+            nations = [row[0] for row in self.cursor.fetchall()]
+            
+            return {"genres": genres, "nations": nations}
+        finally:
+            self.disconnect()
