@@ -954,24 +954,20 @@ class DBManager:
             """
 
             # 검색 조건 추가
+            query_params = []
             if search_query:
-                base_query += f"""
+                base_query += """
                 WHERE movie_title LIKE %s 
                 OR nations LIKE %s 
                 OR director LIKE %s 
                 OR actors LIKE %s
                 """
+                search_term = f"%{search_query}%"
+                query_params.extend([search_term] * 4)
 
             base_query += f" ORDER BY {order_by} DESC LIMIT 100"
 
-            # 검색어가 있으면 매개변수 바인딩
-            if search_query:
-                search_term = f"%{search_query}%"
-                self.cursor.execute(base_query, (search_term, search_term, search_term, search_term))
-            else:
-                self.cursor.execute(base_query)
-
-            # 데이터 가져오기
+            self.cursor.execute(base_query, query_params)
             result = self.cursor.fetchall()
             columns = [col[0] for col in self.cursor.description]  # 컬럼명 가져오기
             df = pd.DataFrame(result, columns=columns)
@@ -986,4 +982,3 @@ class DBManager:
 
         finally:
             self.disconnect()  # 항상 연결 종료
-                
