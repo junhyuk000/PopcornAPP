@@ -1,37 +1,94 @@
 {% extends 'movie_base.html' %}
 {% block css %}
 <style>
-    table td {
+    /* 표가 모바일에서 넘칠 경우 자동 스크롤 가능하게 조정 */
+    .table-responsive {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    table td, table th {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 200px;
-    }
-    
-    /* 툴팁 스타일 */
-    .tooltip-custom {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 8px;
-    border-radius: 5px;
-    font-size: 14px;
-    max-width: 300px;
-    display: none;
-    z-index: 1000;
-    white-space: normal; /* 툴팁 내에서 줄바꿈 허용 */
+        max-width: 150px;
     }
 
+    /* 툴팁 스타일 */
+    .tooltip-custom {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 14px;
+        max-width: 300px;
+        display: none;
+        z-index: 1000;
+        white-space: normal;
+    }
+
+    /* 정렬 버튼 & 필터 한 줄 정렬 */
+    .filters-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* 검색 필터 (제목, 감독, 배우, 검색버튼) 한 줄 정렬 */
+    .search-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* 검색 버튼 크기 조정 */
+    .search-btn {
+        width: auto;
+        white-space: nowrap;
+        padding: 5px 15px;
+    }
+
+    /* 검색 입력 필드 크기 조정 */
+    .form-control {
+        max-width: 200px;
+    }
+
+    /* 반응형 디자인: 화면이 600px 이하일 때 조정 */
+    @media (max-width: 600px) {
+        .filters-container,
+        .search-container {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            max-width: none;
+        }
+
+        .search-btn {
+            width: 100%;
+        }
+
+        table td, table th {
+            font-size: 12px;
+            max-width: 100px;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <h2 class="mt-4 mb-4 text-center">🎬 모든 영화 데이터 조회</h2>
+
 <div class="container">
-    <!-- 정렬 버튼 -->
+    <!-- 정렬 버튼 + 장르 & 국가 필터 -->
     <div class="row mb-3">
-        <div class="col-12">
-            <div class="btn-group" role="group" aria-label="정렬 기준">
+        <div class="col-12 filters-container">
+            <div class="btn-group" role="group">
                 <button id="sort-total_audience" class="btn btn-primary sort-btn" onclick="changeOrderBy('total_audience')">
                     👥 관람객 순
                 </button>
@@ -39,28 +96,14 @@
                     💰 매출액 순
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- 검색 필터 -->
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label>제목</label>
-            <input type="text" id="title" class="form-control" placeholder="영화 제목 입력">
-        </div>
-        <div class="col-md-4">
-            <label>장르</label>
             <select id="genre" class="form-control">
-                <option value="">-- 전체 --</option>
+                <option value="">🎭 장르</option>
                 {% for g in filters.genres %}
                 <option value="{{ g }}">{{ g }}</option>
                 {% endfor %}
             </select>
-        </div>
-        <div class="col-md-4">
-            <label>국가</label>
             <select id="nation" class="form-control">
-                <option value="">-- 전체 --</option>
+                <option value="">🌍 국가</option>
                 {% for n in filters.nations %}
                 <option value="{{ n }}">{{ n }}</option>
                 {% endfor %}
@@ -68,49 +111,37 @@
         </div>
     </div>
 
-
-<!-- 기존 검색 필터들... -->
+    <!-- 제목, 감독, 배우, 검색 버튼 한 줄 정렬 -->
     <div class="row mb-3">
-        <div class="col-md-4">
-            <label>감독</label>
-            <input type="text" id="director" class="form-control" placeholder="감독 입력">
-        </div>
-        <div class="col-md-4">
-            <label>배우</label>
-            <input type="text" id="actor" class="form-control" placeholder="배우 입력">
-        </div>
-        <div class="col-md-4 d-flex align-items-end">
-            <button class="btn btn-primary w-100" onclick="searchMovies()">🔍 검색</button>
+        <div class="col-12 search-container">
+            <input type="text" id="title" class="form-control" placeholder="🎬 제목">
+            <input type="text" id="director" class="form-control" placeholder="🎬 감독">
+            <input type="text" id="actor" class="form-control" placeholder="🎬 배우">
+            <button class="btn btn-primary search-btn" onclick="searchMovies()">🔍 검색</button>
         </div>
     </div>
 
-    <!-- 테이블 -->
-    <table id="movieTable" class="table table-striped">
-        <thead>
-            <tr>
-                <th style="white-space: nowrap;">순위</th>
-                <th>제목</th>
-                <th>장르</th>
-                <th>국가</th>
-                <th>감독</th>
-                <th>배우</th>
-                <th>매출액</th>
-                <th>관객수</th>
-                <th style="white-space: nowrap;">예고편</th>  <!-- 예고편 열 추가 -->
-            </tr>
-        </thead>
-        <tbody id="movieData"></tbody>
-    </table>
-
-    <!-- 페이지네이션 컨테이너 추가 -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <div id="pagination" class="btn-group" role="group"></div>
-            </div>
-        </div>
+    <!-- 반응형 테이블 -->
+    <div class="table-responsive">
+        <table id="movieTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>제목</th>
+                    <th>장르</th>
+                    <th>국가</th>
+                    <th>감독</th>
+                    <th>배우</th>
+                    <th>매출액</th>
+                    <th>관객수</th>
+                    <th>예고편</th>
+                </tr>
+            </thead>
+            <tbody id="movieData"></tbody>
+        </table>
     </div>
 </div>
+
 <!-- 툴팁 요소 추가 -->
 <div id="tooltip" class="tooltip-custom"></div>
 
