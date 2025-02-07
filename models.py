@@ -940,7 +940,7 @@ class DBManager:
             self.disconnect()
 
 
-    def get_movie_data(self, order_by="total_audience", search_query=None):
+    def get_all_movie_data(self, order_by="total_audience", search_query=None):
         """영화 데이터를 정렬/검색하여 반환하는 함수"""
         try:
             self.connect()
