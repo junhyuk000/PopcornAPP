@@ -223,8 +223,9 @@
 </div>
 
 <div class="container">
-    <h3 style="color: #283618;">영화 순위</h3>
+
     <div class="swiper">
+        <h3 style="color: #283618;">영화 순위</h3>
         <div class="swiper-wrapper">
             {% for movie in movies_info|sort(attribute='rank') %}  <!-- ✅ Rank 순 정렬 -->
             <div class="swiper-slide">
@@ -268,8 +269,7 @@
         </div>
 
 
-        <!-- 📌 웹에서는 기존 디자인 유지, 모바일에서만 반응형 적용 -->
-        <div class="table-container">
+        <div class="col-md-4">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
