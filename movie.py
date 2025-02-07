@@ -153,48 +153,48 @@ def edit_password():
             return f'<script>alert("비밀번호 변경 실패!, 아이디 혹은 이름이 다릅니다.");location.href="{url_for("login")}"</script>'
     return render_template('movie_edit_password.html')
 
-### 상영중인 영화 당일 랭킹순으로 화면에 표현
-@app.route('/movies')
-@app.route('/')
-def movies():
-    manager.update_movie_ratings_and_reviews()
-    movies = manager.get_all_movies()
-    movies_info = []
-    for movie in movies:
-        print(movie)
-        movies_info.append({'id':movie['id'],"title":movie['title'],"rank":movie['rank'],"filename":movie['filename'],"rating":movie['rating'],"reviews":movie['reviews']})
+# ### 상영중인 영화 당일 랭킹순으로 화면에 표현
+# @app.route('/movies')
+# @app.route('/')
+# def movies():
+#     manager.update_movie_ratings_and_reviews()
+#     movies = manager.get_all_movies()
+#     movies_info = []
+#     for movie in movies:
+#         print(movie)
+#         movies_info.append({'id':movie['id'],"title":movie['title'],"rank":movie['rank'],"filename":movie['filename'],"rating":movie['rating'],"reviews":movie['reviews']})
 
-    movie_infos = manager.get_all_movies()
-    page_title = 'Movie_Ranks'
-    title = [movie_info['title'] for movie_info in movie_infos]
-    t_sales = [movie_info['t_sales'] for movie_info in movie_infos]
-    c_sales = [movie_info['c_sales'] for movie_info in movie_infos]
-    t_audience = [movie_info['t_audience'] for movie_info in movie_infos]
-    c_audience = [movie_info['c_audience'] for movie_info in movie_infos]
+#     movie_infos = manager.get_all_movies()
+#     page_title = 'Movie_Ranks'
+#     title = [movie_info['title'] for movie_info in movie_infos]
+#     t_sales = [movie_info['t_sales'] for movie_info in movie_infos]
+#     c_sales = [movie_info['c_sales'] for movie_info in movie_infos]
+#     t_audience = [movie_info['t_audience'] for movie_info in movie_infos]
+#     c_audience = [movie_info['c_audience'] for movie_info in movie_infos]
 
-    # 전체 데이터를 JSON으로 전달
-    movies_data = [
-        {
-            "title": movie_info['title'],
-            "t_sales": movie_info['t_sales'],
-            "c_sales": movie_info['c_sales'],
-            "t_audience": movie_info['t_audience'],
-            "c_audience": movie_info['c_audience']
-        }
-        for movie_info in movie_infos
-    ]
+#     # 전체 데이터를 JSON으로 전달
+#     movies_data = [
+#         {
+#             "title": movie_info['title'],
+#             "t_sales": movie_info['t_sales'],
+#             "c_sales": movie_info['c_sales'],
+#             "t_audience": movie_info['t_audience'],
+#             "c_audience": movie_info['c_audience']
+#         }
+#         for movie_info in movie_infos
+#     ]
 
-    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # 공인 ip 가져오기
-    loc = manager.loc_ip(user_ip)
-    return render_template('movie_movies.html', movies_info=movies_info, 
-        page_title = page_title,
-        movies_data=movies_data,
-        title=title,
-        t_sales=t_sales,
-        c_sales=c_sales,
-        t_audience=t_audience,
-        c_audience=c_audience,
-        loc = loc)
+#     user_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # 공인 ip 가져오기
+#     loc = manager.loc_ip(user_ip)
+#     return render_template('movie_movies.html', movies_info=movies_info, 
+#         page_title = page_title,
+#         movies_data=movies_data,
+#         title=title,
+#         t_sales=t_sales,
+#         c_sales=c_sales,
+#         t_audience=t_audience,
+#         c_audience=c_audience,
+#         loc = loc)
 
 
 
@@ -342,12 +342,12 @@ def movie_ranks():
         c_audience=c_audience
     )        
 
-### 카카오 지도로 사용자 공인 ip를 활용하여 근처 영화관 검색 
-@app.route('/movie_map')
-def movie_map():
-    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # 공인 ip 가져오기
-    loc = manager.loc_ip(user_ip)
-    return render_template('movie_map.html', loc= loc)
+# ### 카카오 지도로 사용자 공인 ip를 활용하여 근처 영화관 검색 
+# @app.route('/movie_map')
+# def movie_map():
+#     user_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # 공인 ip 가져오기
+#     loc = manager.loc_ip(user_ip)
+#     return render_template('movie_map.html', loc= loc)
 
 ### 영화별 예고편
 @app.route('/movie_youtube/<title>')
