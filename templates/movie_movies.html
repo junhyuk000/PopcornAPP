@@ -205,7 +205,8 @@
 {% block title %}Movie Rankings{% endblock %}
 
 {% block content %}
-<h2 style="color:  #bc6c25; text-align: center;">🎬 오늘 영화 1위 : {% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %} </h2>
+<h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
+<h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 <!-- 예고편을 표시할 iframe -->
 <div class="trailer-container">
     <iframe id="trailer" frameborder="0"
@@ -261,8 +262,8 @@
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th style="color: white;">Rank</th>
-                        <th style="color: white;">Title</th>
+                        <th style="background-color: #bc6c25; color: white;">Rank</th>
+                        <th style="background-color: #bc6c25; color: white;">Title</th>
                     </tr>
                 </thead>
                 <tbody id="ranking-table-body">
@@ -271,7 +272,7 @@
             </table>
         </div>
     </div>
-</div>
+</div><br><br>
 
 <h2>Cinemas Near Me</h2>
 <input type="text" id="searchInput" placeholder="주소를 입력하세요" style="width: 300px;">
@@ -484,7 +485,7 @@
     }
     // 초기 순위 업데이트
     updateRanking(currentMetric);
-    
+
     function loadKakaoMap() {
         if (window.kakao && window.kakao.maps) {
             console.log("카카오 맵 API 이미 로드됨");
