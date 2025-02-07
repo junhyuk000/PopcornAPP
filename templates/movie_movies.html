@@ -41,20 +41,9 @@
 
     /* 📌 모바일에서만 테이블 반응형 적용 */
     @media (max-width: 768px) {
-        .table-container {
-            overflow-x: auto; /* 모바일에서만 가로 스크롤 가능하게 설정 */
-        }
-
-        .table {
-            min-width: 600px; /* 너무 작아지지 않도록 설정 */
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap; /* 줄바꿈 방지 */
-        }
-
-        .table th, .table td {
-            font-size: 12px; /* 모바일에서 폰트 크기 줄이기 */
-            padding: 6px; /* 여백 조정 */
+        .row {
+            display: flex;
+            flex-direction: column-reverse; /* 모바일에서 테이블이 아래로 이동 */
         }
     }
 
