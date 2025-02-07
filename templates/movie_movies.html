@@ -10,7 +10,7 @@
         margin-top: 50px;
     }
 
-    /* 📺 TV 본체 크기 조정 */
+    /* 📺 TV 본체 */
     .tv-frame {
         position: relative;
         width: 600px; /* 기존보다 크기 키움 */
@@ -26,19 +26,19 @@
         padding-top: 20px;
     }
 
-    /* 📡 TV 안테나 */
+    /* 📡 왼쪽 대각선 뒤로 뻗는 안테나 */
     .tv-antenna {
         position: absolute;
-        top: -50px;
-        left: 50%;
-        width: 10px;
-        height: 50px;
+        top: -30px;
+        left: 10px; /* 왼쪽 대각선 느낌 */
+        width: 8px;
+        height: 80px; /* 길게 뻗음 */
         background: #666;
+        transform: rotate(-30deg); /* 왼쪽 대각선으로 회전 */
         border-radius: 5px;
-        transform: translateX(-50%);
     }
 
-    /* 📺 TV 화면 */
+    /* 🎬 TV 화면 */
     .tv-screen-container {
         position: absolute;
         top: 15%;
@@ -51,46 +51,65 @@
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
     }
 
-    /* 🎬 유튜브 영상 */
+    /* 🎥 유튜브 영상 */
     .tv-screen {
         width: 100%;
         height: 100%;
         border: none;
     }
 
-    /* 🎛 TV 다이얼 버튼 */
+    /* 🎛 동전 넣는 모양 버튼 */
     .tv-knobs {
         position: absolute;
-        bottom: 15px;
+        bottom: 20px;
         right: 20px;
         display: flex;
         flex-direction: column;
         gap: 10px;
+        align-items: center;
+    }
+
+    .coin-slot {
+        width: 10px;
+        height: 40px;
+        background: #333;
+        border-radius: 5px;
+        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
     }
 
     .knob {
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         background: #555;
         border-radius: 50%;
         box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
     }
 
-    /* 🦵 TV 다리 */
+    /* 🦵 대각선 TV 다리 */
     .tv-legs {
         position: absolute;
-        bottom: -30px;
+        bottom: -40px;
         left: 50%;
         display: flex;
-        gap: 80px;
+        gap: 180px;
         transform: translateX(-50%);
     }
 
     .tv-leg {
-        width: 15px;
-        height: 40px;
+        width: 12px;
+        height: 60px;
         background: #888;
         border-radius: 5px;
+    }
+
+    /* 왼쪽 다리는 왼쪽 대각선 */
+    .tv-leg.left {
+        transform: rotate(-20deg);
+    }
+
+    /* 오른쪽 다리는 오른쪽 대각선 */
+    .tv-leg.right {
+        transform: rotate(20deg);
     }
 
 
