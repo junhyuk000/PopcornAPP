@@ -2,10 +2,22 @@
 {% block css %}
 <style>
     .trailer-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto 20px;
-    text-align: center;
+        width: 100%;
+        max-width: 1200px; /* 최대 너비 설정 */
+        margin: 0 auto 20px;
+        text-align: center;
+    }
+
+    #trailer {
+        width: 100%;
+        height: 600px; /* 크기 확대 */
+    }
+
+    /* 모바일 화면에서 높이 조정 */
+    @media (max-width: 768px) {
+        #trailer {
+            height: 300px; /* 모바일에서는 더 작게 */
+        }
     }
 
     .swiper {
@@ -127,10 +139,10 @@
 {% block title %}Movie Rankings{% endblock %}
 
 {% block content %}
-<h2 style="color:  #bc6c25; text-align: center;">🎬 오늘 영화 순위 </h2>
+<h2 style="color:  #bc6c25; text-align: center;">🎬 오늘 영화 1위 : {% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %} </h2>
 <!-- 예고편을 표시할 iframe -->
 <div class="trailer-container">
-    <iframe id="trailer" width="100%" height="400" frameborder="0"
+    <iframe id="trailer" frameborder="0"
         allow="autoplay; encrypted-media" allowfullscreen>
     </iframe>
 </div>
