@@ -497,7 +497,7 @@ def filter_data():
     order_by = request.args.get("order_by", "total_audience")  # 정렬 기준 (기본: 누적 관람객)
     search_query = request.args.get("search", "").strip()  # 검색어
 
-    movies = manager.get_movie_data(order_by, search_query)
+    movies = manager.get_all_movie_data(order_by, search_query)
 
     if not movies:
         return jsonify({"message": "검색 결과가 없습니다."})  # 결과가 없으면 메시지 반환
