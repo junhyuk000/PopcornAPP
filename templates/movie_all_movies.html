@@ -5,6 +5,7 @@
     .table-responsive {
         overflow-x: auto;
         width: 100%;
+        display: block;
     }
 
     table td, table th {
@@ -62,26 +63,15 @@
         max-width: 200px;
     }
 
-    /* 반응형 디자인: 화면이 600px 이하일 때 조정 */
+    /* 반응형 디자인: 화면이 600px 이하일 때 테이블을 스크롤 가능하게 조정 */
     @media (max-width: 600px) {
-        .filters-container,
-        .search-container {
-            flex-direction: column;
-            gap: 5px;
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 */
         }
 
-        .form-control {
-            width: 100%;
-            max-width: none;
-        }
-
-        .search-btn {
-            width: 100%;
-        }
-
-        table td, table th {
-            font-size: 12px;
-            max-width: 100px;
+        table {
+            min-width: 600px; /* 최소 크기 지정하여 가로 스크롤 유도 */
         }
     }
 </style>
