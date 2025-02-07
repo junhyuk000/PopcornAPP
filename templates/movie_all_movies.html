@@ -86,7 +86,7 @@
     <table id="movieTable" class="table table-striped">
         <thead>
             <tr>
-                <th>순위</th>
+                <th style="white-space: nowrap;">순위</th>
                 <th>제목</th>
                 <th>장르</th>
                 <th>국가</th>
@@ -94,7 +94,7 @@
                 <th>배우</th>
                 <th>매출액</th>
                 <th>관객수</th>
-                <th>예고편</th>  <!-- 예고편 열 추가 -->
+                <th style="white-space: nowrap;">예고편</th>  <!-- 예고편 열 추가 -->
             </tr>
         </thead>
         <tbody id="movieData"></tbody>
@@ -143,11 +143,7 @@
                     <td>${movie.actors || '-'}</td>
                     <td>${formatNumber(movie.total_sales)}</td>
                     <td>${formatNumber(movie.total_audience)}</td>
-                    <td>
-                        ${movie.trailer_url ? 
-                            `<a href="/movie_youtube/${movie.movie_title}" target="_blank" class="btn btn-sm btn-outline-success">▶ 예고편</a>` 
-                            : '-'}
-                    </td>
+                    <td><a href="/movie_youtube/${movie.movie_title}" target="_blank" class="btn btn-sm btn-outline-success">▶ 예고편</a></td>
                 `;
                 tbody.appendChild(row);
             });
