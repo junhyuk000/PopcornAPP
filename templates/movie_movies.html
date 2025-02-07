@@ -29,29 +29,31 @@
         height: auto !important;
     }
 
-    /* 📌 테이블을 감싸는 컨테이너에 스크롤 적용 */
-    .table-container {
-        width: 100%;
-        overflow-x: auto; /* 모바일에서 표가 넘치지 않도록 스크롤 가능하게 설정 */
-    }
-
-    /* 📌 기본 테이블 스타일 */
+    /* 기본 테이블 스타일 (웹에서는 변경 없음) */
     .table {
-        min-width: 400px; /* 테이블 최소 너비 설정 */
-        width: 100%; /* 화면 크기에 맞게 자동 조정 */
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    /* 📌 모바일 화면에서 표 조정 */
+    /* 📌 모바일에서만 테이블 반응형 적용 */
     @media (max-width: 768px) {
+        .table-container {
+            overflow-x: auto; /* 모바일에서만 가로 스크롤 가능하게 설정 */
+        }
+
         .table {
-            font-size: 12px; /* 폰트 크기 줄이기 */
+            min-width: 600px; /* 너무 작아지지 않도록 설정 */
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap; /* 줄바꿈 방지 */
         }
 
         .table th, .table td {
-            padding: 6px; /* 여백 줄이기 */
-            white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+            font-size: 12px; /* 모바일에서 폰트 크기 줄이기 */
+            padding: 6px; /* 여백 조정 */
         }
     }
+
 
     .trailer-container {
         width: 100%;
@@ -246,9 +248,10 @@
     </div>
 </div>
 <div class="text-center">
-    <h3 class="mb-4"  id="rank-title" style="color:#283618;">일일 관객수</h3>
+
         <!-- 차트 전환 버튼 -->
         <div class="d-flex flex-wrap justify-content-center mt-4 gap-2">
+            <h3 class="mb-4"  id="rank-title" style="color:#283618;">일일 관객수</h3>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color:  #ad7b67;">일일 관객수</button>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
@@ -260,7 +263,8 @@
             <canvas id="chart" style="max-width: 100%; height: 60vh;"></canvas>
         </div>
 
-        <!-- 영화 순위 표 (모바일에서도 넘치지 않도록 변경) -->
+
+        <!-- 📌 웹에서는 기존 디자인 유지, 모바일에서만 반응형 적용 -->
         <div class="table-container">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
@@ -274,6 +278,7 @@
                 </tbody>
             </table>
         </div>
+
 
     </div>
 </div><br><br>
