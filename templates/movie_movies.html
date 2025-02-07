@@ -225,7 +225,7 @@
 <div class="container">
 
     <div class="swiper">
-        <h3 style="color: #283618;">영화 순위</h3>
+        <h3 style="color: #283618; text-align: center;">영화 순위</h3>
         <div class="swiper-wrapper">
             {% for movie in movies_info|sort(attribute='rank') %}  <!-- ✅ Rank 순 정렬 -->
             <div class="swiper-slide">
@@ -255,8 +255,9 @@
 <div class="text-center">
 
         <!-- 차트 전환 버튼 -->
+        <h3 class="mb-4"  id="rank-title" style="color:#283618;">일일 관객수</h3>
         <div class="d-flex flex-wrap justify-content-center mt-4 gap-2">
-            <h3 class="mb-4"  id="rank-title" style="color:#283618;">일일 관객수</h3>
+            
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_audience')" style="color:  #ad7b67;">일일 관객수</button>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('c_audience')" style="color:  #ad7b67;">누적 관객수</button>
             <button class="btn btn-outline-light mx-2" onclick="updateChartAndRank('t_sales')" style="color:  #ad7b67;">일일 매출액</button>
