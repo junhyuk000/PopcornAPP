@@ -2,32 +2,37 @@
 {% block css %}
 <style>
     .tv-container {
-        position: relative;
-        width: 400px;  /* TV 이미지 크기에 맞게 조정 */
-        height: auto;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 auto; /* 가운데 정렬 */
+        width: 100%;
+        height: auto;
+        margin-top: 20px;
     }
 
     .tv-frame {
-        width: 100%;
-        display: block;
+        position: relative;
+        width: 350px;
+        height: 250px;
+        background: #ccc;
+        border-radius: 20px;
+        border: 8px solid #888;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
     }
 
     .tv-screen-container {
-        position: absolute;
-        top: 20%;   /* TV 화면 위치 조정 */
-        left: 12%;
-        width: 76%;
-        height: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        position: relative;
+        width: 80%;
+        height: 60%;
+        background: black;
+        border-radius: 10px;
         overflow: hidden;
-        border-radius: 10px; /* 둥근 화면 효과 */
-        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5); /* TV 내부 그림자 */
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
     }
 
     .tv-screen {
@@ -36,11 +41,21 @@
         border: none;
     }
 
-
-    @keyframes flicker {
-        0% { opacity: 1; }
-        100% { opacity: 0.98; }
+    .tv-knobs {
+        display: flex;
+        justify-content: space-between;
+        width: 50%;
+        margin-top: 10px;
     }
+
+    .knob {
+        width: 20px;
+        height: 20px;
+        background: #555;
+        border-radius: 50%;
+        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+    }
+
 
 
     .button-container {
@@ -259,12 +274,17 @@
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 <!-- 예고편을 표시할 iframe -->
-<div class="tv-container">
-    <img src="/static/images/tv-frame.png" alt="Retro TV" class="tv-frame">
-    <div class="tv-screen-container">
-        <iframe id="trailer" class="tv-screen" frameborder="0"
-            allow="autoplay; encrypted-media" allowfullscreen>
-        </iframe>
+div class="tv-container">
+    <div class="tv-frame">
+        <div class="tv-screen-container">
+            <iframe id="trailer" class="tv-screen" frameborder="0"
+                allow="autoplay; encrypted-media" allowfullscreen>
+            </iframe>
+        </div>
+        <div class="tv-knobs">
+            <div class="knob"></div>
+            <div class="knob"></div>
+        </div>
     </div>
 </div>
 
