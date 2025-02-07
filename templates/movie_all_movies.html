@@ -1,9 +1,31 @@
 {% extends 'movie_base.html' %}
+{% block css %}
+<style>
+    table td {
+        white-space: nowrap;  /* 줄바꿈 방지 */
+        overflow: hidden;  /* 넘치는 텍스트 숨김 */
+        text-overflow: ellipsis;  /* 너무 긴 경우 ... 처리 */
+        max-width: 200px;  /* 셀의 최대 너비 설정 */
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <h2 class="mt-4 mb-4 text-center">🎬 영화 데이터 조회</h2>
 <div class="container">
-
+    <!-- 정렬 버튼 -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group" role="group" aria-label="정렬 기준">
+                <button id="sort-total_audience" class="btn btn-primary sort-btn" onclick="changeOrderBy('total_audience')">
+                    👥 관람객 순
+                </button>
+                <button id="sort-total_sales" class="btn btn-outline-primary sort-btn" onclick="changeOrderBy('total_sales')">
+                    💰 매출액 순
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- 검색 필터 -->
     <div class="row mb-3">
@@ -30,19 +52,7 @@
             </select>
         </div>
     </div>
-    <!-- 정렬 버튼 -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="btn-group" role="group" aria-label="정렬 기준">
-                <button id="sort-total_audience" class="btn btn-primary sort-btn" onclick="changeOrderBy('total_audience')">
-                    👥 관람객 순
-                </button>
-                <button id="sort-total_sales" class="btn btn-outline-primary sort-btn" onclick="changeOrderBy('total_sales')">
-                    💰 매출액 순
-                </button>
-            </div>
-        </div>
-    </div>
+
 
 <!-- 기존 검색 필터들... -->
     <div class="row mb-3">
@@ -104,14 +114,14 @@
             data.data.forEach(movie => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${movie.rank}</td>
-                    <td>${movie.movie_title}</td>
-                    <td>${movie.genre || '-'}</td>
-                    <td>${movie.nations || '-'}</td>
-                    <td>${movie.director || '-'}</td>
-                    <td>${movie.actors || '-'}</td>
-                    <td>${formatNumber(movie.total_sales)}</td>
-                    <td>${formatNumber(movie.total_audience)}</td>
+                    <td class="no-wrap">${movie.rank}</td>
+                    <td class="no-wrap">${movie.movie_title}</td>
+                    <td class="no-wrap">${movie.genre || '-'}</td>
+                    <td class="no-wrap">${movie.nations || '-'}</td>
+                    <td class="no-wrap">${movie.director || '-'}</td>
+                    <td class="no-wrap">${movie.actors || '-'}</td>
+                    <td class="no-wrap">${formatNumber(movie.total_sales)}</td>
+                    <td class="no-wrap">${formatNumber(movie.total_audience)}</td>
                 `;
                 tbody.appendChild(row);
             });
