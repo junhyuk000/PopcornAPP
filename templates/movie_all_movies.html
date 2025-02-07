@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-4 mb-4 text-center">🎬 영화 데이터 조회</h1>
+    <h2 class="mt-4 mb-4 text-center">🎬 영화 데이터 조회</h2>
 
     <!-- 검색 필터 -->
     <div class="row mb-3">
@@ -29,7 +29,21 @@
             </select>
         </div>
     </div>
+    <!-- 정렬 버튼 -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group" role="group" aria-label="정렬 기준">
+                <button id="sort-total_audience" class="btn btn-primary sort-btn" onclick="changeOrderBy('total_audience')">
+                    👥 관람객 순
+                </button>
+                <button id="sort-total_sales" class="btn btn-outline-primary sort-btn" onclick="changeOrderBy('total_sales')">
+                    💰 매출액 순
+                </button>
+            </div>
+        </div>
+    </div>
 
+<!-- 기존 검색 필터들... -->
     <div class="row mb-3">
         <div class="col-md-4">
             <label>감독</label>
@@ -71,6 +85,7 @@
             .then(data => updateTable(data));
     }
     let currentPage = 1;
+    let currentOrderBy = 'total_audience';  // 기본 정렬 기준
 
     function updateTable(data) {
         const tbody = document.getElementById('movieData');
@@ -108,24 +123,40 @@
         const pagination = document.getElementById('pagination');
         let paginationHtml = '';
         
+        // 처음 페이지로 이동
+        paginationHtml += `
+            <button class="btn btn-secondary me-2" 
+                    onclick="changePage(1)"
+                    ${currentPage === 1 ? 'disabled' : ''}>
+                ≪
+            </button>
+        `;
+        
         // 이전 페이지 버튼
         paginationHtml += `
             <button class="btn btn-secondary me-2" 
                     onclick="changePage(${currentPage - 1})"
                     ${currentPage === 1 ? 'disabled' : ''}>
-                이전
+                ＜
             </button>
         `;
         
-        // 페이지 번호들
-        for (let i = 1; i <= totalPages; i++) {
+        // 페이지 번호들 (현재 페이지 주변 5개만 표시)
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        if (startPage > 1) {
+            paginationHtml += '<span class="mx-2">...</span>';
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
             if (i === currentPage) {
                 paginationHtml += `
-                    <button class="btn btn-primary me-2">${i}</button>
+                    <button class="btn btn-primary mx-1">${i}</button>
                 `;
             } else {
                 paginationHtml += `
-                    <button class="btn btn-outline-primary me-2" 
+                    <button class="btn btn-outline-primary mx-1" 
                             onclick="changePage(${i})">
                         ${i}
                     </button>
@@ -133,12 +164,25 @@
             }
         }
         
+        if (endPage < totalPages) {
+            paginationHtml += '<span class="mx-2">...</span>';
+        }
+        
         // 다음 페이지 버튼
         paginationHtml += `
-            <button class="btn btn-secondary" 
+            <button class="btn btn-secondary ms-2" 
                     onclick="changePage(${currentPage + 1})"
                     ${currentPage === totalPages ? 'disabled' : ''}>
-                다음
+                ＞
+            </button>
+        `;
+        
+        // 마지막 페이지로 이동
+        paginationHtml += `
+            <button class="btn btn-secondary ms-2" 
+                    onclick="changePage(${totalPages})"
+                    ${currentPage === totalPages ? 'disabled' : ''}>
+                ≫
             </button>
         `;
         
@@ -150,8 +194,22 @@
         searchMovies();
     }
 
+    function changeOrderBy(orderBy) {
+        currentOrderBy = orderBy;
+        currentPage = 1;  // 정렬 기준이 바뀌면 첫 페이지로 이동
+        searchMovies();
+        
+        // 정렬 버튼 활성화 상태 업데이트
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline-primary');
+        });
+        document.getElementById(`sort-${orderBy}`).classList.remove('btn-outline-primary');
+        document.getElementById(`sort-${orderBy}`).classList.add('btn-primary');
+    }
+
     function searchMovies() {
-        let query = `?page=${currentPage}&title=${document.getElementById("title").value}&genre=${document.getElementById("genre").value}&nation=${document.getElementById("nation").value}&director=${document.getElementById("director").value}&actor=${document.getElementById("actor").value}`;
+        let query = `?page=${currentPage}&order_by=${currentOrderBy}&title=${document.getElementById("title").value}&genre=${document.getElementById("genre").value}&nation=${document.getElementById("nation").value}&director=${document.getElementById("director").value}&actor=${document.getElementById("actor").value}`;
         fetch(`/filter${query}`)
             .then(response => response.json())
             .then(data => updateTable(data));
