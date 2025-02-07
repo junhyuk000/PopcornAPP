@@ -1,0 +1,77 @@
+{% extends 'movie_base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4 text-center">🎬 영화 데이터 조회</h1>
+
+    <!-- 검색 필터 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label for="nation">🌍 국가별 검색:</label>
+            <input type="text" id="nation" class="form-control" placeholder="국가 입력">
+        </div>
+        <div class="col-md-4">
+            <label for="director">🎥 감독별 검색:</label>
+            <input type="text" id="director" class="form-control" placeholder="감독 입력">
+        </div>
+        <div class="col-md-4">
+            <label for="actor">🎭 배우별 검색:</label>
+            <input type="text" id="actor" class="form-control" placeholder="배우 입력">
+        </div>
+    </div>
+    
+    <button class="btn btn-primary mb-4" onclick="applyFilters()">🔍 검색</button>
+
+    <!-- 영화 데이터 테이블 -->
+    <table id="movieTable" class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>순위</th>
+                <th>영화 제목</th>
+                <th>장르</th>
+                <th>국가</th>
+                <th>감독</th>
+                <th>배우</th>
+                <th>누적 매출액</th>
+                <th>누적 관람객</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.rank }}</td>
+                <td>{{ row.movie_title }}</td>
+                <td>{{ row.genre }}</td>
+                <td>{{ row.nations }}</td>
+                <td>{{ row.director }}</td>
+                <td>{{ row.actors }}</td>
+                <td>{{ "{:,}".format(row.total_sales) }} 원</td>
+                <td>{{ "{:,}".format(row.total_audience) }} 명</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- DataTables 및 검색 필터 적용 -->
+<script>
+    $(document).ready(function() {
+        $('#movieTable').DataTable({
+            "order": [[7, "desc"]], // 누적 관람객 기준 내림차순 정렬
+            "paging": true,
+            "searching": true,
+            "info": true
+        });
+    });
+
+    function applyFilters() {
+        let nation = document.getElementById("nation").value;
+        let director = document.getElementById("director").value;
+        let actor = document.getElementById("actor").value;
+        
+        let url = `/?nation=${nation}&director=${director}&actor=${actor}`;
+        window.location.href = url;
+    }
+</script>
+
+{% endblock %}

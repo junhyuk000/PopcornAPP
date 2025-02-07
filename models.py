@@ -939,4 +939,31 @@ class DBManager:
         finally:
             self.disconnect()
 
+
+    def get_all_movie_data(self):
+        """영화 데이터를 가져오는 함수"""
+        try:
+            self.connect()  # DB 연결
+            
+            query = """
+                SELECT 
+                    ROW_NUMBER() OVER (ORDER BY total_audience DESC) AS rank,
+                    movie_title, genre, nations, director, actors, total_sales, total_audience
+                FROM movie_summary
+                ORDER BY total_audience DESC
+            """
+
+            # ✅ self.connection을 직접 사용해야 함
+            df = pd.read_sql(query, self.connection)  
+
+            return df  # DataFrame 반환
+
+        except mysql.connector.Error as error:
+            print(f"❌ Database error: {error}")
+            if self.connection:
+                self.connection.rollback()
+            return "데이터 처리 중 오류 발생!"
+
+        finally:
+            self.disconnect()  # DB 연결 종료
             

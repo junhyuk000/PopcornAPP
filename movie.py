@@ -486,6 +486,22 @@ def movie_popcorns():
     movies = manager.get_all_popcorns_movies()
     return render_template('movie_popcorns.html', movies=movies)
 
+@app.route('/all_movies')
+def all_movies():
+    df = manager.get_all_movie_data()
+    # 필터링
+    nation_filter = request.args.get("nation")
+    director_filter = request.args.get("director")
+    actor_filter = request.args.get("actor")
+    if nation_filter:
+        df = df[df["nations"].str.contains(nation_filter, na=False)]
+    if director_filter:
+        df = df[df["director"].str.contains(director_filter, na=False)]
+    if actor_filter:
+        df = df[df["actors"].str.contains(actor_filter, na=False)]
+
+    return render_template('movie_all_movies.html', data=df.to_dict(orient="records"))
+
 
 
 if __name__ == '__main__':
