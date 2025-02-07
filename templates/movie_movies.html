@@ -29,25 +29,27 @@
         height: auto !important;
     }
 
-    /* ✅ 테이블이 모바일에서도 넘치지 않도록 조정 */
+    /* 📌 테이블을 감싸는 컨테이너에 스크롤 적용 */
     .table-container {
         width: 100%;
-        overflow-x: auto;
+        overflow-x: auto; /* 모바일에서 표가 넘치지 않도록 스크롤 가능하게 설정 */
     }
 
+    /* 📌 기본 테이블 스타일 */
     .table {
-        min-width: 400px; /* ✅ 최소 너비 설정하여 너무 작아지지 않게 함 */
+        min-width: 400px; /* 테이블 최소 너비 설정 */
+        width: 100%; /* 화면 크기에 맞게 자동 조정 */
     }
 
-    /* ✅ 모바일에서 표 폰트 크기 및 여백 조정 */
+    /* 📌 모바일 화면에서 표 조정 */
     @media (max-width: 768px) {
         .table {
-            font-size: 12px; /* ✅ 모바일에서 폰트 크기 줄이기 */
+            font-size: 12px; /* 폰트 크기 줄이기 */
         }
 
         .table th, .table td {
-            padding: 6px; /* ✅ 여백 줄이기 */
-            white-space: nowrap; /* ✅ 텍스트가 줄바꿈되지 않도록 설정 */
+            padding: 6px; /* 여백 줄이기 */
+            white-space: nowrap; /* 텍스트 줄바꿈 방지 */
         }
     }
 
@@ -258,8 +260,8 @@
             <canvas id="chart" style="max-width: 100%; height: 60vh;"></canvas>
         </div>
 
-        <!-- 매출액 순위 -->
-        <div class="col-md-4">
+        <!-- 영화 순위 표 (모바일에서도 넘치지 않도록 변경) -->
+        <div class="table-container">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
@@ -272,6 +274,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 </div><br><br>
 
