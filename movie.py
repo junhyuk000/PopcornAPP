@@ -183,6 +183,9 @@ def movies():
         }
         for movie_info in movie_infos
     ]
+
+    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # 공인 ip 가져오기
+    loc = manager.loc_ip(user_ip)
     return render_template('movie_movies.html', movies_info=movies_info, 
         page_title = page_title,
         movies_data=movies_data,
@@ -190,7 +193,8 @@ def movies():
         t_sales=t_sales,
         c_sales=c_sales,
         t_audience=t_audience,
-        c_audience=c_audience)
+        c_audience=c_audience,
+        loc = loc)
 
 
 
