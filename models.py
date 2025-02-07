@@ -1003,13 +1003,20 @@ class DBManager:
             self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
             genre_results = self.cursor.fetchall()
 
-            # 🚨 디버깅: 쿼리 실행 후 결과 출력
-            print(f"🟢 [DEBUG] Raw Genre Results: {genre_results}")
+            # 🚨 🔴 fetchall() 결과 확인
+            print(f"🟢 [DEBUG] fetchall() Raw Data: {genre_results}")
 
-            # ✅ 딕셔너리에서 "genre" 키를 사용하여 리스트 생성
-            genres = [row["genre"] for row in genre_results if isinstance(row, dict) and "genre" in row]
+            # ✅ 리스트 변환 (fetchall()이 딕셔너리인지, 튜플인지 확인)
+            if genre_results:
+                if isinstance(genre_results[0], dict):
+                    genres = [row["genre"] for row in genre_results if "genre" in row]  # ✅ 딕셔너리 처리
+                elif isinstance(genre_results[0], tuple):
+                    genres = [row[0] for row in genre_results]  # ✅ 튜플 처리
+                else:
+                    genres = ["Unknown"]
+            else:
+                genres = ["Unknown"]
 
-            # ✅ 장르 데이터가 비어있을 경우 기본값 설정
             if not genres:
                 print("🔴 [DEBUG] No genre data found in database.")
                 genres = ["Unknown"]  # 기본값 추가
@@ -1018,13 +1025,20 @@ class DBManager:
             self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
             nation_results = self.cursor.fetchall()
 
-            # 🚨 디버깅: 국가 데이터 확인
-            print(f"🟢 [DEBUG] Raw Nation Results: {nation_results}")
+            # 🚨 국가 데이터 확인
+            print(f"🟢 [DEBUG] fetchall() Nation Data: {nation_results}")
 
-            # ✅ 딕셔너리에서 "nations" 키를 사용하여 리스트 생성
-            nations = [row["nations"] for row in nation_results if isinstance(row, dict) and "nations" in row]
+            # ✅ 리스트 변환 (fetchall()이 딕셔너리인지, 튜플인지 확인)
+            if nation_results:
+                if isinstance(nation_results[0], dict):
+                    nations = [row["nations"] for row in nation_results if "nations" in row]  # ✅ 딕셔너리 처리
+                elif isinstance(nation_results[0], tuple):
+                    nations = [row[0] for row in nation_results]  # ✅ 튜플 처리
+                else:
+                    nations = ["Unknown"]
+            else:
+                nations = ["Unknown"]
 
-            # ✅ 국가 데이터가 비어있을 경우 기본값 설정
             if not nations:
                 print("🔴 [DEBUG] No nation data found in database.")
                 nations = ["Unknown"]  # 기본값 추가
