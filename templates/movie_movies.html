@@ -26,15 +26,15 @@
         padding-top: 20px;
     }
 
-    /* 📡 안테나 (왼쪽 모서리 끝에서 살짝 오른쪽) */
+    /* 📡 안테나 (왼쪽 모서리 끝쪽으로 이동) */
     .tv-antenna {
         position: absolute;
         top: -50px;
-        left: 40px; /* 왼쪽 모서리에서 살짝 오른쪽 */
+        left: 10px; /* 왼쪽 모서리 끝쪽 */
         width: 6px;
         height: 100px;
         background: #666;
-        transform: rotate(-30deg);
+        transform: rotate(-40deg);
         border-radius: 3px;
     }
 
@@ -91,13 +91,25 @@
         box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.5);
     }
 
-    /* 🦵 TV 다리 (제대로 방향 맞춰서 휘게 수정) */
+    /* 🔴 추가된 버튼 (빨간색 동그라미 위치) */
+    .extra-button {
+        position: absolute;
+        bottom: 20px;
+        right: 10px;
+        width: 20px;
+        height: 40px;
+        background: #333;
+        border-radius: 5px;
+        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 🦵 TV 다리 (좀 더 바깥쪽으로 위치 이동) */
     .tv-legs {
         position: absolute;
         bottom: -50px;
         left: 50%;
         display: flex;
-        gap: 200px;
+        gap: 240px; /* 다리 간격 더 넓게 조정 */
         transform: translateX(-50%);
     }
 
@@ -107,7 +119,7 @@
         height: 80px;
         background: #888;
         border-radius: 5px;
-        transform: rotate(20deg); /* 반대 방향으로 수정 */
+        transform: rotate(15deg); /* 다리 방향 맞춤 */
     }
 
     /* 오른쪽 다리 - 오른쪽으로 휘게 */
@@ -116,9 +128,8 @@
         height: 80px;
         background: #888;
         border-radius: 5px;
-        transform: rotate(-20deg); /* 반대 방향으로 수정 */
+        transform: rotate(-15deg); /* 다리 방향 맞춤 */
     }
-
 
 
     .button-container {
@@ -351,17 +362,23 @@
 
         <!-- 🎛 동전 넣는 모양의 버튼 -->
         <div class="tv-knobs">
-            <div class="coin-slot"></div>
-            <div class="knob"></div>
+            <div class="button-container">
+                <div class="coin-slot"></div>
+                <div class="knob"></div>
+            </div>
         </div>
 
-        <!-- 🦵 대각선 TV 다리 -->
+        <!-- 🔴 새 버튼 (빨간 동그라미 위치) -->
+        <div class="extra-button"></div>
+
+        <!-- 🦵 대각선 TV 다리 (위치 수정) -->
         <div class="tv-legs">
             <div class="tv-leg left"></div>
             <div class="tv-leg right"></div>
         </div>
     </div>
 </div>
+
 
 
 
