@@ -991,7 +991,7 @@ class DBManager:
 
         finally:
             self.disconnect()  # 항상 연결 종료
-            
+
     def get_genres_and_nations(self):
         """장르 및 국가 목록 가져오기"""
         try:
@@ -1035,4 +1035,3 @@ class DBManager:
 
         finally:
             self.disconnect()  # 항상 연결 종료
-
