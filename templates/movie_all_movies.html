@@ -13,6 +13,12 @@
         text-overflow: ellipsis;
         max-width: 150px;
     }
+    /* 표의 hover 효과 */
+    table tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.05); /* 연한 회색 */
+        transition: background-color 0.3s ease-in-out;
+    }
+
 
     /* 툴팁 스타일 */
     .tooltip-custom {
@@ -149,9 +155,6 @@
             </div>
         </div>
 </div>
-
-
-
 <!-- 툴팁 요소 추가 -->
 <div id="tooltip" class="tooltip-custom"></div>
 
