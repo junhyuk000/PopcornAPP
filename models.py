@@ -940,22 +940,24 @@ class DBManager:
             self.disconnect()
 
 
-    def get_all_movie_data(self, order_by="total_audience", title="", genre="", nation="", director="", actor=""):
-        """영화 데이터를 정렬/검색하여 반환하는 함수"""
+    def get_all_movie_data(self, page=1, per_page=20, order_by="total_audience", title="", genre="", nation="", director="", actor=""):
+        """영화 데이터를 페이지네이션하여 반환하는 함수"""
         try:
             self.connect()
-
-            print(f"🟢 [DEBUG] 검색 요청: order_by={order_by}, title={title}, genre={genre}, nation={nation}, director={director}, actor={actor}")
-
-            # 기본 조회 쿼리 (100개 제한)
-            base_query = f"""
+            
+            # 오프셋 계산
+            offset = (page - 1) * per_page
+            
+            # 기본 쿼리
+            base_query = """
                 SELECT 
-                    ROW_NUMBER() OVER (ORDER BY {order_by} DESC) AS rank,
-                    movie_title, genre, nations, director, actors, total_sales, total_audience
+                    ROW_NUMBER() OVER (ORDER BY {0} DESC) AS rank,
+                    movie_title, genre, nations, director, actors, total_sales, total_audience,
+                    COUNT(*) OVER() as total_count
                 FROM movie_summary
                 WHERE 1=1
-            """
-
+            """.format(order_by)
+            
             query_params = []
             
             if title:
@@ -973,81 +975,84 @@ class DBManager:
             if actor:
                 base_query += " AND actors LIKE %s"
                 query_params.append(f"%{actor}%")
-
-            base_query += f" ORDER BY {order_by} DESC LIMIT 100"
-
+                
+            # 페이지네이션 적용
+            base_query += f" ORDER BY {order_by} DESC LIMIT %s OFFSET %s"
+            query_params.extend([per_page, offset])
+            
             self.cursor.execute(base_query, query_params)
             result = self.cursor.fetchall()
-            columns = [col[0] for col in self.cursor.description]  # 컬럼명 가져오기
+            
+            if not result:
+                return {"data": [], "total": 0, "pages": 0}
+                
+            # 전체 레코드 수 추출
+            total_count = result[0]["total_count"] if isinstance(result[0], dict) else result[0][-1]
+            total_pages = (total_count + per_page - 1) // per_page
+            
+            columns = [col[0] for col in self.cursor.description if col[0] != 'total_count']
             df = pd.DataFrame(result, columns=columns)
-
-            return df.to_dict(orient="records")
-
+            
+            return {
+                "data": df.to_dict(orient="records"),
+                "total": total_count,
+                "pages": total_pages
+            }
+            
         except mysql.connector.Error as error:
             print(f"❌ Database error: {error}")
-            if self.connection:
-                self.connection.rollback()
-            return []
-
+            return {"data": [], "total": 0, "pages": 0}
+            
         finally:
-            self.disconnect()  # 항상 연결 종료
+            self.disconnect()
 
     def get_genres_and_nations(self):
-        """장르 및 국가 목록 가져오기"""
+        """장르 및 국가 목록 가져오기 - 쉼표로 구분된 값들을 개별 항목으로 분리"""
         try:
             self.connect()
-
-            print("🟢 [DEBUG] Fetching genres and nations from database...")
-
-            # ✅ 장르 조회
-            self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
+            
+            # 장르 조회 및 분리
+            self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL")
             genre_results = self.cursor.fetchall()
-
-            # 🚨 🔴 fetchall() 결과 확인
-            print(f"🟢 [DEBUG] fetchall() Raw Data: {genre_results}")
-
-            # ✅ 리스트 변환 (fetchall()이 딕셔너리인지, 튜플인지 확인)
-            if genre_results:
-                if isinstance(genre_results[0], dict):
-                    genres = [row["genre"] for row in genre_results if "genre" in row]  # ✅ 딕셔너리 처리
-                elif isinstance(genre_results[0], tuple):
-                    genres = [row[0] for row in genre_results]  # ✅ 튜플 처리
-                else:
-                    genres = ["Unknown"]
-            else:
-                genres = ["Unknown"]
-
-            if not genres:
-                print("🔴 [DEBUG] No genre data found in database.")
-                genres = ["Unknown"]  # 기본값 추가
-
-            # ✅ 국가 조회
-            self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
+            
+            # 쉼표로 구분된 장르들을 분리하고 중복 제거
+            genres = set()
+            for row in genre_results:
+                if isinstance(row, tuple):
+                    genre_str = row[0]
+                elif isinstance(row, dict):
+                    genre_str = row['genre']
+                
+                if genre_str:
+                    # 쉼표로 구분된 장르들을 분리하고 공백 제거
+                    genre_list = [g.strip() for g in genre_str.split(',')]
+                    genres.update(genre_list)
+            
+            # 국가 조회 및 분리
+            self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL")
             nation_results = self.cursor.fetchall()
-
-            # 🚨 국가 데이터 확인
-            print(f"🟢 [DEBUG] fetchall() Nation Data: {nation_results}")
-
-            # ✅ 리스트 변환 (fetchall()이 딕셔너리인지, 튜플인지 확인)
-            if nation_results:
-                if isinstance(nation_results[0], dict):
-                    nations = [row["nations"] for row in nation_results if "nations" in row]  # ✅ 딕셔너리 처리
-                elif isinstance(nation_results[0], tuple):
-                    nations = [row[0] for row in nation_results]  # ✅ 튜플 처리
-                else:
-                    nations = ["Unknown"]
-            else:
-                nations = ["Unknown"]
-
-            if not nations:
-                print("🔴 [DEBUG] No nation data found in database.")
-                nations = ["Unknown"]  # 기본값 추가
-
-            return {"genres": genres, "nations": nations}
-
+            
+            # 쉼표로 구분된 국가들을 분리하고 중복 제거
+            nations = set()
+            for row in nation_results:
+                if isinstance(row, tuple):
+                    nation_str = row[0]
+                elif isinstance(row, dict):
+                    nation_str = row['nations']
+                
+                if nation_str:
+                    # 쉼표로 구분된 국가들을 분리하고 공백 제거
+                    nation_list = [n.strip() for n in nation_str.split(',')]
+                    nations.update(nation_list)
+            
+            return {
+                "genres": sorted(list(genres)),
+                "nations": sorted(list(nations))
+            }
+            
         except mysql.connector.Error as error:
-            print(f"❌ [ERROR] Database error: {error}")
-            return {"genres": ["Unknown"], "nations": ["Unknown"]}  # ✅ 오류 발생 시 기본값 반환
-
+            print(f"❌ Database error: {error}")
+            return {"genres": ["Unknown"], "nations": ["Unknown"]}
+        
         finally:
-            self.disconnect()  # 항상 연결 종료
+            self.disconnect()

@@ -70,13 +70,14 @@
             .then(response => response.json())
             .then(data => updateTable(data));
     }
-    // 테이블 업데이트 함수
+    let currentPage = 1;
+
     function updateTable(data) {
         const tbody = document.getElementById('movieData');
         tbody.innerHTML = '';  // 기존 데이터 초기화
 
-        if (Array.isArray(data)) {
-            data.forEach(movie => {
+        if (data.data && data.data.length > 0) {
+            data.data.forEach(movie => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${movie.rank}</td>
@@ -90,33 +91,81 @@
                 `;
                 tbody.appendChild(row);
             });
-        } else if (data.message) {
-            // 검색 결과가 없는 경우
+            
+            // 페이지네이션 업데이트
+            updatePagination(data.pages);
+        } else {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center">${data.message}</td>
+                    <td colspan="8" class="text-center">검색 결과가 없습니다.</td>
                 </tr>
             `;
+            document.getElementById('pagination').innerHTML = '';
         }
     }
 
-    // 숫자 포맷팅 함수
-    function formatNumber(num) {
-        if (!num) return '-';
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    function updatePagination(totalPages) {
+        const pagination = document.getElementById('pagination');
+        let paginationHtml = '';
+        
+        // 이전 페이지 버튼
+        paginationHtml += `
+            <button class="btn btn-secondary me-2" 
+                    onclick="changePage(${currentPage - 1})"
+                    ${currentPage === 1 ? 'disabled' : ''}>
+                이전
+            </button>
+        `;
+        
+        // 페이지 번호들
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationHtml += `
+                    <button class="btn btn-primary me-2">${i}</button>
+                `;
+            } else {
+                paginationHtml += `
+                    <button class="btn btn-outline-primary me-2" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+        }
+        
+        // 다음 페이지 버튼
+        paginationHtml += `
+            <button class="btn btn-secondary" 
+                    onclick="changePage(${currentPage + 1})"
+                    ${currentPage === totalPages ? 'disabled' : ''}>
+                다음
+            </button>
+        `;
+        
+        pagination.innerHTML = paginationHtml;
+    }
+
+    function changePage(page) {
+        currentPage = page;
+        searchMovies();
+    }
+
+    function searchMovies() {
+        let query = `?page=${currentPage}&title=${document.getElementById("title").value}&genre=${document.getElementById("genre").value}&nation=${document.getElementById("nation").value}&director=${document.getElementById("director").value}&actor=${document.getElementById("actor").value}`;
+        fetch(`/filter${query}`)
+            .then(response => response.json())
+            .then(data => updateTable(data));
     }
 
     // 페이지 로드 시 초기 데이터 로딩
     document.addEventListener('DOMContentLoaded', function() {
-        searchMovies();  // 페이지 로드 시 기본 데이터 로딩
+        currentPage = 1;
+        searchMovies();
     });
 
-    // 정렬 기능 추가
-    function sortMovies(orderBy) {
-        let query = `?order_by=${orderBy}&title=${document.getElementById("title").value}&genre=${document.getElementById("genre").value}&nation=${document.getElementById("nation").value}&director=${document.getElementById("director").value}&actor=${document.getElementById("actor").value}`;
-        fetch(`/filter${query}`)
-            .then(response => response.json())
-            .then(data => updateTable(data));
+    function formatNumber(num) {
+        if (!num) return '-';
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 </script>
 

@@ -492,22 +492,27 @@ def all_movies():
     filters = manager.get_genres_and_nations()
     return render_template('movie_all_movies.html', data=movies, filters = filters)
 
-# AJAX 요청 처리 (정렬 & 검색)
 @app.route("/filter", methods=["GET"])
 def filter_data():
-    order_by = request.args.get("order_by", "total_audience")  
+    page = int(request.args.get("page", 1))
+    order_by = request.args.get("order_by", "total_audience")
     title = request.args.get("title", "").strip()
     genre = request.args.get("genre", "").strip()
     nation = request.args.get("nation", "").strip()
     director = request.args.get("director", "").strip()
     actor = request.args.get("actor", "").strip()
 
-    movies = manager.get_all_movie_data(order_by, title, genre, nation, director, actor)
+    result = manager.get_all_movie_data(
+        page=page,
+        order_by=order_by,
+        title=title,
+        genre=genre,
+        nation=nation,
+        director=director,
+        actor=actor
+    )
 
-    if not movies:
-        return jsonify({"message": "검색 결과가 없습니다."})
-
-    return jsonify(movies)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
