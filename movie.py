@@ -164,7 +164,35 @@ def movies():
         print(movie)
         movies_info.append({'id':movie['id'],"title":movie['title'],"rank":movie['rank'],"filename":movie['filename'],"rating":movie['rating'],"reviews":movie['reviews']})
 
-    return render_template('movie_movies.html', movies_info=movies_info)
+    movie_infos = manager.get_all_movies()
+    page_title = 'Movie_Ranks'
+    title = [movie_info['title'] for movie_info in movie_infos]
+    t_sales = [movie_info['t_sales'] for movie_info in movie_infos]
+    c_sales = [movie_info['c_sales'] for movie_info in movie_infos]
+    t_audience = [movie_info['t_audience'] for movie_info in movie_infos]
+    c_audience = [movie_info['c_audience'] for movie_info in movie_infos]
+
+    # 전체 데이터를 JSON으로 전달
+    movies_data = [
+        {
+            "title": movie_info['title'],
+            "t_sales": movie_info['t_sales'],
+            "c_sales": movie_info['c_sales'],
+            "t_audience": movie_info['t_audience'],
+            "c_audience": movie_info['c_audience']
+        }
+        for movie_info in movie_infos
+    ]
+    return render_template('movie_movies.html', movies_info=movies_info, 
+        page_title = page_title,
+        movies_data=movies_data,
+        title=title,
+        t_sales=t_sales,
+        c_sales=c_sales,
+        t_audience=t_audience,
+        c_audience=c_audience)
+
+
 
 ### 해당영화 리뷰
 @app.route('/reviews/<title>/<movie_id>')
