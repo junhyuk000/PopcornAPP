@@ -10,21 +10,23 @@
     
     /* 툴팁 스타일 */
     .tooltip-custom {
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 8px;
-        border-radius: 5px;
-        font-size: 14px;
-        max-width: 300px;
-        display: none;
-        z-index: 1000;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 14px;
+    max-width: 300px;
+    display: none;
+    z-index: 1000;
+    white-space: normal; /* 툴팁 내에서 줄바꿈 허용 */
     }
+
 </style>
 {% endblock %}
 
 {% block content %}
-<h2 class="mt-4 mb-4 text-center">🎬 영화 데이터 조회</h2>
+<h2 class="mt-4 mb-4 text-center">🎬 모든 영화 데이터 조회</h2>
 <div class="container">
     <!-- 정렬 버튼 -->
     <div class="row mb-3">
@@ -100,8 +102,6 @@
         <tbody id="movieData"></tbody>
     </table>
 
-<!-- 툴팁 요소 추가 -->
-<div id="tooltip" class="tooltip-custom"></div>
     <!-- 페이지네이션 컨테이너 추가 -->
     <div class="row mt-4">
         <div class="col-12">
@@ -111,6 +111,8 @@
         </div>
     </div>
 </div>
+<!-- 툴팁 요소 추가 -->
+<div id="tooltip" class="tooltip-custom"></div>
 
 <!-- AJAX -->
 <script>
@@ -158,24 +160,29 @@
 
     function setupTooltips() {
         const tooltip = document.getElementById('tooltip');
-        document.querySelectorAll('.movie-title').forEach(title => {
-            title.addEventListener('mouseenter', (e) => {
-                tooltip.innerText = e.target.getAttribute('data-tooltip');
-                tooltip.style.display = 'block';
-                tooltip.style.left = `${e.pageX + 10}px`;
-                tooltip.style.top = `${e.pageY + 10}px`;
-            });
+        
+        document.querySelectorAll('td').forEach(cell => {
+            // 셀 안의 텍스트가 생략되었는지 확인
+            if (cell.offsetWidth < cell.scrollWidth) {
+                cell.addEventListener('mouseenter', (e) => {
+                    tooltip.innerText = e.target.innerText; // 원본 전체 텍스트 표시
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = `${e.pageX + 10}px`;
+                    tooltip.style.top = `${e.pageY + 10}px`;
+                });
 
-            title.addEventListener('mousemove', (e) => {
-                tooltip.style.left = `${e.pageX + 10}px`;
-                tooltip.style.top = `${e.pageY + 10}px`;
-            });
+                cell.addEventListener('mousemove', (e) => {
+                    tooltip.style.left = `${e.pageX + 10}px`;
+                    tooltip.style.top = `${e.pageY + 10}px`;
+                });
 
-            title.addEventListener('mouseleave', () => {
-                tooltip.style.display = 'none';
-            });
+                cell.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+            }
         });
     }
+
     function updatePagination(totalPages) {
         const pagination = document.getElementById('pagination');
         let paginationHtml = '';
