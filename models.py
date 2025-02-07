@@ -940,30 +940,50 @@ class DBManager:
             self.disconnect()
 
 
-    def get_all_movie_data(self):
-        """영화 데이터를 가져오는 함수"""
+    def get_movie_data(self, order_by="total_audience", search_query=None):
+        """영화 데이터를 정렬/검색하여 반환하는 함수"""
         try:
-            self.connect()  # DB 연결
-            
-            query = """
+            self.connect()
+
+            # 기본 조회 쿼리 (100개 제한)
+            base_query = f"""
                 SELECT 
-                    ROW_NUMBER() OVER (ORDER BY total_audience DESC) AS rank,
+                    ROW_NUMBER() OVER (ORDER BY {order_by} DESC) AS rank,
                     movie_title, genre, nations, director, actors, total_sales, total_audience
                 FROM movie_summary
-                ORDER BY total_audience DESC
             """
 
-            # ✅ self.connection을 직접 사용해야 함
-            df = pd.read_sql(query, self.connection)  
+            # 검색 조건 추가
+            if search_query:
+                base_query += f"""
+                WHERE movie_title LIKE %s 
+                OR nations LIKE %s 
+                OR director LIKE %s 
+                OR actors LIKE %s
+                """
 
-            return df  # DataFrame 반환
+            base_query += f" ORDER BY {order_by} DESC LIMIT 100"
+
+            # 검색어가 있으면 매개변수 바인딩
+            if search_query:
+                search_term = f"%{search_query}%"
+                self.cursor.execute(base_query, (search_term, search_term, search_term, search_term))
+            else:
+                self.cursor.execute(base_query)
+
+            # 데이터 가져오기
+            result = self.cursor.fetchall()
+            columns = [col[0] for col in self.cursor.description]  # 컬럼명 가져오기
+            df = pd.DataFrame(result, columns=columns)
+
+            return df.to_dict(orient="records")
 
         except mysql.connector.Error as error:
             print(f"❌ Database error: {error}")
             if self.connection:
                 self.connection.rollback()
-            return "데이터 처리 중 오류 발생!"
+            return []
 
         finally:
-            self.disconnect()  # DB 연결 종료
-            
+            self.disconnect()  # 항상 연결 종료
+                

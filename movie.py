@@ -488,20 +488,21 @@ def movie_popcorns():
 
 @app.route('/all_movies')
 def all_movies():
-    df = manager.get_all_movie_data()
-    # 필터링
-    nation_filter = request.args.get("nation")
-    director_filter = request.args.get("director")
-    actor_filter = request.args.get("actor")
-    if nation_filter:
-        df = df[df["nations"].str.contains(nation_filter, na=False)]
-    if director_filter:
-        df = df[df["director"].str.contains(director_filter, na=False)]
-    if actor_filter:
-        df = df[df["actors"].str.contains(actor_filter, na=False)]
+    movies = manager.get_all_movie_data()
+    return render_template('movie_all_movies.html', data=movies)
 
-    return render_template('movie_all_movies.html', data=df.to_dict(orient="records"))
+# AJAX 요청 처리 (정렬 & 검색)
+@app.route("/filter", methods=["GET"])
+def filter_data():
+    order_by = request.args.get("order_by", "total_audience")  # 정렬 기준 (기본: 누적 관람객)
+    search_query = request.args.get("search", "").strip()  # 검색어
 
+    movies = manager.get_movie_data(order_by, search_query)
+
+    if not movies:
+        return jsonify({"message": "검색 결과가 없습니다."})  # 결과가 없으면 메시지 반환
+
+    return jsonify(movies)
 
 
 if __name__ == '__main__':
