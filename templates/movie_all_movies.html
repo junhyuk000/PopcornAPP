@@ -70,6 +70,54 @@
             .then(response => response.json())
             .then(data => updateTable(data));
     }
+    // 테이블 업데이트 함수
+    function updateTable(data) {
+        const tbody = document.getElementById('movieData');
+        tbody.innerHTML = '';  // 기존 데이터 초기화
+
+        if (Array.isArray(data)) {
+            data.forEach(movie => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${movie.rank}</td>
+                    <td>${movie.movie_title}</td>
+                    <td>${movie.genre || '-'}</td>
+                    <td>${movie.nations || '-'}</td>
+                    <td>${movie.director || '-'}</td>
+                    <td>${movie.actors || '-'}</td>
+                    <td>${formatNumber(movie.total_sales)}</td>
+                    <td>${formatNumber(movie.total_audience)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        } else if (data.message) {
+            // 검색 결과가 없는 경우
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center">${data.message}</td>
+                </tr>
+            `;
+        }
+    }
+
+    // 숫자 포맷팅 함수
+    function formatNumber(num) {
+        if (!num) return '-';
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // 페이지 로드 시 초기 데이터 로딩
+    document.addEventListener('DOMContentLoaded', function() {
+        searchMovies();  // 페이지 로드 시 기본 데이터 로딩
+    });
+
+    // 정렬 기능 추가
+    function sortMovies(orderBy) {
+        let query = `?order_by=${orderBy}&title=${document.getElementById("title").value}&genre=${document.getElementById("genre").value}&nation=${document.getElementById("nation").value}&director=${document.getElementById("director").value}&actor=${document.getElementById("actor").value}`;
+        fetch(`/filter${query}`)
+            .then(response => response.json())
+            .then(data => updateTable(data));
+    }
 </script>
 
 {% endblock %}
