@@ -992,47 +992,47 @@ class DBManager:
         finally:
             self.disconnect()  # 항상 연결 종료
 
-def get_genres_and_nations(self):
-    """장르 및 국가 목록 가져오기"""
-    try:
-        self.connect()
+    def get_genres_and_nations(self):
+        """장르 및 국가 목록 가져오기"""
+        try:
+            self.connect()
 
-        print("🟢 [DEBUG] Fetching genres and nations from database...")
+            print("🟢 [DEBUG] Fetching genres and nations from database...")
 
-        # ✅ 장르 조회
-        self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
-        genre_results = self.cursor.fetchall()
-        
-        # 🚨 쿼리 실행 후 결과 출력 (디버깅)
-        print(f"🟢 [DEBUG] Raw Genre Results: {genre_results}")
+            # ✅ 장르 조회
+            self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
+            genre_results = self.cursor.fetchall()
+            
+            # 🚨 쿼리 실행 후 결과 출력 (디버깅)
+            print(f"🟢 [DEBUG] Raw Genre Results: {genre_results}")
 
-        # ✅ 결과값 변환 (튜플이 아닌 경우 처리)
-        genres = [row[0] for row in genre_results if isinstance(row, (tuple, list)) and len(row) > 0]
+            # ✅ 결과값 변환 (튜플이 아닌 경우 처리)
+            genres = [row[0] for row in genre_results if isinstance(row, (tuple, list)) and len(row) > 0]
 
-        if not genres:
-            print("🔴 [DEBUG] No genre data found in database.")
-            genres = ["Unknown"]  # 기본값 추가
+            if not genres:
+                print("🔴 [DEBUG] No genre data found in database.")
+                genres = ["Unknown"]  # 기본값 추가
 
-        # ✅ 국가 조회
-        self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
-        nation_results = self.cursor.fetchall()
-        
-        # 🚨 쿼리 실행 후 결과 출력 (디버깅)
-        print(f"🟢 [DEBUG] Raw Nation Results: {nation_results}")
+            # ✅ 국가 조회
+            self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
+            nation_results = self.cursor.fetchall()
+            
+            # 🚨 쿼리 실행 후 결과 출력 (디버깅)
+            print(f"🟢 [DEBUG] Raw Nation Results: {nation_results}")
 
-        # ✅ 결과값 변환 (튜플이 아닌 경우 처리)
-        nations = [row[0] for row in nation_results if isinstance(row, (tuple, list)) and len(row) > 0]
+            # ✅ 결과값 변환 (튜플이 아닌 경우 처리)
+            nations = [row[0] for row in nation_results if isinstance(row, (tuple, list)) and len(row) > 0]
 
-        if not nations:
-            print("🔴 [DEBUG] No nation data found in database.")
-            nations = ["Unknown"]  # 기본값 추가
+            if not nations:
+                print("🔴 [DEBUG] No nation data found in database.")
+                nations = ["Unknown"]  # 기본값 추가
 
-        return {"genres": genres, "nations": nations}
+            return {"genres": genres, "nations": nations}
 
-    except mysql.connector.Error as error:
-        print(f"❌ [ERROR] Database error: {error}")
-        return {"genres": ["Unknown"], "nations": ["Unknown"]}  # ✅ 오류 발생 시 기본값 반환
+        except mysql.connector.Error as error:
+            print(f"❌ [ERROR] Database error: {error}")
+            return {"genres": ["Unknown"], "nations": ["Unknown"]}  # ✅ 오류 발생 시 기본값 반환
 
-    finally:
-        self.disconnect()  # 항상 연결 종료
+        finally:
+            self.disconnect()  # 항상 연결 종료
 
