@@ -58,6 +58,7 @@
 
 
 
+
     .button-container {
     display: flex;
     flex-wrap: wrap; /* ✅ 버튼이 화면에 맞게 줄바꿈 */
@@ -274,7 +275,7 @@
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 <!-- 예고편을 표시할 iframe -->
-div class="tv-container">
+<div class="tv-container">
     <div class="tv-frame">
         <div class="tv-screen-container">
             <iframe id="trailer" class="tv-screen" frameborder="0"
@@ -287,6 +288,7 @@ div class="tv-container">
         </div>
     </div>
 </div>
+
 
 
 <div class="container">
@@ -370,18 +372,14 @@ div class="tv-container">
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be47724c48a9357381269e671a99079c&libraries=services"></script>
 <script src="js/map.js"></script>
 <script>
-    // movies_info 리스트에서 rank == 1인 영화 찾기
-    const moviesInfo = {{ movies_info | tojson }};  // Flask에서 movies_info 리스트 전달
-    const topMovie = moviesInfo.find(movie => movie.rank === 1);
-
     function loadTrailer(movieTitle) {
         if (!movieTitle) return;
 
         const trailerIframe = document.getElementById('trailer');
         const query = encodeURIComponent(movieTitle + " official trailer");
 
-        // YouTube API를 사용해 검색 (API 키 필요)
-        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=AIzaSyA7YaVXuNffyJ565KPGU7Vh8V9la74lOMk`)
+        // 유튜브 API를 사용해 자동 검색
+        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=YOUR_YOUTUBE_API_KEY`)
             .then(response => response.json())
             .then(data => {
                 if (data.items.length > 0) {
@@ -392,12 +390,16 @@ div class="tv-container">
             .catch(error => console.error("YouTube API Error:", error));
     }
 
-    // 페이지 로드 시 rank == 1인 영화의 예고편 자동 재생
+    // 페이지 로드 시 랭킹 1위 영화의 예고편 자동 재생
     document.addEventListener('DOMContentLoaded', function() {
+        const moviesInfo = {{ movies_info | tojson }}; // Flask에서 영화 정보 전달
+        const topMovie = moviesInfo.find(movie => movie.rank === 1);
+
         if (topMovie) {
             loadTrailer(topMovie.title);
         }
     });
+
 
     document.addEventListener("DOMContentLoaded", function() {
         var swiper = new Swiper(".swiper", {
