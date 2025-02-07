@@ -2,13 +2,13 @@
 {% block css %}
 <style>
     .tv-container {
-    position: relative;
-    width: 400px;  /* TV 이미지 크기에 맞게 조정 */
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto; /* 가운데 정렬 */
+        position: relative;
+        width: 400px;  /* TV 이미지 크기에 맞게 조정 */
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto; /* 가운데 정렬 */
     }
 
     .tv-frame {
@@ -16,20 +16,26 @@
         display: block;
     }
 
-    .tv-screen {
+    .tv-screen-container {
         position: absolute;
-        top: 18%;   /* 화면 위치 조정 */
-        left: 13%;
-        width: 73%;
-        height: 55%;
-        border: none;
-        border-radius: 8px; /* 둥근 화면 느낌 */
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* TV 내부 화면 느낌 */
+        top: 20%;   /* TV 화면 위치 조정 */
+        left: 12%;
+        width: 76%;
+        height: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border-radius: 10px; /* 둥근 화면 효과 */
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5); /* TV 내부 그림자 */
     }
+
     .tv-screen {
-    filter: contrast(1.2) brightness(0.9) saturate(1.1);
-    animation: flicker 0.1s infinite alternate;
+        width: 100%;
+        height: 100%;
+        border: none;
     }
+
 
     @keyframes flicker {
         0% { opacity: 1; }
@@ -255,9 +261,11 @@
 <!-- 예고편을 표시할 iframe -->
 <div class="tv-container">
     <img src="/static/images/tv-frame.png" alt="Retro TV" class="tv-frame">
-    <iframe id="trailer" class="tv-screen" frameborder="0"
-        allow="autoplay; encrypted-media" allowfullscreen>
-    </iframe>
+    <div class="tv-screen-container">
+        <iframe id="trailer" class="tv-screen" frameborder="0"
+            allow="autoplay; encrypted-media" allowfullscreen>
+        </iframe>
+    </div>
 </div>
 
 
