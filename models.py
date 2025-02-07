@@ -529,112 +529,118 @@ class DBManager:
         self.insert_data_with_no_duplicates(df3)
 
 
-    def insert_data_with_no_duplicates(self, df):
-        print("🔍 [DEBUG] insert_data_with_no_duplicates() 호출 전 데이터 확인")
-        print(f"🔍 df3 행 개수: {len(df)}")
-        print(f"🔍 df3 샘플 데이터:\n{df.head()}")
+import pandas as pd
+import mysql.connector
 
-        try:
-            self.connect()
-            for _, row in df.iterrows():
-                print(f"📌 Checking whether to INSERT or UPDATE for {row['title']} ({row['director']})")
+def insert_data_with_no_duplicates(self, df):
+    print("🔍 [DEBUG] insert_data_with_no_duplicates() 호출 전 데이터 확인")
+    print(f"🔍 df3 행 개수: {len(df)}")
+    print(f"🔍 df3 샘플 데이터:\n{df.head()}")
 
-                # ✅ 중복 확인 (title + director)
-                check_sql = """
-                    SELECT id FROM movies 
+    try:
+        self.connect()
+        for _, row in df.iterrows():
+            print(f"📌 Checking whether to INSERT or UPDATE for {row['title']} ({row['director']})")
+
+            # ✅ 중복 확인 (title + director)
+            check_sql = """
+                SELECT id FROM movies 
+                WHERE BINARY TRIM(title) = BINARY TRIM(%s) 
+                AND BINARY TRIM(director) = BINARY TRIM(%s)
+            """
+            self.cursor.execute(check_sql, (row['title'].strip(), row['director'].strip()))
+            existing_record = self.cursor.fetchone()
+
+            # ✅ `rank`값이 정수인지 확인
+            movie_rank = int(row['rank']) if pd.notna(row['rank']) else 0
+
+            # ✅ 기본값 처리 (None 방지)
+            values = (
+                movie_rank,                      # rank
+                row['title'].strip(),           # title
+                str(row['genres']).strip(),     # genres
+                row['director'].strip(),        # director
+                str(row['nations']).strip(),    # nations
+                None,                           # rating (기본값 NULL)
+                None,                           # reviews (기본값 NULL)
+                int(row['t_audience']),         # t_audience
+                int(row['c_audience']),         # c_audience
+                int(row['t_sales']),            # t_sales
+                int(row['c_sales']),            # c_sales
+                row.get('filename', 'noimage.jpg'),  # filename
+                row['release_date'],            # release_date
+                str(row['actors']).strip() if 'actors' in row else ""  # actors 추가 (None 방지)
+            )
+
+            if existing_record:
+                print(f"🛠 Updating: {row['title']} ({row['director']})")
+
+                # 🔍 UPDATE 전 데이터 확인
+                self.cursor.execute(
+                    "SELECT * FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)",
+                    (row['title'].strip(), row['director'].strip())
+                )
+                before_update = self.cursor.fetchone()
+                print(f"Before Update: {before_update}")
+
+                update_sql = """
+                    UPDATE movies
+                    SET rank = %s,
+                        title = %s,
+                        genres = %s,
+                        director = %s,
+                        nations = %s,
+                        rating = %s,
+                        reviews = %s,
+                        t_audience = %s,
+                        c_audience = %s,
+                        t_sales = %s,
+                        c_sales = %s,
+                        filename = %s,
+                        release_date = %s,
+                        actors = %s,  -- ✅ actors 추가
+                        input_date = CURRENT_TIMESTAMP
                     WHERE BINARY TRIM(title) = BINARY TRIM(%s) 
                     AND BINARY TRIM(director) = BINARY TRIM(%s)
                 """
-                self.cursor.execute(check_sql, (row['title'].strip(), row['director'].strip()))
-                existing_record = self.cursor.fetchone()
+                
+                update_values = values + (row['title'].strip(), row['director'].strip())
+                print(f"🔹 Update Values: {update_values}")
 
-                # ✅ `rank`값이 정수인지 확인
-                movie_rank = int(row['rank']) if pd.notna(row['rank']) else 0
+                self.cursor.execute(update_sql, update_values)
+                self.connection.commit()
 
-                # ✅ 기본값 처리 (None 방지)
-                values = (
-                    movie_rank,                      # rank
-                    row['title'].strip(),           # title
-                    str(row['genres']).strip(),     # genres
-                    row['director'].strip(),        # director
-                    str(row['nations']).strip(),    # nations
-                    None,                           # rating (기본값 NULL)
-                    None,                           # reviews (기본값 NULL)
-                    int(row['t_audience']),         # t_audience
-                    int(row['c_audience']),         # c_audience
-                    int(row['t_sales']),            # t_sales
-                    int(row['c_sales']),            # c_sales
-                    row.get('filename', 'noimage.jpg'),  # filename
-                    row['release_date'],            # release_date
+                # 🔍 UPDATE 후 데이터 확인
+                self.cursor.execute(
+                    "SELECT * FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)",
+                    (row['title'].strip(), row['director'].strip())
                 )
+                after_update = self.cursor.fetchone()
+                print(f"After Update: {after_update}")
+                print(f"🛠 Updated rows: {self.cursor.rowcount}")
 
-                if existing_record:
-                    print(f"🛠 Updating: {row['title']} ({row['director']})")
+            else:
+                print(f"🆕 Will attempt INSERT for {row['title']} ({row['director']})")
+                insert_sql = """
+                    INSERT INTO movies 
+                    (rank, title, genres, director, nations, rating, reviews, 
+                    t_audience, c_audience, t_sales, c_sales, filename, release_date, actors)  -- ✅ actors 추가
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """
+                print(f"🎯 Insert Values: {values}")
+                self.cursor.execute(insert_sql, values)
+                self.connection.commit()
+                print(f"✅ Inserted: {row['title']} ({row['director']})")
 
-                    # 🔍 UPDATE 전 데이터 확인
-                    self.cursor.execute(
-                        "SELECT * FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)",
-                        (row['title'].strip(), row['director'].strip())
-                    )
-                    before_update = self.cursor.fetchone()
-                    print(f"Before Update: {before_update}")
+            print("✅ Database update completed successfully.")
 
-                    update_sql = """
-                        UPDATE movies
-                        SET rank = %s,
-                            title = %s,
-                            genres = %s,
-                            director = %s,
-                            nations = %s,
-                            rating = %s,
-                            reviews = %s,
-                            t_audience = %s,
-                            c_audience = %s,
-                            t_sales = %s,
-                            c_sales = %s,
-                            filename = %s,
-                            release_date = %s,
-                            input_date = CURRENT_TIMESTAMP
-                        WHERE BINARY TRIM(title) = BINARY TRIM(%s) 
-                        AND BINARY TRIM(director) = BINARY TRIM(%s)
-                    """
-                    
-                    update_values = values + (row['title'].strip(), row['director'].strip())
-                    print(f"🔹 Update Values: {update_values}")
+    except mysql.connector.Error as error:
+        print(f"❌ Database error: {error}")
+        if self.connection and self.connection.is_connected():
+            self.connection.rollback()
+    finally:
+        self.disconnect()
 
-                    self.cursor.execute(update_sql, update_values)
-                    self.connection.commit()
-
-                    # 🔍 UPDATE 후 데이터 확인
-                    self.cursor.execute(
-                        "SELECT * FROM movies WHERE BINARY TRIM(title) = BINARY TRIM(%s) AND BINARY TRIM(director) = BINARY TRIM(%s)",
-                        (row['title'].strip(), row['director'].strip())
-                    )
-                    after_update = self.cursor.fetchone()
-                    print(f"After Update: {after_update}")
-                    print(f"🛠 Updated rows: {self.cursor.rowcount}")
-
-                else:
-                    print(f"🆕 Will attempt INSERT for {row['title']} ({row['director']})")
-                    insert_sql = """
-                        INSERT INTO movies 
-                        (rank, title, genres, director, nations, rating, reviews, 
-                        t_audience, c_audience, t_sales, c_sales, filename, release_date)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """
-                    print(f"🎯 Insert Values: {values}")
-                    self.cursor.execute(insert_sql, values)
-                    self.connection.commit()
-                    print(f"✅ Inserted: {row['title']} ({row['director']})")
-
-                print("✅ Database update completed successfully.")
-
-        except mysql.connector.Error as error:
-            print(f"❌ Database error: {error}")
-            if self.connection and self.connection.is_connected():
-                self.connection.rollback()
-        finally:
-            self.disconnect()
 
 
     ### 오늘 날짜의 영화 정보 가져오기
