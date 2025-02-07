@@ -13,7 +13,7 @@
     /* 📺 TV 본체 */
     .tv-frame {
         position: relative;
-        width: 600px; /* 기존보다 크기 키움 */
+        width: 600px;
         height: 400px;
         background: #ccc;
         border-radius: 20px;
@@ -26,16 +26,16 @@
         padding-top: 20px;
     }
 
-    /* 📡 왼쪽 대각선 뒤로 뻗는 안테나 */
+    /* 📡 안테나 (왼쪽 대각선으로 더 길게) */
     .tv-antenna {
         position: absolute;
-        top: -30px;
-        left: 10px; /* 왼쪽 대각선 느낌 */
-        width: 8px;
-        height: 80px; /* 길게 뻗음 */
+        top: -60px;
+        left: -10px;
+        width: 6px;
+        height: 120px; /* 더 길게 */
         background: #666;
-        transform: rotate(-30deg); /* 왼쪽 대각선으로 회전 */
-        border-radius: 5px;
+        transform: rotate(-45deg); /* 더 기울이기 */
+        border-radius: 3px;
     }
 
     /* 🎬 TV 화면 */
@@ -61,55 +61,58 @@
     /* 🎛 동전 넣는 모양 버튼 */
     .tv-knobs {
         position: absolute;
-        bottom: 20px;
-        right: 20px;
+        bottom: 30px;
+        right: 30px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
         align-items: center;
+        gap: 8px;
     }
 
+    /* 🔵 동전 넣는 구멍 */
     .coin-slot {
-        width: 10px;
-        height: 40px;
-        background: #333;
-        border-radius: 5px;
-        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+        width: 15px;
+        height: 50px;
+        background: #222;
+        border-radius: 8px;
+        box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.5);
     }
 
+    /* 🎛 둥근 버튼 */
     .knob {
         width: 35px;
         height: 35px;
         background: #555;
         border-radius: 50%;
-        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+        box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.3);
     }
 
-    /* 🦵 대각선 TV 다리 */
+    /* 🦵 TV 다리 (대각선으로 기울임) */
     .tv-legs {
         position: absolute;
-        bottom: -40px;
+        bottom: -50px;
         left: 50%;
         display: flex;
-        gap: 180px;
+        gap: 200px;
         transform: translateX(-50%);
     }
 
-    .tv-leg {
-        width: 12px;
-        height: 60px;
+    /* 왼쪽 다리 - 왼쪽으로 기울기 */
+    .tv-leg.left {
+        width: 14px;
+        height: 80px;
         background: #888;
         border-radius: 5px;
+        transform: rotate(-25deg);
     }
 
-    /* 왼쪽 다리는 왼쪽 대각선 */
-    .tv-leg.left {
-        transform: rotate(-20deg);
-    }
-
-    /* 오른쪽 다리는 오른쪽 대각선 */
+    /* 오른쪽 다리 - 오른쪽으로 기울기 */
     .tv-leg.right {
-        transform: rotate(20deg);
+        width: 14px;
+        height: 80px;
+        background: #888;
+        border-radius: 5px;
+        transform: rotate(25deg);
     }
 
 
@@ -331,26 +334,26 @@
 <!-- 예고편을 표시할 iframe -->
 <div class="tv-container">
     <div class="tv-frame">
-        <!-- 📺 TV 안테나 -->
+        <!-- 📡 TV 안테나 -->
         <div class="tv-antenna"></div>
 
-        <!-- 📺 TV 화면 (유튜브 영상이 나오는 부분) -->
+        <!-- 🎬 TV 화면 (유튜브 영상) -->
         <div class="tv-screen-container">
             <iframe id="trailer" class="tv-screen" frameborder="0"
                 allow="autoplay; encrypted-media" allowfullscreen>
             </iframe>
         </div>
 
-        <!-- 📺 TV 다이얼 버튼 -->
+        <!-- 🎛 동전 넣는 모양의 버튼 -->
         <div class="tv-knobs">
-            <div class="knob"></div>
+            <div class="coin-slot"></div>
             <div class="knob"></div>
         </div>
 
-        <!-- 📺 TV 다리 -->
+        <!-- 🦵 대각선 TV 다리 -->
         <div class="tv-legs">
-            <div class="tv-leg"></div>
-            <div class="tv-leg"></div>
+            <div class="tv-leg left"></div>
+            <div class="tv-leg right"></div>
         </div>
     </div>
 </div>
