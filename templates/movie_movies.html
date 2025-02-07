@@ -26,15 +26,15 @@
         padding-top: 20px;
     }
 
-    /* 📡 안테나 (왼쪽 모서리 끝쪽으로 이동) */
+    /* 📡 안테나 (완전히 왼쪽 모서리) */
     .tv-antenna {
         position: absolute;
         top: -50px;
-        left: 10px; /* 왼쪽 모서리 끝쪽 */
+        left: -5px; /* 완전히 왼쪽 끝으로 */
         width: 6px;
         height: 100px;
         background: #666;
-        transform: rotate(-40deg);
+        transform: rotate(-45deg);
         border-radius: 3px;
     }
 
@@ -91,10 +91,10 @@
         box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.5);
     }
 
-    /* 🔴 추가된 버튼 (빨간색 동그라미 위치) */
+    /* 🔴 추가된 버튼 (조금 아래쪽으로 이동) */
     .extra-button {
         position: absolute;
-        bottom: 20px;
+        bottom: 10px; /* 더 아래로 조정 */
         right: 10px;
         width: 20px;
         height: 40px;
@@ -103,13 +103,13 @@
         box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
     }
 
-    /* 🦵 TV 다리 (좀 더 바깥쪽으로 위치 이동) */
+    /* 🦵 TV 다리 (모서리로 이동) */
     .tv-legs {
         position: absolute;
         bottom: -50px;
         left: 50%;
         display: flex;
-        gap: 240px; /* 다리 간격 더 넓게 조정 */
+        gap: 300px; /* 완전히 양쪽 끝으로 */
         transform: translateX(-50%);
     }
 
@@ -119,7 +119,7 @@
         height: 80px;
         background: #888;
         border-radius: 5px;
-        transform: rotate(15deg); /* 다리 방향 맞춤 */
+        transform: rotate(15deg);
     }
 
     /* 오른쪽 다리 - 오른쪽으로 휘게 */
@@ -128,7 +128,7 @@
         height: 80px;
         background: #888;
         border-radius: 5px;
-        transform: rotate(-15deg); /* 다리 방향 맞춤 */
+        transform: rotate(-15deg);
     }
 
 
@@ -350,7 +350,7 @@
 <!-- 예고편을 표시할 iframe -->
 <div class="tv-container">
     <div class="tv-frame">
-        <!-- 📡 TV 안테나 -->
+        <!-- 📡 TV 안테나 (모서리로 이동) -->
         <div class="tv-antenna"></div>
 
         <!-- 🎬 TV 화면 (유튜브 영상) -->
@@ -368,16 +368,17 @@
             </div>
         </div>
 
-        <!-- 🔴 새 버튼 (빨간 동그라미 위치) -->
+        <!-- 🔴 추가된 버튼 (조금 아래쪽으로 이동) -->
         <div class="extra-button"></div>
 
-        <!-- 🦵 대각선 TV 다리 (위치 수정) -->
+        <!-- 🦵 대각선 TV 다리 (모서리로 이동) -->
         <div class="tv-legs">
             <div class="tv-leg left"></div>
             <div class="tv-leg right"></div>
         </div>
     </div>
 </div>
+
 
 
 
