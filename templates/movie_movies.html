@@ -29,10 +29,14 @@
         height: auto !important;
     }
 
-    /* 기본 테이블 스타일 (웹에서는 변경 없음) */
-    .table {
+    /* ✅ 테이블이 모바일에서도 넘치지 않도록 조정 */
+    .table-container {
         width: 100%;
-        border-collapse: collapse;
+        overflow-x: auto;
+    }
+
+    .table {
+        min-width: 400px; /* ✅ 최소 너비 설정하여 너무 작아지지 않게 함 */
     }
 
     /* 📌 모바일에서만 테이블 반응형 적용 */
