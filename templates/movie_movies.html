@@ -39,24 +39,26 @@
         min-width: 400px; /* ✅ 최소 너비 설정하여 너무 작아지지 않게 함 */
     }
 
-    /* 📌 모바일에서만 테이블 반응형 적용 */
+    /* 기본적으로 가로 정렬 */
+    .content-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* 간격 조정 */
+        align-items: flex-start;
+    }
+
+    /* 모바일 화면에서는 세로 정렬 */
     @media (max-width: 768px) {
-        .table-container {
-            overflow-x: auto; /* 모바일에서만 가로 스크롤 가능하게 설정 */
+        .content-container {
+            flex-direction: column; /* 요소를 세로 배치 */
         }
 
-        .table {
-            min-width: 600px; /* 너무 작아지지 않도록 설정 */
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap; /* 줄바꿈 방지 */
-        }
-
-        .table th, .table td {
-            font-size: 12px; /* 모바일에서 폰트 크기 줄이기 */
-            padding: 6px; /* 여백 조정 */
+        .row {
+            display: flex;
+            flex-direction: column-reverse; /* ✅ 테이블을 아래로 이동 */
         }
     }
+
 
 
     .trailer-container {
@@ -71,12 +73,6 @@
         height: 600px; /* 크기 확대 */
     }
 
-    /* 모바일 화면에서 높이 조정 */
-    @media (max-width: 768px) {
-        #trailer {
-            height: 300px; /* 모바일에서는 더 작게 */
-        }
-    }
 
     .swiper {
         position: relative;
