@@ -385,12 +385,18 @@
         fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=AIzaSyA7YaVXuNffyJ565KPGU7Vh8V9la74lOMk`)
             .then(response => response.json())
             .then(data => {
-                if (data.items.length > 0) {
-                    const videoId = data.items[0].id.videoId;
-                    trailerIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
+                console.log("YouTube API 응답:", data); // 응답 데이터 확인
+
+                if (!data.items || data.items.length === 0) {
+                    console.error("❌ 유튜브 API에서 결과를 찾을 수 없습니다!");
+                    return;
                 }
+
+                const videoId = data.items[0].id.videoId;
+                trailerIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
             })
             .catch(error => console.error("YouTube API Error:", error));
+
     }
 
     // 페이지 로드 시 랭킹 1위 영화의 예고편 자동 재생
