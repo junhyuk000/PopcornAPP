@@ -996,12 +996,26 @@ class DBManager:
         """장르 및 국가 목록 가져오기"""
         try:
             self.connect()
+            
+            print("🟢 [DEBUG] Fetching genres and nations from database...")
+
+            # ✅ 장르 조회
             self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
-            genres = [row[0] for row in self.cursor.fetchall()]
-            
+            genre_results = self.cursor.fetchall()
+            print(f"🟢 [DEBUG] Fetched Genres: {genre_results}")  # 🛠 디버깅 출력
+            genres = [row[0] for row in genre_results if row and len(row) > 0]
+
+            # ✅ 국가 조회
             self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
-            nations = [row[0] for row in self.cursor.fetchall()]
-            
+            nation_results = self.cursor.fetchall()
+            print(f"🟢 [DEBUG] Fetched Nations: {nation_results}")  # 🛠 디버깅 출력
+            nations = [row[0] for row in nation_results if row and len(row) > 0]
+
             return {"genres": genres, "nations": nations}
+
+        except mysql.connector.Error as error:
+            print(f"❌ [ERROR] Database error: {error}")
+            return {"genres": [], "nations": []}  # ✅ 오류 발생 시 빈 리스트 반환
+
         finally:
-            self.disconnect()
+            self.disconnect()  # 항상 연결 종료
