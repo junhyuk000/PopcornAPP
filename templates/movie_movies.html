@@ -43,7 +43,19 @@
     @media (max-width: 768px) {
         .row {
             display: flex;
-            flex-direction: column-reverse; /* 모바일에서 테이블이 아래로 이동 */
+            flex-direction: column; /* 모바일에서 테이블이 그래프 아래로 이동 */
+        }
+
+        .table-container {
+            overflow-x: auto; /* 표가 넘칠 경우 가로 스크롤 추가 */
+            max-width: 100%; /* 화면을 벗어나지 않도록 설정 */
+        }
+
+        .table {
+            min-width: 100%; /* 표 크기가 고정되지 않고 조정되도록 설정 */
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap; /* 표 내용 줄바꿈 방지 */
         }
     }
 
