@@ -2,10 +2,23 @@
 {% block css %}
 <style>
     table td {
-        white-space: nowrap;  /* 줄바꿈 방지 */
-        overflow: hidden;  /* 넘치는 텍스트 숨김 */
-        text-overflow: ellipsis;  /* 너무 긴 경우 ... 처리 */
-        max-width: 200px;  /* 셀의 최대 너비 설정 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+    
+    /* 툴팁 스타일 */
+    .tooltip-custom {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 14px;
+        max-width: 300px;
+        display: none;
+        z-index: 1000;
     }
 </style>
 {% endblock %}
@@ -81,10 +94,14 @@
                 <th>배우</th>
                 <th>매출액</th>
                 <th>관객수</th>
+                <th>예고편</th>  <!-- 예고편 열 추가 -->
             </tr>
         </thead>
         <tbody id="movieData"></tbody>
     </table>
+
+<!-- 툴팁 요소 추가 -->
+<div id="tooltip" class="tooltip-custom"></div>
     <!-- 페이지네이션 컨테이너 추가 -->
     <div class="row mt-4">
         <div class="col-12">
@@ -108,36 +125,61 @@
 
     function updateTable(data) {
         const tbody = document.getElementById('movieData');
-        tbody.innerHTML = '';  // 기존 데이터 초기화
+        tbody.innerHTML = '';
 
         if (data.data && data.data.length > 0) {
             data.data.forEach(movie => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="no-wrap">${movie.rank}</td>
-                    <td class="no-wrap">${movie.movie_title}</td>
-                    <td class="no-wrap">${movie.genre || '-'}</td>
-                    <td class="no-wrap">${movie.nations || '-'}</td>
-                    <td class="no-wrap">${movie.director || '-'}</td>
-                    <td class="no-wrap">${movie.actors || '-'}</td>
-                    <td class="no-wrap">${formatNumber(movie.total_sales)}</td>
-                    <td class="no-wrap">${formatNumber(movie.total_audience)}</td>
+                    <td>${movie.rank}</td>
+                    <td>
+                        <span class="movie-title" data-tooltip="${movie.summary || '설명 없음'}">
+                            ${movie.movie_title}
+                        </span>
+                    </td>
+                    <td>${movie.genre || '-'}</td>
+                    <td>${movie.nations || '-'}</td>
+                    <td>${movie.director || '-'}</td>
+                    <td>${movie.actors || '-'}</td>
+                    <td>${formatNumber(movie.total_sales)}</td>
+                    <td>${formatNumber(movie.total_audience)}</td>
+                    <td>
+                        ${movie.trailer_url ? 
+                            `<a href="/movie_youtube/${movie.movie_title}" target="_blank" class="btn btn-sm btn-outline-success">▶ 예고편</a>` 
+                            : '-'}
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
-            
-            // 페이지네이션 업데이트
+
             updatePagination(data.pages);
+            setupTooltips();
         } else {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center">검색 결과가 없습니다.</td>
-                </tr>
-            `;
+            tbody.innerHTML = `<tr><td colspan="9" class="text-center">검색 결과가 없습니다.</td></tr>`;
             document.getElementById('pagination').innerHTML = '';
         }
     }
 
+    function setupTooltips() {
+        const tooltip = document.getElementById('tooltip');
+        document.querySelectorAll('.movie-title').forEach(title => {
+            title.addEventListener('mouseenter', (e) => {
+                tooltip.innerText = e.target.getAttribute('data-tooltip');
+                tooltip.style.display = 'block';
+                tooltip.style.left = `${e.pageX + 10}px`;
+                tooltip.style.top = `${e.pageY + 10}px`;
+            });
+
+            title.addEventListener('mousemove', (e) => {
+                tooltip.style.left = `${e.pageX + 10}px`;
+                tooltip.style.top = `${e.pageY + 10}px`;
+            });
+
+            title.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+        });
+    }
     function updatePagination(totalPages) {
         const pagination = document.getElementById('pagination');
         let paginationHtml = '';
@@ -241,8 +283,7 @@
     });
 
     function formatNumber(num) {
-        if (!num) return '-';
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '-';
     }
 </script>
 
