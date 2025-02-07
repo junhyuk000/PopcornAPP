@@ -1003,12 +1003,13 @@ class DBManager:
             self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
             genre_results = self.cursor.fetchall()
 
-            # 🚨 쿼리 실행 후 결과 출력 (디버깅)
+            # 🚨 디버깅: 쿼리 실행 후 결과 출력
             print(f"🟢 [DEBUG] Raw Genre Results: {genre_results}")
 
-            # ✅ `row["genre"]` 사용하여 올바르게 변환
+            # ✅ 딕셔너리에서 "genre" 키를 사용하여 리스트 생성
             genres = [row["genre"] for row in genre_results if isinstance(row, dict) and "genre" in row]
 
+            # ✅ 장르 데이터가 비어있을 경우 기본값 설정
             if not genres:
                 print("🔴 [DEBUG] No genre data found in database.")
                 genres = ["Unknown"]  # 기본값 추가
@@ -1017,12 +1018,13 @@ class DBManager:
             self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
             nation_results = self.cursor.fetchall()
 
-            # 🚨 쿼리 실행 후 결과 출력 (디버깅)
+            # 🚨 디버깅: 국가 데이터 확인
             print(f"🟢 [DEBUG] Raw Nation Results: {nation_results}")
 
-            # ✅ `row["nations"]` 사용하여 올바르게 변환
+            # ✅ 딕셔너리에서 "nations" 키를 사용하여 리스트 생성
             nations = [row["nations"] for row in nation_results if isinstance(row, dict) and "nations" in row]
 
+            # ✅ 국가 데이터가 비어있을 경우 기본값 설정
             if not nations:
                 print("🔴 [DEBUG] No nation data found in database.")
                 nations = ["Unknown"]  # 기본값 추가
