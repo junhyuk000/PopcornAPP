@@ -1002,14 +1002,24 @@ class DBManager:
             # ✅ 장르 조회
             self.cursor.execute("SELECT DISTINCT genre FROM movie_summary WHERE genre IS NOT NULL ORDER BY genre")
             genre_results = self.cursor.fetchall()
+
+            if not genre_results:  # 🚨 데이터가 없을 경우 예외 처리
+                print("🔴 [DEBUG] No genre data found.")
+                genre_results = []
+
             print(f"🟢 [DEBUG] Fetched Genres: {genre_results}")  # 🛠 디버깅 출력
-            genres = [row[0] for row in genre_results if row and len(row) > 0]
+            genres = [row[0] if isinstance(row, (tuple, list)) and len(row) > 0 else row for row in genre_results]
 
             # ✅ 국가 조회
             self.cursor.execute("SELECT DISTINCT nations FROM movie_summary WHERE nations IS NOT NULL ORDER BY nations")
             nation_results = self.cursor.fetchall()
+
+            if not nation_results:  # 🚨 데이터가 없을 경우 예외 처리
+                print("🔴 [DEBUG] No nation data found.")
+                nation_results = []
+
             print(f"🟢 [DEBUG] Fetched Nations: {nation_results}")  # 🛠 디버깅 출력
-            nations = [row[0] for row in nation_results if row and len(row) > 0]
+            nations = [row[0] if isinstance(row, (tuple, list)) and len(row) > 0 else row for row in nation_results]
 
             return {"genres": genres, "nations": nations}
 
