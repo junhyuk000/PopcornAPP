@@ -379,7 +379,7 @@
         const query = encodeURIComponent(movieTitle + " official trailer");
 
         // 유튜브 API를 사용해 자동 검색
-        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=YOUR_YOUTUBE_API_KEY`)
+        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=AIzaSyA7YaVXuNffyJ565KPGU7Vh8V9la74lOMk`)
             .then(response => response.json())
             .then(data => {
                 if (data.items.length > 0) {
