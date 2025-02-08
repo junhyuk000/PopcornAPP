@@ -1,29 +1,85 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
-     /* 유튜브 영상이 전체 화면을 차지하도록 설정 */
-     .trailer-container {
-        width: 100vw; /* 뷰포트 전체 너비 */
-        height: 100vh; /* 뷰포트 전체 높이 */
+    /* 📺 TV 전체 컨테이너 */
+    .tv-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        background: black; /* 배경을 검은색으로 설정 */
+        width: 100%;
+        height: auto;
+        margin-top: 50px;
     }
 
-    /* 유튜브 영상 */
-    #trailer {
-        width: 80%; /* 화면의 80%를 차지하도록 설정 */
-        height: 80vh; /* 화면 높이의 80% */
+    /* 🎬 TV 프레임 */
+    .tv-frame {
+        position: relative;
+        width: 800px; /* TV 크기 조정 */
+        height: 500px; /* TV 높이 조정 */
+        background: #ccc;
+        border-radius: 20px;
+        border: 10px solid #888;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
+    }
+
+    /* 🎥 TV 화면 (유튜브 영상) */
+    .tv-screen-container {
+        position: relative;
+        width: 90%;
+        height: 60vh; /* 영상 높이를 줄이기 */
+        background: black;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* 🎥 유튜브 영상 */
+    .tv-screen {
+        width: 100%;
+        height: 100%;
         border: none;
+        object-fit: cover;
     }
 
-    @media (max-width: 768px) {
-        #trailer {
-            width: 100%; /* 모바일에서는 100% 너비 */
-            height: 50vh; /* 모바일에서는 높이 줄이기 */
-        }
+    /* 🎛 TV 버튼 스타일 */
+    .tv-knobs {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
     }
+
+    .button-container {
+        width: 40px;
+        height: 40px;
+        background: #555;
+        border-radius: 50%;
+        box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 🔵 동전 넣는 구멍 */
+    .coin-slot {
+        width: 10px;
+        height: 30px;
+        background: #222;
+        border-radius: 5px;
+        box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.5);
+    }
+
 
     .button-container {
     display: flex;
@@ -241,12 +297,30 @@
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 <!-- 예고편을 표시할 iframe -->
-<div class="trailer-container">
-    <iframe id="trailer" frameborder="0"
-        allow="autoplay; encrypted-media" allowfullscreen>
-    </iframe>
-</div>
+{% block content %}
+<h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
+<h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 
+<!-- 📺 TV 스타일을 유지하면서 trailer-container 활용 -->
+<div class="tv-container">
+    <div class="tv-frame">
+        <div class="trailer-container">
+            <div class="tv-screen-container">
+                <iframe id="trailer" class="tv-screen" frameborder="0"
+                    allow="autoplay; encrypted-media" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- 🎛 TV 버튼 -->
+        <div class="tv-knobs">
+            <div class="button-container">
+                <div class="coin-slot"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 
 
