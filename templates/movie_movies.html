@@ -3,40 +3,31 @@
 <style>
     /* 📺 TV 전체 컨테이너 */
     .tv-container {
+        position: relative;
+        width: 800px;  /* TV 이미지 크기 */
+        height: 500px; /* TV 이미지 크기 */
+        margin: auto;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+    }
+
+    /* 🎞️ TV 이미지 */
+    .tv-frame {
         width: 100%;
         height: auto;
-        margin-top: 50px;
+        display: block;
     }
 
-    /* 🎬 TV 프레임 */
-    /* 📺 TV 프레임 */
-    .tv-frame {
-        position: relative;
-        width: 800px; /* TV 크기 */
-        height: 500px; /* TV 높이 */
-        background: #ccc;
-        border-radius: 20px;
-        border: 10px solid #888;
-        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden; /* ✅ 영상이 TV 밖으로 튀어나오지 않도록 설정 */
-    }
-
-    /* 🎬 TV 화면 */
+    /* 🎬 TV 화면 (유튜브 영상) */
     .tv-screen-container {
         position: absolute;
-        top: 10%; /* ✅ TV 화면 내부에 정렬 */
-        left: 5%;
-        width: 90%;
-        height: 70%; /* ✅ TV 화면 비율 조정 */
+        top: 17%; /* TV 화면 위치 조정 */
+        left: 14%;
+        width: 72%;
+        height: 55%;
         background: black;
-        border-radius: 10px;
+        border-radius: 5px;
         overflow: hidden;
         display: flex;
         justify-content: center;
@@ -48,20 +39,11 @@
         width: 100%;
         height: 100%;
         border: none;
-        object-fit: cover; /* ✅ TV 내부에 맞게 꽉 채우기 */
+        object-fit: cover;
     }
 
 
-    /* 🎛 TV 버튼 스타일 */
-    .tv-knobs {
-        position: absolute;
-        bottom: 30px;
-        right: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-    }
+
 
     .button-container {
         width: 40px;
@@ -300,23 +282,15 @@
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 
-<!-- 📺 TV 스타일을 유지하면서 trailer-container 활용 -->
+<!-- 📺 TV 프레임 적용 -->
 <div class="tv-container">
-    <div class="tv-frame">
-        <div class="trailer-container">
-            <div class="tv-screen-container">
-                <iframe id="trailer" class="tv-screen" frameborder="0"
-                    allow="autoplay; encrypted-media" allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-
-        <!-- 🎛 TV 버튼 -->
-        <div class="tv-knobs">
-            <div class="button-container">
-                <div class="coin-slot"></div>
-            </div>
-        </div>
+    <img src="/static/tv.jpg" alt="Retro TV" class="tv-frame">
+    
+    <!-- 🎬 TV 화면 (유튜브 영상) -->
+    <div class="tv-screen-container">
+        <iframe id="trailer" class="tv-screen" frameborder="0"
+            allow="autoplay; encrypted-media" allowfullscreen>
+        </iframe>
     </div>
 </div>
 
