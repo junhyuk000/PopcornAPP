@@ -1,144 +1,29 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
-    .tv-container {
+     /* 유튜브 영상이 전체 화면을 차지하도록 설정 */
+     .trailer-container {
+        width: 100vw; /* 뷰포트 전체 너비 */
+        height: 100vh; /* 뷰포트 전체 높이 */
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 100%;
-        height: auto;
-        margin-top: 50px;
+        background: black; /* 배경을 검은색으로 설정 */
     }
 
-    /* 📺 TV 본체 */
-    .tv-frame {
-        position: relative;
-        width: 600px;
-        height: 400px;
-        background: #ccc;
-        border-radius: 20px;
-        border: 8px solid #888;
-        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding-top: 20px;
-    }
-
-    /* 📡 안테나 (완전히 왼쪽 모서리) */
-    .tv-antenna {
-        position: absolute;
-        top: -50px;
-        left: -5px; /* 완전히 왼쪽 끝으로 */
-        width: 6px;
-        height: 100px;
-        background: #666;
-        transform: rotate(-45deg);
-        border-radius: 3px;
-    }
-
-    /* 🎬 TV 화면 */
-    /* 🎬 TV 화면 (유튜브 영상) */
-    .tv-screen-container {
-        position: absolute;
-        top: 15%;
-        left: 7%;
-        width: 86%;
-        height: 65%;
-        background: black;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
-        display: flex; /* ✅ 추가 */
-        justify-content: center; /* ✅ 추가 */
-        align-items: center; /* ✅ 추가 */
-    }
-
-    /* 🎥 유튜브 영상 */
-    .tv-screen {
-        position: absolute; /* ✅ 추가 */
-        top: 0; /* ✅ 추가 */
-        left: 0; /* ✅ 추가 */
-        width: 100%; /* ✅ 수정 */
-        height: 100%; /* ✅ 수정 */
+    /* 유튜브 영상 */
+    #trailer {
+        width: 80%; /* 화면의 80%를 차지하도록 설정 */
+        height: 80vh; /* 화면 높이의 80% */
         border: none;
-        object-fit: cover; /* ✅ 비율 유지하며 꽉 차도록 설정 */
     }
 
-    /* 🎛 동전 넣는 버튼 (둥근 원 안에 타원형 슬롯) */
-    .tv-knobs {
-        position: absolute;
-        bottom: 30px;
-        right: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
+    @media (max-width: 768px) {
+        #trailer {
+            width: 100%; /* 모바일에서는 100% 너비 */
+            height: 50vh; /* 모바일에서는 높이 줄이기 */
+        }
     }
-
-    /* 🌀 둥근 버튼 */
-    .button-container {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        background: #555;
-        border-radius: 50%;
-        box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* 🔵 동전 넣는 구멍 (둥근 버튼 안에 타원형) */
-    .coin-slot {
-        width: 10px;
-        height: 30px;
-        background: #222;
-        border-radius: 5px;
-        box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    /* 🔴 추가된 버튼 (조금 아래쪽으로 이동) */
-    .extra-button {
-        position: absolute;
-        bottom: 10px; /* 더 아래로 조정 */
-        right: 10px;
-        width: 20px;
-        height: 40px;
-        background: #333;
-        border-radius: 5px;
-        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3);
-    }
-
-    /* 🦵 TV 다리 (모서리로 이동) */
-    .tv-legs {
-        position: absolute;
-        bottom: -50px;
-        left: 50%;
-        display: flex;
-        gap: 300px; /* 완전히 양쪽 끝으로 */
-        transform: translateX(-50%);
-    }
-
-    /* 왼쪽 다리 - 왼쪽으로 휘게 */
-    .tv-leg.left {
-        width: 14px;
-        height: 80px;
-        background: #888;
-        border-radius: 5px;
-        transform: rotate(15deg);
-    }
-
-    /* 오른쪽 다리 - 오른쪽으로 휘게 */
-    .tv-leg.right {
-        width: 14px;
-        height: 80px;
-        background: #888;
-        border-radius: 5px;
-        transform: rotate(-15deg);
-    }
-
 
     .button-container {
     display: flex;
@@ -356,39 +241,10 @@
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 <!-- 예고편을 표시할 iframe -->
-<div class="tv-container">
-    <div class="tv-frame">
-        <!-- 📡 TV 안테나 (모서리로 이동) -->
-        <div class="tv-antenna"></div>
-
-        <!-- 🎬 TV 화면 (유튜브 영상) -->
-        <div class="tv-screen-container">
-            <iframe id="trailer" class="tv-screen"
-            src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&rel=0"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen>
-        </iframe>
-        
-        </div>
-
-        <!-- 🎛 동전 넣는 모양의 버튼 -->
-        <div class="tv-knobs">
-            <div class="button-container">
-                <div class="coin-slot"></div>
-                <div class="knob"></div>
-            </div>
-        </div>
-
-        <!-- 🔴 추가된 버튼 (조금 아래쪽으로 이동) -->
-        <div class="extra-button"></div>
-
-        <!-- 🦵 대각선 TV 다리 (모서리로 이동) -->
-        <div class="tv-legs">
-            <div class="tv-leg left"></div>
-            <div class="tv-leg right"></div>
-        </div>
-    </div>
+<div class="trailer-container">
+    <iframe id="trailer" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen>
+    </iframe>
 </div>
 
 
@@ -477,35 +333,29 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be47724c48a9357381269e671a99079c&libraries=services"></script>
 <script src="js/map.js"></script>
 <script>
-    function loadTrailer(movieTitle) {
+     function loadTrailer(movieTitle) {
         if (!movieTitle) return;
 
         const trailerIframe = document.getElementById('trailer');
         const query = encodeURIComponent(movieTitle + " official trailer");
 
-        // 유튜브 API를 사용해 자동 검색
         fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=AIzaSyCStt6OCKJD2YY1wOPVkR88PZMjknY3EPw`)
             .then(response => response.json())
             .then(data => {
-                console.log("YouTube API 응답:", data); // 응답 데이터 확인
-
                 if (!data.items || data.items.length === 0) {
                     console.error("❌ 유튜브 API에서 결과를 찾을 수 없습니다!");
                     return;
                 }
-
                 const videoId = data.items[0].id.videoId;
                 trailerIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
             })
             .catch(error => console.error("YouTube API Error:", error));
-
     }
 
-    // 페이지 로드 시 랭킹 1위 영화의 예고편 자동 재생
+    // 페이지 로드 시 실행
     document.addEventListener('DOMContentLoaded', function() {
-        const moviesInfo = {{ movies_info | tojson }}; // Flask에서 영화 정보 전달
+        const moviesInfo = {{ movies_info | tojson }};
         const topMovie = moviesInfo.find(movie => movie.rank === 1);
-
         if (topMovie) {
             loadTrailer(topMovie.title);
         }
