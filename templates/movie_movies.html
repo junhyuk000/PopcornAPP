@@ -293,10 +293,7 @@
 
 {% block title %}Movie Rankings{% endblock %}
 
-{% block content %}
-<h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
-<h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
-<!-- 예고편을 표시할 iframe -->
+
 {% block content %}
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
