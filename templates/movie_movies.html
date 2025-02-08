@@ -12,10 +12,11 @@
     }
 
     /* 🎬 TV 프레임 */
+    /* 📺 TV 프레임 */
     .tv-frame {
         position: relative;
-        width: 800px; /* TV 크기 조정 */
-        height: 500px; /* TV 높이 조정 */
+        width: 800px; /* TV 크기 */
+        height: 500px; /* TV 높이 */
         background: #ccc;
         border-radius: 20px;
         border: 10px solid #888;
@@ -24,18 +25,19 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding-top: 20px;
+        overflow: hidden; /* ✅ 영상이 TV 밖으로 튀어나오지 않도록 설정 */
     }
 
-    /* 🎥 TV 화면 (유튜브 영상) */
+    /* 🎬 TV 화면 */
     .tv-screen-container {
-        position: relative;
+        position: absolute;
+        top: 10%; /* ✅ TV 화면 내부에 정렬 */
+        left: 5%;
         width: 90%;
-        height: 60vh; /* 영상 높이를 줄이기 */
+        height: 70%; /* ✅ TV 화면 비율 조정 */
         background: black;
         border-radius: 10px;
         overflow: hidden;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -46,8 +48,9 @@
         width: 100%;
         height: 100%;
         border: none;
-        object-fit: cover;
+        object-fit: cover; /* ✅ TV 내부에 맞게 꽉 채우기 */
     }
+
 
     /* 🎛 TV 버튼 스타일 */
     .tv-knobs {
