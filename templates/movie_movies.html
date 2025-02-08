@@ -1,68 +1,23 @@
 {% extends "movie_base.html" %}
 {% block css %}
 <style>
-    /* 📺 TV 전체 컨테이너 */
-    .tv-container {
-        position: relative;
-        width: 800px;  /* TV 이미지 크기 */
-        height: 500px; /* TV 이미지 크기 */
+/* 🎥 유튜브 영상 전체 컨테이너 */
+    .video-container {
+        width: 90%;  /* 브라우저 너비의 90% */
+        max-width: 1200px; /* 최대 크기 제한 */
+        height: 70vh; /* 브라우저 높이의 70% */
         margin: auto;
         display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* 🎞️ TV 이미지 */
-    .tv-frame {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    /* 🎬 TV 화면 (유튜브 영상) */
-    .tv-screen-container {
-        position: absolute;
-        top: 17%; /* TV 화면 위치 조정 */
-        left: 14%;
-        width: 72%;
-        height: 55%;
-        background: black;
-        border-radius: 5px;
-        overflow: hidden;
-        display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    /* 🎥 유튜브 영상 */
-    .tv-screen {
+    /* 🎞️ 유튜브 영상 */
+    .video-frame {
         width: 100%;
         height: 100%;
         border: none;
         object-fit: cover;
-    }
-
-
-
-
-    .button-container {
-        width: 40px;
-        height: 40px;
-        background: #555;
-        border-radius: 50%;
-        box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* 🔵 동전 넣는 구멍 */
-    .coin-slot {
-        width: 10px;
-        height: 30px;
-        background: #222;
-        border-radius: 5px;
-        box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.5);
     }
 
 
@@ -282,18 +237,12 @@
 <h2 style="color:  #283618; text-align: center;">🎬 오늘의 영화 </h2>
 <h3 style="color:  #bc6c25; text-align: center;">{% for movie in movies_info %}{% if movie.rank == 1 %}{{movie.title}}{%endif%}{% endfor %}</h3>
 
-<!-- 📺 TV 프레임 적용 -->
-<div class="tv-container">
-    <img src="/static/images/tv.jpg" alt="Retro TV" class="tv-frame">
-    
-    <!-- 🎬 TV 화면 (유튜브 영상) -->
-    <div class="tv-screen-container">
-        <iframe id="trailer" class="tv-screen" frameborder="0"
-            allow="autoplay; encrypted-media" allowfullscreen>
-        </iframe>
-    </div>
+<!-- 🎥 YouTube 영상 (전체 화면에 더 가깝게 확대) -->
+<div class="video-container">
+    <iframe id="trailer" class="video-frame" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen>
+    </iframe>
 </div>
-
 <div class="container">
 
     <div class="swiper">
