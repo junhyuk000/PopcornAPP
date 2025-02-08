@@ -39,6 +39,7 @@
     }
 
     /* 🎬 TV 화면 */
+    /* 🎬 TV 화면 (유튜브 영상) */
     .tv-screen-container {
         position: absolute;
         top: 15%;
@@ -49,13 +50,20 @@
         border-radius: 10px;
         overflow: hidden;
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+        display: flex; /* ✅ 추가 */
+        justify-content: center; /* ✅ 추가 */
+        align-items: center; /* ✅ 추가 */
     }
 
     /* 🎥 유튜브 영상 */
     .tv-screen {
-        width: 100%;
-        height: 100%;
+        position: absolute; /* ✅ 추가 */
+        top: 0; /* ✅ 추가 */
+        left: 0; /* ✅ 추가 */
+        width: 100%; /* ✅ 수정 */
+        height: 100%; /* ✅ 수정 */
         border: none;
+        object-fit: cover; /* ✅ 비율 유지하며 꽉 차도록 설정 */
     }
 
     /* 🎛 동전 넣는 버튼 (둥근 원 안에 타원형 슬롯) */
@@ -355,9 +363,13 @@
 
         <!-- 🎬 TV 화면 (유튜브 영상) -->
         <div class="tv-screen-container">
-            <iframe id="trailer" class="tv-screen" frameborder="0"
-                allow="autoplay; encrypted-media" allowfullscreen>
-            </iframe>
+            <iframe id="trailer" class="tv-screen"
+            src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&rel=0"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+        </iframe>
+        
         </div>
 
         <!-- 🎛 동전 넣는 모양의 버튼 -->
