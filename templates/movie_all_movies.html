@@ -130,6 +130,7 @@
                     <th>배우</th>
                     <th>매출액</th>
                     <th>관객수</th>
+                    <th>개봉일</th>
                     <th>예고편</th>
                 </tr>
             </thead>
@@ -179,6 +180,7 @@
                     <td>${movie.actors || '-'}</td>
                     <td>${formatNumber(movie.total_sales)}</td>
                     <td>${formatNumber(movie.total_audience)}</td>
+                    <td>${movie.release_date || '-'}</td>
                     <td><a href="/movie_youtube/${movie.movie_title}" target="_blank" class="btn btn-sm btn-outline-success">▶ 예고편</a></td>
                 `;
                 tbody.appendChild(row);
