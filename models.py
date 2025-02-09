@@ -952,7 +952,7 @@ class DBManager:
             base_query = """
                 SELECT 
                     ROW_NUMBER() OVER (ORDER BY {0} DESC) AS rank,
-                    movie_title, genre, nations, director, actors, total_sales, total_audience,
+                    movie_title, genre, nations, director, actors, total_sales, total_audience, release_date,
                     COUNT(*) OVER() as total_count
                 FROM movie_summary
                 WHERE 1=1
