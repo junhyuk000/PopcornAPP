@@ -355,43 +355,44 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         var swiper = new Swiper(".swiper", {
-            slidesPerView: 5, // ✅ 기본: 3개씩 보이도록 설정
-            slidesPerGroup: 1,
-            spaceBetween: 20,
-            centeredSlides: true,
-            loop: true,
-            autoplay: {
-                delay: 1000,
-                disableOnInteraction: false,
+        slidesPerView: 5, // 기본적으로 5개씩 표시
+        slidesPerGroup: 1,
+        spaceBetween: 20,
+        centeredSlides: false,
+        loop: true,
+        autoplay: {
+            delay: 2000, // 2초마다 슬라이드 변경
+            disableOnInteraction: false,
+        },
+        speed: 600,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+            320: { // 모바일 작은 화면 (예: iPhone SE)
+                slidesPerView: 1,
+                spaceBetween: 5
             },
-            speed: 500,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
+            480: { // 일반 모바일 화면
+                slidesPerView: 2,
+                spaceBetween: 10
             },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
+            768: { // 태블릿 화면
+                slidesPerView: 3,
+                spaceBetween: 15
             },
-            breakpoints: {
-                320: {  // ✅ 작은 모바일 화면 (예: iPhone SE)
-                    slidesPerView: 1,
-                    spaceBetween: 5
-                },
-                480: {  // ✅ 일반적인 모바일 화면
-                    slidesPerView: 1,
-                    spaceBetween: 10
-                },
-                768: {  // ✅ 태블릿 화면 (너비 768px 이상)
-                    slidesPerView: 2,
-                    spaceBetween: 15
-                },
-                1024: {  // ✅ 데스크탑 화면
-                    slidesPerView: 3, // 🚀 PC에서는 3개씩 표시
-                    spaceBetween: 20
-                }
+            1024: { // 데스크톱 (컨테이너 1600px 기준)
+                slidesPerView: 5, // 🟢 5개씩 보여줌
+                spaceBetween: 20
             }
-        });
+        }
+    });
+
 
         document.querySelector(".swiper").addEventListener("mouseenter", function() {
             swiper.autoplay.stop();
