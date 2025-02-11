@@ -2,7 +2,7 @@ const CACHE_NAME = "popcorn-cache-v1";
 const urlsToCache = [
   "/",
   "/static/css/styles.css",
-  "/static/js/main.js",
+  // "/static/js/main.js",
   "/static/icons/icon-128x128.png",
   "/static/icons/icon-512x512.png"
 ];
