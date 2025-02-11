@@ -268,7 +268,7 @@ def add_post(movie_title,movie_id):
 
 ### 리뷰 수정(수정)
 @app.route('/post/edit/<movie_title>/<int:id>', methods=['GET', 'POST'])
-def edit_post(id):
+def edit_post(movie_title, id):
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -289,7 +289,7 @@ def edit_post(id):
     # GET 요청: 게시글 정보를 가져와 폼에 표시
     post = manager.get_post_by_id(id)
     if post:
-        return render_template('movie_edit.html', post=post)  # 수정 페이지 렌더링
+        return render_template('movie_edit.html', movie_title = movie_title, post=id)  # 수정 페이지 렌더링
     return flash("게시글을 찾을 수 없습니다.404", 'error')
 
 ### 리뷰 삭제
