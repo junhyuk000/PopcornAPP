@@ -305,12 +305,12 @@ def delete_post(id):
             flash("file삭제",'success')
             if manager.delete_post(id,user_id):
                 flash("게시물 삭제 성공!","success")
-                return redirect(url_for('movies'))
+                return redirect(f'/reviews/{post["movie_title"]}/{post["movie_id"]}')
             return f'<script>alert("파일 삭제 성공! 게시물 삭제 실패!");location.href="{url_for("register")}"</script>' # 스크립트로 alert알람창 띄우기
         else:
             if manager.delete_post(id,user_id):
                 flash("게시물 삭제 성공!","success")
-                return redirect(url_for('movies'))
+                return redirect(f'/reviews/{post["movie_title"]}/{post["movie_id"]}')
         flash("삭제실패",'error')
     
     return redirect(url_for('view'))
