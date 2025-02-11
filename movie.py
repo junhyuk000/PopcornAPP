@@ -6,7 +6,7 @@ from models import DBManager
 import pandas as pd
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = 'your-secret-key'
 # app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static','uploads')
@@ -18,6 +18,12 @@ manager = DBManager()
 manager.moives_info()
 manager.movies_images()
 manager.update_filename_in_db("movies")
+
+
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(app.static_folder, filename)
 
 
 ### images 폴더 static/images 폴더로 연결

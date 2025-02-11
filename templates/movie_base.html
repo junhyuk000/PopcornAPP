@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link rel="manifest" href="/static/manifest.json">
+
 
     <style>
 
@@ -279,5 +281,15 @@
         }
     }
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/static/service-worker.js')
+              .then((reg) => console.log("Service Worker Registered", reg))
+              .catch((err) => console.log("Service Worker Registration Failed", err));
+          });
+        }
+      </script>
+      
 </body>
 </html>
