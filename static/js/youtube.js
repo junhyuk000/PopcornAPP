@@ -5,7 +5,7 @@ console.log(`Movie Title (from JavaScript file): ${movieTitle}`);
 function fetchTrailer(movieTitle) {
     const query = `${movieTitle.trim()} 예고편`;
     const searchUrl = "https://www.googleapis.com/youtube/v3/search";
-    const apiKey = "AIzaSyCStt6OCKJD2YY1wOPVkR88PZMjknY3EPw"; // 유튜브 API 키
+    const apiKey = "AIzaSyB7W9s7YDSc8amU9SLcNZMd3YF1kgxUOYM"; // 유튜브 API 키
 
     const url = `${searchUrl}?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${apiKey}`;
 

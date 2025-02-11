@@ -330,7 +330,7 @@
         const trailerIframe = document.getElementById('trailer');
         const query = encodeURIComponent(movieTitle + " official trailer");
 
-        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=AIzaSyCStt6OCKJD2YY1wOPVkR88PZMjknY3EPw`)
+        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=AIzaSyB7W9s7YDSc8amU9SLcNZMd3YF1kgxUOYM`)
             .then(response => response.json())
             .then(data => {
                 if (!data.items || data.items.length === 0) {
