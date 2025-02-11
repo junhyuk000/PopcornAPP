@@ -266,8 +266,8 @@ def add_post(movie_title,movie_id):
 
     return render_template('movie_review_add.html', movie_title=movie_title, movie_id=movie_id )
 
-### 리뷰 수정
-@app.route('/post/edit/<int:id>', methods=['GET', 'POST'])
+### 리뷰 수정(수정)
+@app.route('/post/edit/<movie_title>/<int:id>', methods=['GET', 'POST'])
 def edit_post(id):
     if request.method == 'POST':
         title = request.form['title']
@@ -283,7 +283,7 @@ def edit_post(id):
         # 게시글 정보를 업데이트
         if manager.update_post(id, title, content, filename):
             flash("업데이트 성공!", "success")
-            return redirect(url_for('movies'))  # 성공 시 메인 페이지로 리디렉션
+            return redirect(request.referrer or url_for('view_post', movie_title = title, id=id))  # 성공 시 메인 페이지로 리디렉션
         return flash("게시글 수정 실패,400", 'error')  # 실패 시 400 에러 반환
 
     # GET 요청: 게시글 정보를 가져와 폼에 표시
