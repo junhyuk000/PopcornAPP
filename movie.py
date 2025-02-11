@@ -284,7 +284,7 @@ def edit_post(movie_title, id):
         if manager.update_post(id, title, content, filename):
             flash("업데이트 성공!", "success")
             post = manager.get_post_by_id(id)
-            return redirect(f'/post/{movie_title}/{post['movie_id']}')
+            return redirect(f'/post/{movie_title}/{post["movie_id"]}')
         return flash("게시글 수정 실패,400", 'error')  # 실패 시 400 에러 반환
 
     # GET 요청: 게시글 정보를 가져와 폼에 표시
